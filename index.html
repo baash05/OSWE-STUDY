@@ -556,6 +556,7 @@
 <li>dynamic class loading: <code>new $class()</code>, <code>call_user_func([$obj, $method])</code>, <code>ReflectionClass</code>, <code>unserialize()</code></li>
 <li>template engines used with untrusted input and rendering context</li>
 <li>search for: <code>eval</code>, <code>assert</code>, <code>exec</code>, <code>system</code>, <code>include</code>, <code>require</code>, <code>preg_replace</code>, <code>call_user_func</code>, <code>new $</code></li>
+<li>NOTE: The regex assert\( only works as a dynamic RCE string evaluator in PHP 7.x. In PHP 8.x, assert() was changed to a language construct; passing it a variable string containing code will throw a compiler error instead of executing it. Keep a red pencil note on the target's PHP environment version.</li>
 </ul>
 <h4>4.1. PHP RCE patterns</h4>
 <ul>
@@ -1280,10 +1281,11 @@
 <h3>7.10. SQLi</h3>
 <ul>
 <li><code>DbContext</code>, <code>Database.ExecuteSqlRaw</code>, <code>FromSqlRaw</code>, <code>SqlCommand</code>, <code>SqlDataAdapter</code>, <code>ExecuteReader</code></li>
-<li>string concatenation with LINQ/SQL, interpolation in raw SQL, <code>.FromSqlInterpolated</code>, <code>.FromSqlRaw</code></li>
+<li>string concatenation with LINQ/SQL, interpolation in raw SQL, <code>.FromSqlRaw</code></li>
 <li><code>SELECT</code>, <code>WHERE</code>, <code>ORDER BY</code>, <code>LIMIT</code>, <code>UNION</code>, <code>--</code>, <code>OR 1=1</code>, <code>&#x27; OR &#x27;1&#x27;=&#x27;1</code></li>
 <li>if user input reaches <code>WHERE</code>, <code>ORDER BY</code>, <code>OFFSET</code>, or dynamic SQL, inspect closely</li>
 <li>search for: <code>ExecuteSqlRaw</code>, <code>FromSqlRaw</code>, <code>SqlCommand</code>, <code>OrderBy</code>, <code>Union</code>, <code>RawSql</code></li>
+<li>NOTE: FromSqlInterpolated IS make sqli safe.. it converts sql to param'ed</li>
 </ul>
 </section>
 <section>
@@ -1711,7 +1713,7 @@
 <section>
 <h3>8.15. XML / XXE</h3>
 <ul>
-<li><code>xml2js</code>, <code>fast-xml-parser</code>, <code>sax</code>, <code>xmldom</code>, <code>libxmljs</code>, <code>xml-js</code></li>
+<li><code>xml2js</code>, <code>sax</code>, <code>xmldom</code>, <code>libxmljs</code></li>
 <li><code>parse</code>, <code>parseString</code>, <code>DOMParser</code>, <code>XMLParser</code>, <code>XMLReader</code></li>
 <li><code>&lt;!DOCTYPE</code>, <code>ENTITY</code>, <code>SYSTEM</code>, <code>PUBLIC</code></li>
 <li>search for: <code>parse</code>, <code>XML</code>, <code>DOCTYPE</code>, <code>ENTITY</code>, <code>SYSTEM</code>, <code>PUBLIC</code></li>
@@ -1985,9 +1987,10 @@
 <li><code>read_text()</code>, <code>read_bytes()</code>, <code>open(&#x27;/etc/passwd&#x27;)</code></li>
 <li><code>../</code>, <code>..\</code>, <code>%2e%2e</code>, <code>%2f</code>, <code>..%2f</code></li>
 <li>file reads from uploads, templates, logs, configs</li>
-<li><code>safe_join</code>, <code>basename</code>, <code>FileResponse</code></li>
+<li><code>basename</code>, <code>FileResponse</code></li>
 <li>zip slip: <code>zipfile.extract(...)</code>, <code>extractall()</code></li>
 <li>search for: <code>open(</code>, <code>Path(</code>, <code>send_file</code>, <code>basename</code>, <code>zipfile</code></li>
+<li>NOTE: <code>safe_join</code> is how to safely join paths. It is NOT THE DROID I'M LOOKING FOR!</li>
 </ul>
 </section>
 <section>
