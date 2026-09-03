@@ -227,7 +227,82 @@
   </style>
 </head>
 <!--
-  Hey.. If you're reading this, well you should be. That's sort of the point. We are hackers, we need the details. 
+# Context: Systems Engineer & Application Security Analyst
+
+## Professional Profile
+* **Experience Baseline:** 27 years in enterprise software development and systems engineering.
+* **Core Specialization:** High-concurrency systems, distributed architectures, and production-grade Elixir/OTP systems (5+ years).
+* **Current Technical Focus:** Advanced web application source code auditing, white-box vulnerability research, and security orchestration.
+
+---
+
+## Active Methodologies & Playbooks
+* **Source Code Auditing Workflow:** Multi-language infrastructure profiling (PHP, Java, .NET Core, Node.js, Python). Prioritizes framework route mapping and tracing data flows backward from dangerous sinks to user-controlled inputs.
+* **Exploitation Chains:** Focused on chaining primitives (Authentication Bypass, IDOR, SSRF, Prototype Pollution) into reliable, unauthenticated Remote Code Execution (RCE).
+* **Active Retrieval Engine:** Uses daily, high-repetition memory transcription and manual structural mapping to reinforce cognitive patterns without relying on persistent external notes or passive reviews.
+
+---
+
+## Technical Domain Competencies
+* **Environments:** Distributed Unix/Linux systems, containerized deployment pipelines, and remote network debugging topologies.
+* **Architectural Auditing:** Verification of trust-boundary crossings, state-machine transitions, dynamic class/assembly loaders, object mutation pathways, and secure parameter binding.
+
+---
+
+## Black-Box Enumeration & Integration Strategies
+
+### Core Philosophy: Mapping the Invisible
+*   **The Black-Box Mandate:** When source code is restricted or missing, mapping application state depends entirely on observing input/output differentials and timing anomalies.
+*   **The Objective:** Transform an obscured runtime into a logical map of endpoints, structural frameworks, and data processing behavior.
+
+### High-Value Discovery & Profiling Techniques
+
+#### 1. Passive & Active Fingerprinting
+*   **Header Dissection:** Inspect `Server`, `X-Powered-By`, `X-AspNet-Version`, cookies (`PHPSESSID`, `JSESSIONID`, `.AspNetCore.Antiforgery`), and custom security tokens for version infrastructure leaks.
+*   **Error-State Inducement:** Intentionally force malformed requests (e.g., dangling quotes, invalid JSON structures, arrays instead of strings, missing headers, mismatching HTTP verbs) to trigger unhandled exceptions, raw stack traces, or framework error pages.
+*   **Dynamic Framework Fingerprinting:** Analyse route-normalization traits (e.g., handling of trailing slashes, case-sensitivity, path-traversal mutations like `/admin/..;`, or duplicate slashes `//`) to deduce the underlying routing engine.
+
+#### 2. Endpoint & Parameter Mapping
+*   **Recursive Parameter Fuzzing:** Target parameters handling IDs (`id`, `uuid`), tracking, configurations, and administrative flags to identify hidden functions or potential access control flaws.
+*   **Route Discovery Loops:** Use structured wordlists focusing on routing frameworks, common administration endpoints (`/admin`, `/debug`, `/actuator`), and backup file extensions (`.bak`, `.old`, `.zip`).
+*   **Query Shape Analysis:** Systematically observe response variations across search inputs, pagination indices, filtering parameters, and data sorting actions to isolate underlying database components.
+
+#### 3. Out-of-Band (OOB) & Interaction Testing
+*   **Network Interaction Logging:** Insert external listener targets into data transport fields (e.g., tracking URLs, webhooks, XML schemas) to identify outbound networking vectors (SSRF, XXE).
+*   **Timing-Anomaly Extraction:** Measure precise processing latency variations to infer internal conditions, logic paths, and query states when direct visual output is suppressed.
+
+---
+
+## Strategic Timeline & Milestones
+
+### Phase 1: The Twin-Engine Exploitation Matrix (07 Sept – 14 Sept)
+*   **Daily Execution:** Complete 2 target labs/challenges per day within strict 6-to-8-hour bounds.
+*   **Documentation Protocol:** Log every vulnerability chain, primitive link, and code anomaly observed directly into the physical playbook.
+*   **Black-Box Overlay:** For every target application, perform a 30-minute blind black-box scan *before* opening the source code. Document discovered endpoints, parameter anomalies, and inferred structure patterns.
+
+### Phase 2: Active Re-Execution & Script Refinement (15 Sept – 25 Sept)
+*   **Subscription Sunset Target:** Maximise the final 11 days of VPN lab connectivity before the subscription ends on 16 September, transitioning completely to local instances and mock environments by 17 September.
+*   **Script Modularization:** Build and modularise raw Python exploit components (e.g., custom HTTP clients, multi-stage session handlers, payload delivery blocks).
+*   **Blind Re-runs & Mapping Exercises:** Re-audit target application codebases from the lab collection from scratch without referencing the playbook, confirming input-to-sink mapping solely via active memory retrieval. Practise generating full exploit chains driven exclusively by black-box discovery steps.
+
+### Phase 3: The Dark Window Reflection (26 Sept – 02 Oct)
+*   **Terminal Blackout:** Cease active keyboard work on new environments.
+*   **Manual Transcription Loops:** Conduct daily morning transcription sessions using the expanded physical playbook framework. Re-write core language sinks, framework entry points, black-box fingerprinting checklists, and vulnerability chain schemas onto a blank slate from memory.
+*   **Cognitive Patching:** Use a red pencil to isolate and reinforce areas where structural memory gaps appear during manual transcription loops.
+
+### Phase 4: Final Operational Consolidation (03 Oct – 04 Oct)
+*   **Infrastructure Check:** Verify local staging environment health, terminal styling profiles, text editor configurations, and backup multi-screen window layouts.
+*   **Pattern Staging:** Review the unconstrained physical blueprint to lock down systemic framework signatures (.NET middleware flow, Spring routing anomalies, Node.js prototype patterns, and black-box mapping logic).
+
+### Phase 5: Mission Launch (05 Oct @ 12:00 AEDT)
+*   **Exam Window Commencement:** Enter the assessment cycle.
+
+---
+
+## Daily Operational Routine
+1.  **06:00 - 07:30 | The Cold Run:** Open a blank sheet in the expanded physical playbook. Transcribe route mapping, sinks, black-box profiling steps, and bypass patterns for one complete language family entirely from memory. Red-pencil memory gaps immediately.
+2.  **08:00 - 16:00 | Active Technical Execution:** Execute the day's scheduled lab matrix block, script refinement tasks, or black-box tracking drills.
+3.  **16:00 - 17:00 | Delta Logging:** Document structural insights, unique framework behaviors, black-box response signatures, and custom chain combinations discovered during the day's execution.
 -->
 
 <body>
