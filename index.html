@@ -226,9 +226,11 @@
     }
   </style>
 </head>
-
+<!--
+  Hey.. If you're reading this, well you should be. That's sort of the point. We are hackers, we need the details. 
+-->
 <body>
-  <header aria-label="Title page">
+  <header aria-label="Daves OSWE study notes">
     <h1>Daves OSWE Notes</h1>
     <blockquote>
       <p>We live in a world where all wars will begin as cyber wars...<br /> It&#x27;s the combination of hacking and
@@ -242,27 +244,27 @@
       <li><a href="#getting-started">Getting Started</a>
         <ul>
           <li><a href="#oswe-review-workflow">1. OSWE Review Workflow</a></li>
-          <li><a href="#vs-code-network-debugging-notes">2. VS Code Network Debugging Notes</a></li>
+          <li><a href="#vs-code-network-debugging-notes">2. VS Code Network Debugging</a></li>
         </ul>
       </li>
       <li><a href="#decompile">Decompile</a>
         <ul>
-          <li><a href="#java-decompilation-notes">3. Java Decompilation Notes</a></li>
-          <li><a href="#net-decompilation-notes">4. .NET Decompilation Notes</a></li>
+          <li><a href="#java-decompilation-notes">3. Java Decompilation</a></li>
+          <li><a href="#net-decompilation-notes">4. .NET Decompilation</a></li>
         </ul>
       </li>
       <li><a href="#languages">Languages</a>
         <ul>
-          <li><a href="#php-subtopic-notes">5. PHP Notes</a></li>
-          <li><a href="#java-subtopic-notes">6. Java Notes</a></li>
-          <li><a href="#net-asp-net-core-subtopic-notes">7. .NET / ASP.NET Core Notes</a></li>
-          <li><a href="#node-js-subtopic-notes">8. Node.js Notes</a></li>
-          <li><a href="#python-subtopic-notes">9. Python Notes</a></li>
+          <li><a href="#php-subtopic-notes">5. PHP</a></li>
+          <li><a href="#java-subtopic-notes">6. Java</a></li>
+          <li><a href="#net-asp-net-core-subtopic-notes">7. .NET / ASP.NET Core</a></li>
+          <li><a href="#node-js-subtopic-notes">8. Node.js</a></li>
+          <li><a href="#python-subtopic-notes">9. Python</a></li>
         </ul>
       </li>
       <li><a href="#vectors">Vectors</a>
         <ul>
-          <li><a href="#business-logic-idor-notes">10. Business Logic / IDOR Notes</a></li>
+          <li><a href="#business-logic-idor-notes">10. Business Logic / IDOR</a></li>
           <li><a href="#information-disclosure">11. Information Disclosure</a></li>
           <li><a href="#local-file-inclusion-lfi-file-upload-execution">12. Local File Inclusion (LFI) / File Upload +
               Execution</a></li>
@@ -500,9 +502,9 @@
           </ul>
         </section>
       </details>
-      <details>
+      <details topic="VS Code network debugging">
         <summary id="vs-code-network-debugging-notes">
-          <h2>2. VS Code Network Debugging Notes</h2>
+          <h2>2. VS Code Network Debugging</h2>
         </summary>
         <section>
           <h3>Scope</h3>
@@ -588,9 +590,9 @@
     </article>
     <article>
       <h1 id="decompile">Decompile</h1>
-      <details>
+      <details topic="Java decomplile">
         <summary id="java-decompilation-notes">
-          <h2>3. Java Decompilation Notes</h2>
+          <h2>3. Java Decompilation</h2>
         </summary>
         <section>
           <h3>3.1. Identify the Artifact</h3>
@@ -648,9 +650,9 @@
           </ul>
         </section>
       </details>
-      <details>
+      <details topic=".Net Decompile">
         <summary id="net-decompilation-notes">
-          <h2>4. .NET Decompilation Notes</h2>
+          <h2>4. .NET Decompilation</h2>
         </summary>
         <section>
           <h3>4.1. Identify the Artifact</h3>
@@ -724,9 +726,9 @@
     </article>
     <article>
       <h1 id="languages">Languages</h1>
-      <details>
+      <details topic="PHP">
         <summary id="php-subtopic-notes">
-          <h2>5. PHP Notes</h2>
+          <h2>5. PHP</h2>
         </summary>
         <section>
           <h3>Scope</h3>
@@ -736,7 +738,16 @@
           </ul>
         </section>
         <section>
-          <h3>5.0. Identify the Stack</h3>
+          <h3>5.0. Final rule</h3>
+          <ul>
+            <li>identify the framework first</li>
+            <li>identify the template engine second</li>
+            <li>then identify the real sink</li>
+            <li>only after that do you chase input flows and payloads</li>
+          </ul>
+        </section>
+        <section>
+          <h3>5.1. Identify the Stack</h3>
           <ul>
             <li>Plain PHP: <code>$_GET</code>, <code>$_POST</code>, <code>$_REQUEST</code>, <code>$_COOKIE</code>,
               <code>$_SERVER</code>, <code>$_FILES</code>, <code>header()</code>, <code>echo</code>, <code>print</code>,
@@ -760,21 +771,6 @@
               <code>require_once</code>, <code>eval</code>, <code>assert</code>,
               <code>preg_replace(&#x27;/.../e&#x27;)</code>
             </li>
-          </ul>
-        </section>
-        <section>
-          <h3>5.1. Identify the Template Engine</h3>
-          <ul>
-            <li>Twig: <code>{{ ... }}</code>, <code>{% ... %}</code></li>
-            <li>Blade: <code>{{ ... }}</code>, <code>@php</code>, <code>@include</code>, <code>@foreach</code>,
-              <code>@if</code>
-            </li>
-            <li>Smarty: <code>{...}</code></li>
-            <li>native PHP templates: <code>&lt;?= $var ?&gt;</code>, <code>&lt;?php echo $var ?&gt;</code></li>
-            <li>custom template loaders: <code>render</code>, <code>template</code>, <code>view</code>,
-              <code>mustache</code>, <code>handlebars</code>
-            </li>
-            <li>route → controller → template → user input</li>
           </ul>
         </section>
         <section>
@@ -817,8 +813,24 @@
             </li>
           </ul>
         </section>
+         <section>
+          <h3>5.3. Identify the Template Engine</h3>
+          <ul>
+            <li>Twig: <code>{{ ... }}</code>, <code>{% ... %}</code></li>
+            <li>Blade: <code>{{ ... }}</code>, <code>@php</code>, <code>@include</code>, <code>@foreach</code>,
+              <code>@if</code>
+            </li>
+            <li>Smarty: <code>{...}</code></li>
+            <li>native PHP templates: <code>&lt;?= $var ?&gt;</code>, <code>&lt;?php echo $var ?&gt;</code></li>
+            <li>custom template loaders: <code>render</code>, <code>template</code>, <code>view</code>,
+              <code>mustache</code>, <code>handlebars</code>
+            </li>
+            <li>route → controller → template → user input</li>
+          </ul>
+        </section>
+       
         <section>
-          <h3>5.3. Routing</h3>
+          <h3>5.4. Routing</h3>
           <ul>
             <li>Plain PHP: <code>index.php</code>, <code>mod_rewrite</code>, <code>.htaccess</code>, custom routing,
               <code>$_SERVER[&#x27;REQUEST_URI&#x27;]</code>, <code>parse_url</code>, <code>router</code>
@@ -838,7 +850,7 @@
           </ul>
         </section>
         <section>
-          <h3>5.4. Code Execution</h3>
+          <h3>5.5. Code Execution</h3>
           <ul>
             <li><code>eval($x)</code>, <code>assert($x)</code>, <code>preg_replace(&#x27;/.*/e&#x27;, ...)</code>,
               <code>create_function(...)</code>, <code>call_user_func($fn, ...)</code>
@@ -861,7 +873,7 @@
               was changed to a language construct; passing it a variable string containing code will throw a compiler
               error instead of executing it. Keep a red pencil note on the target's PHP environment version.</li>
           </ul>
-          <h4>4.1. PHP RCE patterns</h4>
+          <h4>5.5.1. PHP RCE patterns</h4>
           <ul>
             <li><code>eval($_GET[&#x27;cmd&#x27;])</code></li>
             <li><code>assert($_POST[&#x27;x&#x27;])</code></li>
@@ -871,7 +883,7 @@
             <li><code>call_user_func($_GET[&#x27;func&#x27;], $_GET[&#x27;arg&#x27;])</code></li>
             <li><code>new $className()</code> where <code>$className</code> is user-controlled</li>
           </ul>
-          <h4>4.2. High-value sinks / file names</h4>
+          <h4>5.5.2. High-value sinks / file names</h4>
           <ul>
             <li><code>exec.php</code>, <code>shell.php</code>, <code>commands.php</code>, <code>utils.php</code>,
               <code>loader.php</code>, <code>render.php</code>, <code>template.php</code>, <code>config.php</code>
@@ -884,7 +896,7 @@
               <code>preg_replace</code>, <code>call_user_func</code>, <code>assert</code>, <code>include</code>
             </li>
           </ul>
-          <h4>4.3. What to do when you find it</h4>
+          <h4>5.5.3. What to do when you find it</h4>
           <ul>
             <li>Confirm user input reaches the sink</li>
             <li>Check whether the sink is direct code execution or a wrapper around a shell</li>
@@ -893,7 +905,7 @@
           </ul>
         </section>
         <section>
-          <h3>5.5. Command Injection</h3>
+          <h3>5.6. Command Injection</h3>
           <ul>
             <li><code>system($cmd)</code>, <code>exec($cmd)</code>, <code>shell_exec($cmd)</code>,
               <code>passthru($cmd)</code>, <code>proc_open($cmd)</code>, <code>popen($cmd)</code>
@@ -908,7 +920,7 @@
           </ul>
         </section>
         <section>
-          <h3>5.6. Insecure Deserialization</h3>
+          <h3>5.7. Insecure Deserialization</h3>
           <ul>
             <li><code>unserialize($data)</code>, <code>serialize($obj)</code>, <code>yaml_parse</code>,
               <code>simplexml_load_string</code>, <code>DOMDocument::loadXML</code>
@@ -924,7 +936,7 @@
           </ul>
         </section>
         <section>
-          <h3>5.7. Templates / SSTI</h3>
+          <h3>5.8. Templates / SSTI</h3>
           <ul>
             <li>Twig: <code>{{ ... }}</code></li>
             <li>Blade: <code>{{ ... }}</code></li>
@@ -937,7 +949,7 @@
           </ul>
         </section>
         <section>
-          <h3>5.8. XSS</h3>
+          <h3>5.9. XSS</h3>
           <ul>
             <li><code>echo</code>, <code>print</code>, <code>print_r</code>, raw HTML responses, template output without
               encoding</li>
@@ -952,7 +964,7 @@
           </ul>
         </section>
         <section>
-          <h3>5.9. File Upload</h3>
+          <h3>5.10. File Upload</h3>
           <ul>
             <li><code>$_FILES</code>, <code>move_uploaded_file</code>, <code>fopen</code>, <code>fwrite</code>,
               <code>file_put_contents</code>, <code>tmp_name</code>, <code>name</code>, <code>type</code>,
@@ -970,7 +982,7 @@
           </ul>
         </section>
         <section>
-          <h3>5.10. SQLi</h3>
+          <h3>5.11. SQLi</h3>
           <ul>
             <li><code>mysqli_query</code>, <code>mysqli_multi_query</code>, <code>PDO::query</code>,
               <code>PDO::prepare</code>, <code>DB::select</code>, <code>wpdb-&gt;get_results</code>, raw SQL strings
@@ -987,7 +999,7 @@
           </ul>
         </section>
         <section>
-          <h3>5.11. Directory Traversal</h3>
+          <h3>5.12. Directory Traversal</h3>
           <ul>
             <li><code>file_get_contents</code>, <code>fopen</code>, <code>readfile</code>, <code>include</code>,
               <code>require</code>, <code>glob</code>, <code>opendir</code>, <code>is_file</code>, <code>unlink</code>
@@ -1003,7 +1015,7 @@
           </ul>
         </section>
         <section>
-          <h3>5.12. Mass Assignment / Object Mutation</h3>
+          <h3>5.13. Mass Assignment / Object Mutation</h3>
           <ul>
             <li><code>extract($_GET)</code>, <code>parse_str</code>, <code>$_REQUEST</code>,
               <code>array_merge($_GET, $_POST)</code>, <code>foreach ($request as $k =&gt; $v)</code>
@@ -1018,7 +1030,7 @@
           </ul>
         </section>
         <section>
-          <h3>5.13. Auth / Session</h3>
+          <h3>5.14. Auth / Session</h3>
           <ul>
             <li><code>$_SESSION</code>, <code>session_start</code>, <code>setcookie</code>,
               <code>session_regenerate_id</code>, <code>password_hash</code>, <code>password_verify</code>,
@@ -1036,7 +1048,7 @@
           </ul>
         </section>
         <section>
-          <h3>5.14. SSRF</h3>
+          <h3>5.15. SSRF</h3>
           <ul>
             <li><code>file_get_contents($url)</code>, <code>curl_exec</code>, <code>fsockopen</code>,
               <code>stream_context_create</code>, <code>HttpClient</code>, <code>Guzzle</code>,
@@ -1054,7 +1066,7 @@
           </ul>
         </section>
         <section>
-          <h3>5.15. XML / XXE</h3>
+          <h3>5.16. XML / XXE</h3>
           <ul>
             <li><code>simplexml_load_string</code>, <code>simplexml_load_file</code>, <code>DOMDocument::loadXML</code>,
               <code>DOMDocument::loadHTML</code>, <code>XMLReader</code>
@@ -1066,7 +1078,7 @@
           </ul>
         </section>
         <section>
-          <h3>5.16. Mass Assignment / Object Hydration</h3>
+          <h3>5.17. Mass Assignment / Object Hydration</h3>
           <ul>
             <li><code>new User($_POST)</code>, <code>new Model($data)</code>, <code>array_map</code>,
               <code>extract</code>, <code>binding</code> of request arrays to objects
@@ -1078,7 +1090,7 @@
           </ul>
         </section>
         <section>
-          <h3>5.17. Rabbit Holes</h3>
+          <h3>5.18. Rabbit Holes</h3>
           <ul>
             <li><code>trim()</code>, <code>strtolower()</code>, <code>str_replace()</code>, <code>substr()</code>,
               <code>explode()</code>, <code>strpos()</code>, <code>preg_match()</code>
@@ -1092,7 +1104,7 @@
           </ul>
         </section>
         <section>
-          <h3>5.18. KPI’s / High-Value Files</h3>
+          <h3>5.19. KPI’s / High-Value Files</h3>
           <ul>
             <li><code>index.php</code>, <code>config.php</code>, <code>bootstrap.php</code>, <code>app.php</code>,
               <code>routes.php</code>, <code>settings.php</code>, <code>wp-config.php</code>
@@ -1109,17 +1121,17 @@
           </ul>
         </section>
         <section>
-          <h3>Quick Review Rule</h3>
+          <h3>5.20. Quick Review Rule</h3>
           <ul>
             <li>Start with the sink: shell, eval, file write, template render, SQL, open, session/auth.</li>
             <li>Trace the user input backward.</li>
             <li>If the “fix” is only <code>trim()</code>, <code>strtolower()</code>, <code>str_replace()</code>, regex,
               or normalization, it is usually a rabbit hole unless it gates a real sink.</li>
-            <li>Best OSWE clue: dynamic include + object injection + config + request arrays + runtime globals.</li>
+            <li>NOTE/CLUE: dynamic include + object injection + config + request arrays + runtime globals.</li>
           </ul>
         </section>
         <section>
-          <h3>Useful Search Terms</h3>
+          <h3>5.21. Useful Search Terms</h3>
           <ul>
             <li><code>eval\(|assert\(|preg_replace\(.*e|create_function|call_user_func|include\s*\$|require\s*\$</code>
             </li>
@@ -1132,8 +1144,8 @@
           </ul>
         </section>
         <section>
-          <h3>Payloads / Quick Reference</h3>
-          <h4>RCE Checklist</h4>
+          <h3>5.22. Payloads / Quick Reference</h3>
+          <h4>5.22.1. RCE Checklist</h4>
           <ul>
             <li><code>eval</code>, <code>assert</code>, <code>preg_replace(&#x27;/.*/e&#x27;, ...)</code>,
               <code>create_function</code>, <code>call_user_func</code>, <code>include</code>, <code>require</code>
@@ -1146,14 +1158,14 @@
               <code>file</code>, <code>func</code>, <code>class</code>, <code>template</code>
             </li>
           </ul>
-          <h4>SQLi</h4>
+          <h4>5.22.2. SQLi</h4>
           <ul>
             <li><code>&#x27; OR &#x27;1&#x27;=&#x27;1</code></li>
             <li><code>admin&#x27; --</code></li>
             <li><code>UNION SELECT NULL--</code></li>
             <li><code>ORDER BY 1--</code></li>
           </ul>
-          <h4>Command Injection</h4>
+          <h4>5.22.3. Command Injection</h4>
           <ul>
             <li><code>; id;</code></li>
             <li><code>&amp;&amp; whoami</code></li>
@@ -1162,35 +1174,35 @@
             <li>`<code> </code>id<code> </code>`</li>
             <li><code>bash -c &#x27;id&#x27;</code></li>
           </ul>
-          <h4>Traversal / File Reads</h4>
+          <h4>5.22.4. Traversal / File Reads</h4>
           <ul>
             <li><code>../../etc/passwd</code></li>
             <li><code>..\..\windows\win.ini</code></li>
             <li><code>%2e%2e%2fetc/passwd</code></li>
             <li><code>../secret.txt</code></li>
           </ul>
-          <h4>Template Injection / SSTI</h4>
+          <h4>5.22.5. Template Injection / SSTI</h4>
           <ul>
             <li><code>{{7*7}}</code></li>
             <li><code>{% for x in [1,2,3] %}{{ x }}{% endfor %}</code></li>
             <li><code>&lt;?= 7*7 ?&gt;</code></li>
             <li><code>${7*7}</code></li>
           </ul>
-          <h4>XSS / HTML Injection</h4>
+          <h4>5.22.6. XSS / HTML Injection</h4>
           <ul>
             <li><code>&lt;script&gt;alert(1)&lt;/script&gt;</code></li>
             <li><code>&lt;img src=x onerror=alert(1)&gt;</code></li>
             <li><code>&quot;&gt;&lt;svg/onload=alert(1)&gt;</code></li>
             <li><code>javascript:alert(1)</code></li>
           </ul>
-          <h4>Deserialization / Object Abuse</h4>
+          <h4>5.22.7. Deserialization / Object Abuse</h4>
           <ul>
             <li><code>unserialize($_GET[&#x27;data&#x27;])</code></li>
             <li><code>yaml_parse($_POST[&#x27;data&#x27;])</code></li>
             <li><code>simplexml_load_string($_POST[&#x27;xml&#x27;])</code></li>
             <li><code>DOMDocument::loadXML($tainted)</code></li>
           </ul>
-          <h4>SSRF</h4>
+          <h4>5.22.8. SSRF</h4>
           <ul>
             <li><code>http://127.0.0.1:22</code></li>
             <li><code>http://localhost/admin</code></li>
@@ -1198,19 +1210,10 @@
             <li><code>file:///etc/passwd</code></li>
           </ul>
         </section>
-        <section>
-          <h3>Final rule</h3>
-          <ul>
-            <li>identify the framework first</li>
-            <li>identify the template engine second</li>
-            <li>then identify the real sink</li>
-            <li>only after that do you chase input flows and payloads</li>
-          </ul>
-        </section>
       </details>
-      <details>
+      <details topic="JAVA notes">
         <summary id="java-subtopic-notes">
-          <h2>6. Java Notes</h2>
+          <h2>6. Java</h2>
         </summary>
         <section>
           <h3>Scope</h3>
@@ -1729,9 +1732,9 @@
           </ul>
         </section>
       </details>
-      <details>
+      <details topic=".NET / ASP.NET Core">
         <summary id="net-asp-net-core-subtopic-notes">
-          <h2>7. .NET / ASP.NET Core Notes</h2>
+          <h2>7. .NET / ASP.NET Core</h2>
         </summary>
         <section>
           <h3>Scope</h3>
@@ -2286,9 +2289,9 @@
           </ul>
         </section>
       </details>
-      <details>
+      <details topic="Node.js">
         <summary id="node-js-subtopic-notes">
-          <h2>8. Node.js Notes</h2>
+          <h2>8. Node.js</h2>
         </summary>
         <section>
           <h3>Scope</h3>
@@ -2873,9 +2876,9 @@
           </ul>
         </section>
       </details>
-      <details>
+      <details topic="Python" >
         <summary id="python-subtopic-notes">
-          <h2>9. Python Notes</h2>
+          <h2>9. Python</h2>
         </summary>
         <section>
           <h3>Scope</h3>
@@ -3220,9 +3223,9 @@
     </article>
     <article>
       <h1 id="vectors">Vectors</h1>
-      <details>
+      <details topic="Business Logic / IDOR" >
         <summary id="business-logic-idor-notes">
-          <h2>10. Business Logic / IDOR Notes</h2>
+          <h2>10. Business Logic / IDOR</h2>
         </summary>
         <section>
           <h3>Scope</h3>
@@ -3446,7 +3449,7 @@
           </ul>
         </section>
       </details>
-      <details>
+      <details topic="Information Disclosure" >
         <summary id="information-disclosure">
           <h2>11. Information Disclosure</h2>
         </summary>
@@ -3632,7 +3635,7 @@
           </ul>
         </section>
       </details>
-      <details>
+      <details topic="Local File Inclusion / File Upload + Execution" >
         <summary id="local-file-inclusion-lfi-file-upload-execution">
           <h2>12. Local File Inclusion (LFI) / File Upload + Execution</h2>
         </summary>
@@ -3893,7 +3896,7 @@
           </ul>
         </section>
       </details>
-      <details>
+      <details topic="Sql Injection">
         <summary id="sql-injection-cheat-sheet">
           <h2>13. SQL Injection Cheat Sheet</h2>
         </summary>
@@ -4035,7 +4038,7 @@
           </ul>
         </section>
         <section>
-          <h3>13.11. DB-Specific Notes</h3>
+          <h3>13.11. DB-Specific</h3>
           <ul>
             <li>MySQL: <code>information_schema</code>, <code>users</code>, <code>mysql.user</code>,
               <code>@@version</code>, <code>database()</code>, <code>sleep()</code>
