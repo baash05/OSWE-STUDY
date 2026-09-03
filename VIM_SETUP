@@ -1,0 +1,22 @@
+echo "set number" > ~/.vimrc
+echo "syntax on" >> ~/.vimrc
+echo "set nowrap" >> ~/.vimrc
+echo "set incsearch" >> ~/.vimrc
+echo "set hlsearch" >> ~/.vimrc
+echo "set ts=4 sw=4 et" >> ~/.vimrc
+echo "let g:netrw_liststyle = 3" >> ~/.vimrc
+echo "let g:netrw_browse_split = 4" >> ~/.vimrc
+echo "nnoremap <F2> :Lexplore<CR>" >> ~/.vimrc
+echo "set wildignore+=*.class,*.jar,*.war,*.zip" >> ~/.vimrc
+echo "nnoremap <F4> :vimgrep //j **/*<Left><Left><Left><Left><Left><Left><Left><Left>" >> ~/.vimrc
+echo "autocmd QuickFixCmdPost [^l]* copen" >> ~/.vimrc
+echo "nnoremap <Esc><Esc> :cclose<CR>" >> ~/.vimrc
+
+
+# vi setup
+echo "syntax on" > ~/.vimrc
+echo "set nowrap" >> ~/.vimrc
+echo "set incsearch" >> ~/.vimrc
+echo "set hlsearch" >> ~/.vimrc
+echo "set ts=4 sw=4 et" >> ~/.vimrc
+echo "set wildignore+=*.class,*.jar,*.war,*.zip" >> ~/.vimrc

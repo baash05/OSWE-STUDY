@@ -1548,7 +1548,7 @@
 <li>template render with execution context: EJS/Handlebars/Lodash <code>render</code>, <code>compile</code>, <code>template</code></li>
 <li>search for: <code>exec</code>, <code>spawn</code>, <code>eval</code>, <code>Function</code>, <code>vm</code>, <code>import(</code>, <code>require(</code>, <code>setTimeout</code></li>
 </ul>
-<h4>4.1. RCE in Node: what to look for</h4>
+<h4>8.4.1. RCE in Node: what to look for</h4>
 <ul>
 <li>Any function that spawns a shell or process from external input.</li>
 <li><code>child_process.exec</code>, <code>execSync</code>, <code>spawn</code>, <code>spawnSync</code>, <code>fork</code> with <code>shell: true</code> or a command string built from request data.</li>
@@ -1557,7 +1557,7 @@
 <li>Template engines used with untrusted input and server-side rendering.</li>
 <li>Any wrapper around shelling out to <code>bash</code>, <code>sh</code>, <code>powershell</code>, <code>cmd</code>, <code>python</code>, <code>node</code>, <code>curl</code>, <code>wget</code>, <code>perl</code>, <code>ruby</code>.</li>
 </ul>
-<h4>4.2. Real Node RCE patterns</h4>
+<h4>8.4.2. Real Node RCE patterns</h4>
 <ul>
 <li><code>exec(&quot;cat &quot; + req.query.file)</code></li>
 <li><code>spawn(&quot;bash&quot;, [&quot;-c&quot;, req.body.cmd])</code></li>
@@ -1568,21 +1568,21 @@
 <li><code>require(req.params.module)</code> where module path is user-controlled</li>
 <li><code>import(req.query.path)</code> or <code>import(path.join(base, userInput))</code></li>
 </ul>
-<h4>4.3. High-value file names / sinks for Node RCE</h4>
+<h4>8.4.3. High-value file names / sinks for Node RCE</h4>
 <ul>
 <li><code>child_process.js</code>, <code>shell.js</code>, <code>exec.js</code>, <code>system.js</code>, <code>utils.js</code>, <code>runner.js</code></li>
 <li><code>command</code>, <code>cmd</code>, <code>script</code>, <code>shell</code>, <code>exec</code>, <code>spawn</code>, <code>fork</code>, <code>bash</code>, <code>powershell</code>, <code>python</code>, <code>node</code></li>
 <li><code>vm.js</code>, <code>sandbox.js</code>, <code>template.js</code>, <code>eval.js</code>, <code>compile.js</code></li>
 <li><code>require</code>, <code>import</code>, <code>module.constructor._load</code>, <code>Function</code>, <code>setTimeout</code>, <code>setInterval</code></li>
 </ul>
-<h4>4.4. High-value endpoint patterns</h4>
+<h4>8.4.4. High-value endpoint patterns</h4>
 <ul>
 <li><code>/api/run</code>, <code>/api/execute</code>, <code>/api/compile</code>, <code>/api/render</code>, <code>/api/shell</code>, <code>/api/cmd</code>, <code>/api/command</code>, <code>/api/template</code></li>
 <li>routes that accept <code>cmd</code>, <code>code</code>, <code>script</code>, <code>filename</code>, <code>path</code>, <code>template</code>, <code>name</code>, <code>module</code>, <code>eval</code>, <code>expression</code></li>
 <li>debug endpoints, admin tooling, preview routes, report generation endpoints</li>
 <li>file upload handlers that later shell out or execute the uploaded file</li>
 </ul>
-<h4>4.5. What to do when you find it</h4>
+<h4>8.4.5. What to do when you find it</h4>
 <ul>
 <li>Confirm the sink: is user input flowing directly into <code>exec</code>, <code>spawn</code>, <code>vm</code>, or <code>Function</code>?</li>
 <li>Check whether the call uses <code>shell: true</code> or a string to a shell.</li>
@@ -1590,7 +1590,7 @@
 <li>Determine if the process runs under the same privileges as the app.</li>
 <li>Then assess impact: file read, code execution, data theft, persistence, pivoting.</li>
 </ul>
-<h4>4.6. Quick Node RCE triage flow</h4>
+<h4>8.4.6. Quick Node RCE triage flow</h4>
 <ul>
 <li>Step 1: find <code>exec|spawn|fork|eval|Function|vm|import\(|require\(</code></li>
 <li>Step 2: trace input from <code>req.query|req.params|req.body|headers|cookies</code></li>
@@ -1613,7 +1613,7 @@
 <section>
 <h3>8.6. Insecure Deserialization</h3>
 <ul>
-<li><code>serialize.unserialize(...)</code>, <code>node-serialize</code>, <code>yaml.load(...)</code>, <code>yaml.parse(...)</code></li>
+<li><code>require('node-serialize').unserialize()</code> <code>serialize.unserialize(...)</code>, <code>node-serialize</code>, <code>yaml.load(...)</code>, <code>yaml.parse(...)</code></li>
 <li><code>bson.deserialize(...)</code>, <code>msgpack.decode(...)</code>, <code>cbor.decode(...)</code></li>
 <li>custom <code>deserialize</code>, <code>decode</code>, <code>load</code>, <code>parse</code>, <code>hydrate</code> on user-controlled input</li>
 <li><code>__proto__</code>, <code>constructor.prototype</code>, <code>prototype pollution</code> via untrusted JSON / query objects</li>
