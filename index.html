@@ -229,6 +229,7 @@
 <!--
   Hey.. If you're reading this, well you should be. That's sort of the point. We are hackers, we need the details. 
 -->
+
 <body>
   <header aria-label="Daves OSWE study notes">
     <h1>Daves OSWE Notes</h1>
@@ -502,7 +503,7 @@
           </ul>
         </section>
       </details>
-      <details topic="VS Code network debugging">
+      <details aria-label="VS Code network debugging">
         <summary id="vs-code-network-debugging-notes">
           <h2>2. VS Code Network Debugging</h2>
         </summary>
@@ -558,16 +559,7 @@
           </ul>
         </section>
         <section>
-          <h3>2.5. Start or Attach</h3>
-          <ul>
-            <li>Set breakpoints in the remote workspace.</li>
-            <li>Start the debug configuration or attach to the remote process.</li>
-            <li>Trigger the remote request or action that reaches the breakpoint.</li>
-            <li>Inspect variables, call stacks, threads, and exception details.</li>
-          </ul>
-        </section>
-        <section>
-          <h3>2.6. Troubleshoot Connection Problems</h3>
+          <h3>2.5. Troubleshoot Connection Problems</h3>
           <ul>
             <li>Check SSH connectivity and the remote VS Code server status.</li>
             <li>Confirm the process is listening: run <code>ss -ltnp | grep &lt;port&gt;</code> on Linux or
@@ -583,14 +575,13 @@
           <ul>
             <li>Stop the debug session and terminate temporary processes.</li>
             <li>Remove temporary port forwards and debug listeners.</li>
-            <li>Do not commit secrets, private keys, or environment files to the workspace.</li>
           </ul>
       </details>
       </section>
     </article>
     <article>
       <h1 id="decompile">Decompile</h1>
-      <details topic="Java decomplile">
+      <details aria-label="Java decomplile">
         <summary id="java-decompilation-notes">
           <h2>3. Java Decompilation</h2>
         </summary>
@@ -650,7 +641,7 @@
           </ul>
         </section>
       </details>
-      <details topic=".Net Decompile">
+      <details aria-label=".Net Decompile">
         <summary id="net-decompilation-notes">
           <h2>4. .NET Decompilation</h2>
         </summary>
@@ -726,7 +717,7 @@
     </article>
     <article>
       <h1 id="languages">Languages</h1>
-      <details topic="PHP">
+      <details aria-label="PHP">
         <summary id="php-subtopic-notes">
           <h2>5. PHP</h2>
         </summary>
@@ -813,7 +804,7 @@
             </li>
           </ul>
         </section>
-         <section>
+        <section>
           <h3>5.3. Identify the Template Engine</h3>
           <ul>
             <li>Twig: <code>{{ ... }}</code>, <code>{% ... %}</code></li>
@@ -828,7 +819,7 @@
             <li>route → controller → template → user input</li>
           </ul>
         </section>
-       
+
         <section>
           <h3>5.4. Routing</h3>
           <ul>
@@ -1211,7 +1202,7 @@
           </ul>
         </section>
       </details>
-      <details topic="JAVA notes">
+      <details aria-label="JAVA notes">
         <summary id="java-subtopic-notes">
           <h2>6. Java</h2>
         </summary>
@@ -1732,7 +1723,7 @@
           </ul>
         </section>
       </details>
-      <details topic=".NET / ASP.NET Core">
+      <details aria-label=".NET / ASP.NET Core">
         <summary id="net-asp-net-core-subtopic-notes">
           <h2>7. .NET / ASP.NET Core</h2>
         </summary>
@@ -2289,7 +2280,7 @@
           </ul>
         </section>
       </details>
-      <details topic="Node.js">
+      <details aria-label="Node.js">
         <summary id="node-js-subtopic-notes">
           <h2>8. Node.js</h2>
         </summary>
@@ -2876,7 +2867,7 @@
           </ul>
         </section>
       </details>
-      <details topic="Python" >
+      <details aria-label="Python">
         <summary id="python-subtopic-notes">
           <h2>9. Python</h2>
         </summary>
@@ -3223,7 +3214,7 @@
     </article>
     <article>
       <h1 id="vectors">Vectors</h1>
-      <details topic="Business Logic / IDOR" >
+      <details aria-label="Business Logic / IDOR">
         <summary id="business-logic-idor-notes">
           <h2>10. Business Logic / IDOR</h2>
         </summary>
@@ -3449,7 +3440,7 @@
           </ul>
         </section>
       </details>
-      <details topic="Information Disclosure" >
+      <details aria-label="Information Disclosure">
         <summary id="information-disclosure">
           <h2>11. Information Disclosure</h2>
         </summary>
@@ -3635,7 +3626,7 @@
           </ul>
         </section>
       </details>
-      <details topic="Local File Inclusion / File Upload + Execution" >
+      <details aria-label="Local File Inclusion / File Upload + Execution">
         <summary id="local-file-inclusion-lfi-file-upload-execution">
           <h2>12. Local File Inclusion (LFI) / File Upload + Execution</h2>
         </summary>
@@ -3896,7 +3887,7 @@
           </ul>
         </section>
       </details>
-      <details topic="Sql Injection">
+      <details aria-label="Sql Injection">
         <summary id="sql-injection-cheat-sheet">
           <h2>13. SQL Injection Cheat Sheet</h2>
         </summary>
