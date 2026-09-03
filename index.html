@@ -1678,7 +1678,7 @@
               <code>Activator</code>, <code>MethodInfo</code>, <code>CSharpCodeProvider</code>, <code>CodeDom</code>
             </li>
           </ul>
-          <h4>7.4.1. .NET RCE patterns</h4>
+          <h4>7.4.1. RCE patterns</h4>
           <ul>
             <li>
               <code>Process.Start(new ProcessStartInfo(&quot;bash&quot;, &quot;-c &quot; + request.Query[&quot;cmd&quot;]))</code>
@@ -1700,13 +1700,6 @@
               <code>script</code></li>
             <li><code>ProcessStartInfo</code>, <code>Process</code>, <code>Assembly.Load</code>, <code>Activator</code>,
               <code>MethodInfo</code>, <code>Type.GetType</code></li>
-          </ul>
-          <h4>7.4.3. What to do when you find it</h4>
-          <ul>
-            <li>Confirm user input reaches a process start, assembly load, reflection call, or dynamic compiler</li>
-            <li>Check whether the command is built from query/form/cookie/header data</li>
-            <li>Confirm it is reachable from an HTTP route, page, or worker job</li>
-            <li>Determine impact: file read, command execution, persistence, lateral movement</li>
           </ul>
         </section>
         <section>
@@ -1745,7 +1738,7 @@
             <li>Blazor: <code>@bind</code>, <code>@onclick</code>, <code>@code</code>, <code>RenderFragment</code>,
               dynamic rendering</li>
             <li>MVC Views / Razor Pages: model values printed directly into HTML without encoding</li>
-            <li>route → controller/page → view → user input</li>
+            <li><code>route → controller/page → view → user input</code></li>
             <li>XSS / SSTI risk often appears when output is raw HTML or markup strings</li>
           </ul>
         </section>
