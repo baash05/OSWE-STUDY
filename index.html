@@ -1806,55 +1806,8 @@
               coverage</li>
           </ul>
         </section>
-        <section>
-          <h3>7.0. Identify the Stack</h3>
-          <ul>
-            <li>ASP.NET Core Minimal API: <code>WebApplication</code>, <code>app.MapGet</code>,
-              <code>app.MapPost</code>, <code>app.MapPut</code>, <code>app.MapDelete</code>, <code>app.MapGroup</code>,
-              <code>app.Use</code>, <code>app.UseRouting</code>, <code>app.UseEndpoints</code>
-            </li>
-            <li>ASP.NET Core MVC: <code>Controller</code>, <code>ControllerBase</code>, <code>ApiController</code>,
-              <code>Route</code>, <code>HttpGet</code>, <code>HttpPost</code>, <code>FromQuery</code>,
-              <code>FromRoute</code>, <code>FromBody</code>, <code>ActionResult&lt;T&gt;</code>,
-              <code>IActionResult</code>
-            </li>
-            <li>Razor Pages: <code>PageModel</code>, <code>OnGet</code>, <code>OnPost</code>, <code>OnGetAsync</code>,
-              <code>OnPostAsync</code>, <code>BindProperty</code>, <code>PageResult</code>
-            </li>
-            <li>Blazor: <code>@page</code>, <code>@code</code>, <code>@bind</code>, <code>@onclick</code>,
-              <code>EventCallback</code>, <code>HttpClient</code>, <code>EditForm</code>
-            </li>
-            <li>SignalR: <code>Hub</code>, <code>Hub&lt;T&gt;</code>, <code>MapHub&lt;...&gt;</code>,
-              <code>IHubContext&lt;T&gt;</code>, <code>Clients.All</code>
-            </li>
-            <li>Entity Framework Core: <code>DbContext</code>, <code>DbSet&lt;T&gt;</code>, <code>FromSqlRaw</code>,
-              <code>ExecuteSqlRaw</code>, <code>SaveChanges</code>, <code>LINQ</code>
-            </li>
-            <li>Raw ASP.NET / old .NET: <code>HttpApplication</code>, <code>HttpHandler</code>, <code>HttpModule</code>,
-              <code>Page</code>, <code>WebMethod</code>, <code>Server.Execute</code>
-            </li>
-          </ul>
-        </section>
-        <section>
-          <h3>7.1. Identify the Template Engine</h3>
-          <ul>
-            <li>Razor: <code>@model</code>, <code>@Html.Raw</code>, <code>@Html.Encode</code>, <code>@foreach</code>,
-              <code>@if</code>, <code>@page</code>, <code>@Url.Action</code>, <code>@using</code>
-            </li>
-            <li>MVC Views: <code>.cshtml</code>, <code>ViewBag</code>, <code>ViewData</code>, <code>TempData</code>,
-              <code>Model</code>
-            </li>
-            <li>Blazor Components: <code>@bind</code>, <code>@onclick</code>, <code>@for</code>, <code>@if</code>,
-              <code>@code</code>, <code>MarkupString</code>
-            </li>
-            <li>custom templates: <code>TemplateEngine</code>, <code>RazorViewEngine</code>, <code>Handlebars</code>,
-              <code>Mustache</code>, <code>Jinja</code> in .NET wrappers
-            </li>
-            <li>if user input reaches server-side rendering or template output, inspect for SSTI / XSS</li>
-          </ul>
-        </section>
-        <section>
-          <h3>7.2. The 10 Patterns to Check First</h3>
+         <section>
+          <h3>7.0. The 10 Patterns to Check First</h3>
           <ul>
             <li>Route Precedence and Generic-vs-Specific Confusion: <code>MapGet</code>, <code>MapPost</code>,
               <code>MapPut</code>, <code>MapDelete</code>, <code>MapGroup</code>, <code>Route</code>,
@@ -1887,6 +1840,53 @@
               <code>HttpContext.Items</code>, <code>Session</code>, <code>AuthenticationState</code>,
               <code>ClaimsPrincipal</code>, <code>IOptions&lt;T&gt;</code>
             </li>
+          </ul>
+        </section>
+        <section>
+          <h3>7.1. Identify the Stack</h3>
+          <ul>
+            <li>ASP.NET Core Minimal API: <code>WebApplication</code>, <code>app.MapGet</code>,
+              <code>app.MapPost</code>, <code>app.MapPut</code>, <code>app.MapDelete</code>, <code>app.MapGroup</code>,
+              <code>app.Use</code>, <code>app.UseRouting</code>, <code>app.UseEndpoints</code>
+            </li>
+            <li>ASP.NET Core MVC: <code>Controller</code>, <code>ControllerBase</code>, <code>ApiController</code>,
+              <code>Route</code>, <code>HttpGet</code>, <code>HttpPost</code>, <code>FromQuery</code>,
+              <code>FromRoute</code>, <code>FromBody</code>, <code>ActionResult&lt;T&gt;</code>,
+              <code>IActionResult</code>
+            </li>
+            <li>Razor Pages: <code>PageModel</code>, <code>OnGet</code>, <code>OnPost</code>, <code>OnGetAsync</code>,
+              <code>OnPostAsync</code>, <code>BindProperty</code>, <code>PageResult</code>
+            </li>
+            <li>Blazor: <code>@page</code>, <code>@code</code>, <code>@bind</code>, <code>@onclick</code>,
+              <code>EventCallback</code>, <code>HttpClient</code>, <code>EditForm</code>
+            </li>
+            <li>SignalR: <code>Hub</code>, <code>Hub&lt;T&gt;</code>, <code>MapHub&lt;...&gt;</code>,
+              <code>IHubContext&lt;T&gt;</code>, <code>Clients.All</code>
+            </li>
+            <li>Entity Framework Core: <code>DbContext</code>, <code>DbSet&lt;T&gt;</code>, <code>FromSqlRaw</code>,
+              <code>ExecuteSqlRaw</code>, <code>SaveChanges</code>, <code>LINQ</code>
+            </li>
+            <li>Raw ASP.NET / old .NET: <code>HttpApplication</code>, <code>HttpHandler</code>, <code>HttpModule</code>,
+              <code>Page</code>, <code>WebMethod</code>, <code>Server.Execute</code>
+            </li>
+          </ul>
+        </section>
+        <section>
+          <h3>7.2. Identify the Template Engine</h3>
+          <ul>
+            <li>Razor: <code>@model</code>, <code>@Html.Raw</code>, <code>@Html.Encode</code>, <code>@foreach</code>,
+              <code>@if</code>, <code>@page</code>, <code>@Url.Action</code>, <code>@using</code>
+            </li>
+            <li>MVC Views: <code>.cshtml</code>, <code>ViewBag</code>, <code>ViewData</code>, <code>TempData</code>,
+              <code>Model</code>
+            </li>
+            <li>Blazor Components: <code>@bind</code>, <code>@onclick</code>, <code>@for</code>, <code>@if</code>,
+              <code>@code</code>, <code>MarkupString</code>
+            </li>
+            <li>custom templates: <code>TemplateEngine</code>, <code>RazorViewEngine</code>, <code>Handlebars</code>,
+              <code>Mustache</code>, <code>Jinja</code> in .NET wrappers
+            </li>
+            <li>if user input reaches server-side rendering or template output, inspect for SSTI / XSS</li>
           </ul>
         </section>
         <section>
