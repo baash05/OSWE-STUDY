@@ -59,6 +59,7 @@
       font-size: 1.8em;
     }
 
+
     details>summary h2 {
       display: inline;
       margin: 0;
@@ -80,6 +81,10 @@
       margin-bottom: 4pt;
       border-top: 1px solid #d3d3d3;
       padding-top: .25rem;
+    }
+
+    h4 {
+      margin-bottom: 0.25rem;
     }
 
     header {
@@ -578,7 +583,7 @@
           </ul>
         </section>
       </details>
-      <details aria-label="VS Code network debugging">
+      <details open aria-label="VS Code network debugging">
         <summary id="vs-code-network-debugging-notes">
           <h2>2. VS Code Network Debugging</h2>
         </summary>
@@ -656,7 +661,7 @@
     </article>
     <article>
       <h1 id="decompile">Decompile</h1>
-      <details aria-label="Java decomplile">
+      <details open aria-label="Java decomplile">
         <summary id="java-decompilation-notes">
           <h2>3. Java Decompilation</h2>
         </summary>
@@ -716,7 +721,7 @@
           </ul>
         </section>
       </details>
-      <details aria-label=".Net Decompile">
+      <details open aria-label=".Net Decompile">
         <summary id="net-decompilation-notes">
           <h2>4. .NET Decompilation</h2>
         </summary>
@@ -792,7 +797,7 @@
     </article>
     <article>
       <h1 id="languages">Languages</h1>
-      <details aria-label="PHP">
+      <details open aria-label="PHP">
         <summary id="php-subtopic-notes">
           <h2>5. PHP</h2>
         </summary>
@@ -1276,7 +1281,7 @@
           </ul>
         </section>
       </details>
-      <details aria-label="JAVA notes">
+      <details open aria-label="JAVA notes">
         <summary id="java-subtopic-notes">
           <h2>6. Java</h2>
         </summary>
@@ -1323,6 +1328,21 @@
               <code>BeanUtils.copyProperties</code>, <code>Reflection</code>, <code>Class.forName</code>,
               <code>MBeanServer</code>, <code>@RequestBody</code>
             </li>
+          </ul>
+        </section>
+        <section>
+          <h3>6.0.1 Rabbit Holes</h3>
+          <ul>
+            <li><code>trim()</code>, <code>toLowerCase()</code>, <code>replace()</code>, <code>substring()</code>,
+              <code>split()</code>, <code>indexOf()</code>, <code>contains()</code>
+            </li>
+            <li><code>Random</code>, <code>UUID.randomUUID()</code>,
+              <code>MessageDigest.getInstance(&quot;SHA-256&quot;)</code>, <code>BCrypt</code>, <code>PBKDF2</code>
+            </li>
+            <li><code>Pattern.matcher()</code>, <code>Matcher.find()</code>, <code>String.matches()</code></li>
+            <li><code>Paths.get()</code>, <code>normalize()</code>, <code>toAbsolutePath()</code></li>
+            <li>these are usually not bugs by themselves; they matter only if they gate a real sink</li>
+            <li>if it never reaches a sink, move on</li>
           </ul>
         </section>
         <section>
@@ -1404,41 +1424,43 @@
               <code>ognl</code>
             </li>
           </ul>
-          <h4>6.4.1. Java RCE in practice</h4>
-          <ul>
-            <li>
-              <code>Runtime.getRuntime().exec(&quot;bash -c \&quot;&quot; + req.getParameter(&quot;cmd&quot;) + &quot;\&quot;&quot;)</code>
-            </li>
-            <li><code>new ProcessBuilder(command).start()</code> with request-driven command array</li>
-            <li><code>ScriptEngineManager().getEngineByName(&quot;js&quot;).eval(userInput)</code></li>
-            <li><code>new ELProcessor().eval(userInput)</code></li>
-            <li><code>Class.forName(request.getParameter(&quot;className&quot;)).newInstance()</code></li>
-            <li><code>ognl.OgnlRuntime.getMethod(...)</code> / OGNL expression abuse</li>
-            <li><code>loadClass</code>, <code>invoke</code>, <code>MethodHandles</code> on attacker-controlled class
-              names or method strings</li>
-          </ul>
-          <h4>6.4.2. High-value sinks / file names</h4>
-          <ul>
-            <li><code>CommandRunner.java</code>, <code>Shell.java</code>, <code>Exec.java</code>,
-              <code>ProcessUtil.java</code>, <code>RuntimeUtil.java</code>, <code>BeanUtils.java</code>
-            </li>
-            <li><code>cmd</code>, <code>command</code>, <code>exec</code>, <code>script</code>, <code>runtime</code>,
-              <code>process</code>, <code>builder</code>, <code>clazz</code>, <code>method</code>,
-              <code>template</code>, <code>expression</code>
-            </li>
-            <li><code>ScriptEngine</code>, <code>ELProcessor</code>, <code>ProcessBuilder</code>,
-              <code>Class.forName</code>, <code>Method.invoke</code>
-            </li>
-          </ul>
-          <h4>6.4.3. What to do when you find it</h4>
-          <ul>
-            <li>Confirm user input reaches <code>exec</code>, <code>ProcessBuilder</code>, <code>eval</code>,
-              <code>reflect</code>, or <code>Class.forName</code>
-            </li>
-            <li>Check whether the command is passed as a string or array built from request data</li>
-            <li>Confirm the call is reachable from a controller, servlet, filter, or scheduled job</li>
-            <li>Determine privileges and impact: file read, command execution, data theft, persistence</li>
-          </ul>
+          <div style="margin-left: 18px;">
+            <h4>6.4.1. Java RCE in practice</h4>
+            <ul>
+              <li>
+                <code>Runtime.getRuntime().exec(&quot;bash -c \&quot;&quot; + req.getParameter(&quot;cmd&quot;) + &quot;\&quot;&quot;)</code>
+              </li>
+              <li><code>new ProcessBuilder(command).start()</code> with request-driven command array</li>
+              <li><code>ScriptEngineManager().getEngineByName(&quot;js&quot;).eval(userInput)</code></li>
+              <li><code>new ELProcessor().eval(userInput)</code></li>
+              <li><code>Class.forName(request.getParameter(&quot;className&quot;)).newInstance()</code></li>
+              <li><code>ognl.OgnlRuntime.getMethod(...)</code> / OGNL expression abuse</li>
+              <li><code>loadClass</code>, <code>invoke</code>, <code>MethodHandles</code> on attacker-controlled class
+                names or method strings</li>
+            </ul>
+            <h4>6.4.2. High-value sinks / file names</h4>
+            <ul>
+              <li><code>CommandRunner.java</code>, <code>Shell.java</code>, <code>Exec.java</code>,
+                <code>ProcessUtil.java</code>, <code>RuntimeUtil.java</code>, <code>BeanUtils.java</code>
+              </li>
+              <li><code>cmd</code>, <code>command</code>, <code>exec</code>, <code>script</code>, <code>runtime</code>,
+                <code>process</code>, <code>builder</code>, <code>clazz</code>, <code>method</code>,
+                <code>template</code>, <code>expression</code>
+              </li>
+              <li><code>ScriptEngine</code>, <code>ELProcessor</code>, <code>ProcessBuilder</code>,
+                <code>Class.forName</code>, <code>Method.invoke</code>
+              </li>
+            </ul>
+            <h4>6.4.3. What to do when you find it</h4>
+            <ul>
+              <li>Confirm user input reaches <code>exec</code>, <code>ProcessBuilder</code>, <code>eval</code>,
+                <code>reflect</code>, or <code>Class.forName</code>
+              </li>
+              <li>Check whether the command is passed as a string or array built from request data</li>
+              <li>Confirm the call is reachable from a controller, servlet, filter, or scheduled job</li>
+              <li>Determine privileges and impact: file read, command execution, data theft, persistence</li>
+            </ul>
+          </div>
         </section>
         <section>
           <h3>6.5. Command Injection</h3>
@@ -1663,21 +1685,6 @@
           </ul>
         </section>
         <section>
-          <h3>6.17. Rabbit Holes</h3>
-          <ul>
-            <li><code>trim()</code>, <code>toLowerCase()</code>, <code>replace()</code>, <code>substring()</code>,
-              <code>split()</code>, <code>indexOf()</code>, <code>contains()</code>
-            </li>
-            <li><code>Random</code>, <code>UUID.randomUUID()</code>,
-              <code>MessageDigest.getInstance(&quot;SHA-256&quot;)</code>, <code>BCrypt</code>, <code>PBKDF2</code>
-            </li>
-            <li><code>Pattern.matcher()</code>, <code>Matcher.find()</code>, <code>String.matches()</code></li>
-            <li><code>Paths.get()</code>, <code>normalize()</code>, <code>toAbsolutePath()</code></li>
-            <li>these are usually not bugs by themselves; they matter only if they gate a real sink</li>
-            <li>if it never reaches a sink, move on</li>
-          </ul>
-        </section>
-        <section>
           <h3>6.18. KPI’s / High-Value Files</h3>
           <ul>
             <li><code>Application.java</code>, <code>Main.java</code>, <code>SecurityConfig.java</code>,
@@ -1697,7 +1704,7 @@
           </ul>
         </section>
         <section>
-          <h3>Quick Review Rule</h3>
+          <h3>6.19. Quick Review Rule</h3>
           <ul>
             <li>Start with the sink: shell, eval, file write, template render, SQL, open, session/auth.</li>
             <li>Trace the user input backward.</li>
@@ -1707,7 +1714,7 @@
           </ul>
         </section>
         <section>
-          <h3>Useful Search Terms</h3>
+          <h3>6.20. Useful Search Terms</h3>
           <ul>
             <li><code>exec\(|ProcessBuilder|ScriptEngine|Class\.forName|reflect|invoke</code></li>
             <li><code>@RequestMapping|@GetMapping|doGet|doPost|web\.xml|Servlet</code></li>
@@ -1720,8 +1727,8 @@
           </ul>
         </section>
         <section>
-          <h3>Payloads / Quick Reference</h3>
-          <h4>RCE Checklist</h4>
+          <h3>6.21. Payloads / Quick Reference</h3>
+          <h4>6.21.1. RCE Checklist</h4>
           <ul>
             <li><code>Runtime.getRuntime().exec</code>, <code>ProcessBuilder</code>, <code>ScriptEngine</code>,
               <code>ELProcessor</code>, <code>Class.forName</code>, <code>Method.invoke</code>
@@ -1734,14 +1741,14 @@
               <code>method</code>, <code>path</code>, <code>filename</code>, <code>template</code>
             </li>
           </ul>
-          <h4>SQLi</h4>
+          <h4>6.21.2. SQLi</h4>
           <ul>
             <li><code>&#x27; OR &#x27;1&#x27;=&#x27;1</code></li>
             <li><code>admin&#x27; --</code></li>
             <li><code>UNION SELECT NULL--</code></li>
             <li><code>ORDER BY 1--</code></li>
           </ul>
-          <h4>Command Injection</h4>
+          <h4>6.21.3. Command Injection</h4>
           <ul>
             <li><code>; id;</code></li>
             <li><code>&amp;&amp; whoami</code></li>
@@ -1750,14 +1757,14 @@
             <li>`<code> </code>id<code> </code>`</li>
             <li><code>bash -c &#x27;id&#x27;</code></li>
           </ul>
-          <h4>Traversal / File Reads</h4>
+          <h4>6.21.4. Traversal / File Reads</h4>
           <ul>
             <li><code>../../etc/passwd</code></li>
             <li><code>..\..\windows\win.ini</code></li>
             <li><code>%2e%2e%2fetc/passwd</code></li>
             <li><code>../secret.txt</code></li>
           </ul>
-          <h4>Template Injection / SSTI</h4>
+          <h4>6.21.5. Template Injection / SSTI</h4>
           <ul>
             <li><code>${7*7}</code></li>
             <li><code>${T(java.lang.Runtime).getRuntime().exec(&#x27;id&#x27;)}</code></li>
@@ -1765,21 +1772,21 @@
             <li><code>{{7*7}}</code></li>
             <li><code>#{7*7}</code></li>
           </ul>
-          <h4>XSS / HTML Injection</h4>
+          <h4>6.21.6. XSS / HTML Injection</h4>
           <ul>
             <li><code>&lt;script&gt;alert(1)&lt;/script&gt;</code></li>
             <li><code>&lt;img src=x onerror=alert(1)&gt;</code></li>
             <li><code>&quot;&gt;&lt;svg/onload=alert(1)&gt;</code></li>
             <li><code>javascript:alert(1)</code></li>
           </ul>
-          <h4>Deserialization / Object Abuse</h4>
+          <h4>6.21.7. Deserialization / Object Abuse</h4>
           <ul>
             <li><code>serialVersionUID</code> / Java serialized gadget chains</li>
             <li><code>ObjectInputStream.readObject()</code> on untrusted input</li>
             <li>YAML/JSON polymorphic payloads with <code>enableDefaultTyping</code> or <code>@TypeInfo</code></li>
             <li><code>readObject</code>, <code>readResolve</code>, <code>Externalizable</code></li>
           </ul>
-          <h4>SSRF</h4>
+          <h4>6.21.8. SSRF</h4>
           <ul>
             <li><code>http://127.0.0.1:22</code></li>
             <li><code>http://localhost/admin</code></li>
@@ -1787,17 +1794,8 @@
             <li><code>file:///etc/passwd</code></li>
           </ul>
         </section>
-        <section>
-          <h3>Final rule</h3>
-          <ul>
-            <li>identify the framework first</li>
-            <li>identify the template engine second</li>
-            <li>then identify the real sink</li>
-            <li>only after that do you chase input flows and payloads</li>
-          </ul>
-        </section>
       </details>
-      <details aria-label=".NET / ASP.NET Core">
+      <details open aria-label=".NET / ASP.NET Core">
         <summary id="net-asp-net-core-subtopic-notes">
           <h2>7. .NET / ASP.NET Core</h2>
         </summary>
@@ -2344,17 +2342,8 @@
             <li><code>file:///etc/passwd</code></li>
           </ul>
         </section>
-        <section>
-          <h3>7.21 Final rule</h3>
-          <ul>
-            <li>identify the framework first</li>
-            <li>identify the template engine second</li>
-            <li>then identify the real sink</li>
-            <li>only after that do you chase input flows and payloads</li>
-          </ul>
-        </section>
       </details>
-      <details aria-label="Node.js">
+      <details open aria-label="Node.js">
         <summary id="node-js-subtopic-notes">
           <h2>8. Node.js</h2>
         </summary>
@@ -2366,45 +2355,7 @@
           </ul>
         </section>
         <section>
-          <h3>8.0. Identify the Stack</h3>
-          <ul>
-            <li>Express: <code>const app = express()</code>, <code>app.get</code>, <code>app.post</code>,
-              <code>app.use</code>, <code>router.get</code>, <code>router.use</code>, <code>req.query</code>,
-              <code>req.params</code>, <code>req.body</code>, <code>res.send</code>, <code>res.render</code>
-            </li>
-            <li>Koa: <code>new Koa()</code>, <code>app.use(async (ctx) =&gt; ...)</code>, <code>ctx.request</code>,
-              <code>ctx.params</code>, <code>ctx.query</code>, <code>ctx.body</code>
-            </li>
-            <li>Fastify: <code>fastify.get</code>, <code>fastify.post</code>, <code>fastify.route</code>,
-              <code>request.query</code>, <code>request.params</code>, <code>request.body</code>,
-              <code>reply.send()</code>
-            </li>
-            <li>Hapi: <code>server.route</code>, <code>request.payload</code>, <code>request.query</code>,
-              <code>request.params</code>
-            </li>
-            <li>Next.js API: <code>pages/api/*</code> or <code>app/api/*/route.js</code>,
-              <code>export default function handler(req, res)</code>
-            </li>
-            <li>NestJS: <code>@Controller</code>, <code>@Get</code>, <code>@Post</code>, <code>@Body</code>,
-              <code>@Param</code>, <code>@Query</code>
-            </li>
-            <li>Raw Node HTTP: <code>http.createServer</code>, <code>req.url</code>, <code>new URL(req.url, ...)</code>
-            </li>
-          </ul>
-        </section>
-        <section>
-          <h3>8.1. Identify the Template Engine</h3>
-          <ul>
-            <li>EJS: <code>res.render</code>, <code>&lt;%= ... %&gt;</code>, <code>&lt;%- ... %&gt;</code></li>
-            <li>Pug/Jade: <code>pug.render</code>, <code>#{...}</code>, <code>!{...}</code></li>
-            <li>Handlebars: <code>hbs.render</code>, <code>handlebars.compile</code>, <code>{{ ... }}</code></li>
-            <li>Nunjucks: <code>nunjucks.renderString</code>, <code>{{ ... }}</code></li>
-            <li>Lodash: <code>_.template</code>, <code>&lt;%= ... %&gt;</code></li>
-            <li>React SSR: <code>renderToString</code>, <code>ReactDOMServer.renderToStaticMarkup</code></li>
-          </ul>
-        </section>
-        <section>
-          <h3>8.2. The 10 Patterns to Check First</h3>
+          <h3>8.0. The 10 Patterns to Check First</h3>
           <ul>
             <li>Route Precedence and Generic-vs-Specific Confusion: <code>app.get</code>, <code>app.post</code>,
               <code>app.use</code>, <code>router.use</code>, <code>/:param</code>, regex routes, catch-all routes
@@ -2438,6 +2389,44 @@
               <code>_.merge</code>, <code>lodash.set</code>, <code>req.body</code>, <code>app.locals</code>,
               <code>global</code>
             </li>
+          </ul>
+        </section>
+        <section>
+          <h3>8.1. Identify the Stack</h3>
+          <ul>
+            <li>Express: <code>const app = express()</code>, <code>app.get</code>, <code>app.post</code>,
+              <code>app.use</code>, <code>router.get</code>, <code>router.use</code>, <code>req.query</code>,
+              <code>req.params</code>, <code>req.body</code>, <code>res.send</code>, <code>res.render</code>
+            </li>
+            <li>Koa: <code>new Koa()</code>, <code>app.use(async (ctx) =&gt; ...)</code>, <code>ctx.request</code>,
+              <code>ctx.params</code>, <code>ctx.query</code>, <code>ctx.body</code>
+            </li>
+            <li>Fastify: <code>fastify.get</code>, <code>fastify.post</code>, <code>fastify.route</code>,
+              <code>request.query</code>, <code>request.params</code>, <code>request.body</code>,
+              <code>reply.send()</code>
+            </li>
+            <li>Hapi: <code>server.route</code>, <code>request.payload</code>, <code>request.query</code>,
+              <code>request.params</code>
+            </li>
+            <li>Next.js API: <code>pages/api/*</code> or <code>app/api/*/route.js</code>,
+              <code>export default function handler(req, res)</code>
+            </li>
+            <li>NestJS: <code>@Controller</code>, <code>@Get</code>, <code>@Post</code>, <code>@Body</code>,
+              <code>@Param</code>, <code>@Query</code>
+            </li>
+            <li>Raw Node HTTP: <code>http.createServer</code>, <code>req.url</code>, <code>new URL(req.url, ...)</code>
+            </li>
+          </ul>
+        </section>
+        <section>
+          <h3>8.2. Identify the Template Engine</h3>
+          <ul>
+            <li>EJS: <code>res.render</code>, <code>&lt;%= ... %&gt;</code>, <code>&lt;%- ... %&gt;</code></li>
+            <li>Pug/Jade: <code>pug.render</code>, <code>#{...}</code>, <code>!{...}</code></li>
+            <li>Handlebars: <code>hbs.render</code>, <code>handlebars.compile</code>, <code>{{ ... }}</code></li>
+            <li>Nunjucks: <code>nunjucks.renderString</code>, <code>{{ ... }}</code></li>
+            <li>Lodash: <code>_.template</code>, <code>&lt;%= ... %&gt;</code></li>
+            <li>React SSR: <code>renderToString</code>, <code>ReactDOMServer.renderToStaticMarkup</code></li>
           </ul>
         </section>
         <section>
@@ -2931,17 +2920,8 @@
             <li><code>file:///etc/passwd</code></li>
           </ul>
         </section>
-        <section>
-          <h3>8.23. Final rule</h3>
-          <ul>
-            <li>identify the framework first</li>
-            <li>identify the template engine second</li>
-            <li>then identify the real sink</li>
-            <li>only after that do you chase input flows and payloads</li>
-          </ul>
-        </section>
       </details>
-      <details aria-label="Python">
+      <details open aria-label="Python">
         <summary id="python-subtopic-notes">
           <h2>9. Python</h2>
         </summary>
@@ -3033,8 +3013,8 @@
             </li>
             <li><code>shlex.split(...)</code> is safer only with <code>shell=False</code>; do not trust it if a shell
               wrapper exists upstream</li>
+            <li>- search for: `shell=True`, `os.system`, `subprocess`, `Popen`, `bash -c`, `cmd`, `command`</li>
           </ul>
-          - search for: `shell=True`, `os.system`, `subprocess`, `Popen`, `bash -c`, `cmd`, `command` -->
           <section>
             <h3>9.4. Insecure Deserialization</h3>
             <ul>
@@ -3045,8 +3025,8 @@
               </li>
               <li><code>__reduce__</code>, <code>__setstate__</code>, <code>__getstate__</code></li>
               <li>unsafe plugins / config / session loading</li>
+              <li>- search for: `pickle`, `yaml.load`, `marshal`, `loads`, `deserialize`, `object_hook`</li>
             </ul>
-            - search for: `pickle`, `yaml.load`, `marshal`, `loads`, `deserialize`, `object_hook` -->
           </section>
           <section>
             <h3>9.5. Templates / SSTI</h3>
@@ -3064,7 +3044,7 @@
               <li>SSTI payloads usually hit <code>{{</code>, <code>{%</code>, <code>${...}</code></li>
             </ul>
             <section>
-              <h3>6. XSS</h3>
+              <h3>9.6. XSS</h3>
               <ul>
                 <li><code>render_template</code>, <code>render_template_string</code></li>
                 <li><code>HttpResponse</code>, <code>HTMLResponse</code>, <code>Response(</code></li>
@@ -3073,11 +3053,11 @@
                 <li><code>request.args</code>, <code>request.form</code>, <code>request.GET</code>,
                   <code>request.POST</code>
                 </li>
+                <li>- search for: `Response(`, `HttpResponse`, `mark_safe`, `|safe`, `{{`, `request.GET`</li>
               </ul>
-              - search for: `Response(`, `HttpResponse`, `mark_safe`, `|safe`, `{{`, `request.GET`
             </section>
             <section>
-              <h3>7. File Upload</h3>
+              <h3>9.7. File Upload</h3>
               <ul>
                 <li><code>request.files</code>, <code>FileStorage</code></li>
                 <li><code>secure_filename</code>, <code>save(...)</code>, <code>open(...)</code>,
@@ -3095,8 +3075,8 @@
                 <li>web shell upload patterns: <code>.php</code>, <code>.jsp</code>, <code>.aspx</code>,
                   <code>.phtml</code>, <code>.py</code>, <code>.sh</code>
                 </li>
+                <li>- search for: `request.files`, `save`, `filename`, `secure_filename`, `upload`</li>
               </ul>
-              - search for: `request.files`, `save`, `filename`, `secure_filename`, `upload` -->
             </section>
             <section>
               <h3>9.8. SQLi</h3>
@@ -3270,8 +3250,8 @@
                 </li>
                 <li>file writes from user-controlled paths or names</li>
                 <li>treat config/cache/upload state changes as security-sensitive</li>
+                <li>- search for: `unlink`, `remove`, `rmtree`, `write_text`, `NamedTemporaryFile`, `shutil.move`</li>
               </ul>
-              - search for: `unlink`, `remove`, `rmtree`, `write_text`, `NamedTemporaryFile`, `shutil.move` -->
             </section>
             <section>
               <h3>9.18. CSRF / Session State</h3>
@@ -3283,8 +3263,8 @@
                   <code>@csrf.exempt</code>
                 </li>
                 <li>session fixation via reused tokens, cookies, login state</li>
+                <li>- search for: `csrf`, `SameSite`, `session_cookie`, `csrf_token`, `validate_csrf`</li>
               </ul>
-              - search for: `csrf`, `SameSite`, `session_cookie`, `csrf_token`, `validate_csrf`
             </section>
             <section>
               <h3>Quick Review Rule</h3>
@@ -3300,7 +3280,7 @@
     </article>
     <article>
       <h1 id="vectors">Vectors</h1>
-      <details aria-label="Business Logic / IDOR">
+      <details open aria-label="Business Logic / IDOR">
         <summary id="business-logic-idor-notes">
           <h2>10. Business Logic / IDOR (Insecure Direct Object Reference)</h2>
         </summary>
@@ -3312,7 +3292,15 @@
           </ul>
         </section>
         <section>
-          <h3>10.0. The 10 Patterns to Check First</h3>
+          <h3>10.0. Final Rule</h3>
+          <ul>
+            <li>business logic bugs are often easier to exploit than classic injection</li>
+            <li>they usually come from missing server-side checks, not missing payloads</li>
+            <li>if the app trusts client-controlled state, inspect it aggressively</li>
+          </ul>
+        </section>
+        <section>
+          <h3>10.0.1 The 10 Patterns to Check First</h3>
           <ul>
             <li>Object IDs in URL or JSON: <code>id</code>, <code>userId</code>, <code>accountId</code>,
               <code>orderId</code>, <code>fileId</code>, <code>reportId</code>
@@ -3493,14 +3481,14 @@
         </section>
         <section>
           <h3>10.16. Quick Payloads</h3>
-          <h4>IDOR</h4>
+          <h4>10.16.1. IDOR</h4>
           <ul>
             <li>change <code>id=1</code> to <code>id=2</code></li>
             <li>change <code>userId=abc</code> to <code>userId=admin</code></li>
             <li>manipulate <code>orderId</code>, <code>invoiceId</code>, <code>fileId</code>, <code>reportId</code></li>
             <li>tamper with query param, JSON body, hidden form field</li>
           </ul>
-          <h4>Privilege Abuse</h4>
+          <h4>10.16.2. Privilege Abuse</h4>
           <ul>
             <li><code>{&quot;role&quot;:&quot;admin&quot;}</code></li>
             <li><code>{&quot;admin&quot;:true}</code></li>
@@ -3508,7 +3496,7 @@
             <li><code>?role=admin</code></li>
             <li>cookie or token value that bypasses role check</li>
           </ul>
-          <h4>State Abuse</h4>
+          <h4>10.16.3. State Abuse</h4>
           <ul>
             <li>approve without required checks</li>
             <li>refund after cancel</li>
@@ -3517,16 +3505,9 @@
             <li>bypass quantity / limit / coupon validation</li>
           </ul>
         </section>
-        <section>
-          <h3>10.17. Final Rule</h3>
-          <ul>
-            <li>business logic bugs are often easier to exploit than classic injection</li>
-            <li>they usually come from missing server-side checks, not missing payloads</li>
-            <li>if the app trusts client-controlled state, inspect it aggressively</li>
-          </ul>
-        </section>
+        
       </details>
-      <details aria-label="Information Disclosure">
+      <details open aria-label="Information Disclosure">
         <summary id="information-disclosure">
           <h2>11. Information Disclosure</h2>
         </summary>
@@ -3537,12 +3518,11 @@
             <li>Confirm the leak is real, useful, and reachable.</li>
             <li>Use it to pivot to auth bypass, config access, secrets, internal hosts, source code, logic, or admin
               functions.</li>
-            <li>In OSWE, disclosure is usually a stepping stone, not the final issue.</li>
           </ul>
         </section>
         <section>
           <h3>11.1. How to Discover It</h3>
-          <h4>A. Error and exception handling</h4>
+          <h4>11.1.A. Error and exception handling</h4>
           <ul>
             <li>500 errors, stack traces, debug pages, tracebacks, verbose errors.</li>
             <li>Application crash output with file paths, framework names, library versions.</li>
@@ -3550,7 +3530,7 @@
             <li>Deserialization errors exposing class names and internal object graphs.</li>
             <li>Unhandled exceptions in API endpoints, file upload handlers, template rendering, session logic.</li>
           </ul>
-          <h4>B. Response headers</h4>
+          <h4>11.1.B. Response headers</h4>
           <ul>
             <li><code>Server</code>, <code>X-Powered-By</code>, <code>X-AspNet-Version</code>, <code>Stack</code>,
               <code>Framework</code>, <code>Tool</code>.
@@ -3562,7 +3542,7 @@
               <code>X-Cache</code>.
             </li>
           </ul>
-          <h4>C. URLs and directory structure</h4>
+          <h4>11.1.C. URLs and directory structure</h4>
           <ul>
             <li><code>/admin</code>, <code>/debug</code>, <code>/manage</code>, <code>/metrics</code>,
               <code>/actuator</code>, <code>/phpinfo.php</code>, <code>/console</code>, <code>/logs</code>.
@@ -3577,7 +3557,7 @@
             <li>Default framework endpoints, health pages, debug routes.</li>
             <li>Unprotected API docs and schema files.</li>
           </ul>
-          <h4>D. Source and config exposure</h4>
+          <h4>11.1.D. Source and config exposure</h4>
           <ul>
             <li><code>/.git/config</code>, <code>/.git/HEAD</code>, <code>/.svn</code>, <code>/.hg</code>.</li>
             <li><code>config.php</code>, <code>settings.py</code>, <code>application.properties</code>,
@@ -3589,14 +3569,14 @@
             <li>Hardcoded secrets, tokens, DB URLs, API keys, encryption keys.</li>
             <li>Debug configs and feature flags.</li>
           </ul>
-          <h4>E. File read / directory traversal</h4>
+          <h4>11.1.E. File read / directory traversal</h4>
           <ul>
             <li>Read arbitrary files via <code>../</code>, <code>%2e%2e</code>, encoded traversal.</li>
             <li>Access logs, configs, backups, password stores, certificate keys.</li>
             <li>Exposed upload directories or static file roots.</li>
             <li>ZIP extraction leads to local file disclosure.</li>
           </ul>
-          <h4>F. IDOR and object enumeration</h4>
+          <h4>11.1.F. IDOR and object enumeration</h4>
           <ul>
             <li>IDOR = insecure direct object reference: user-controlled object identifiers are accepted without proper
               authorization checks.</li>
@@ -3605,14 +3585,14 @@
             <li>Hidden API endpoints returning other users’ objects.</li>
             <li>Access control checks performed only on some routes.</li>
           </ul>
-          <h4>G. Verbose auth / session behavior</h4>
+          <h4>11.1.G. Verbose auth / session behavior</h4>
           <ul>
             <li>Distinct error messages for bad username vs bad password.</li>
             <li>Account enumeration via response timing, status codes, JS messages, HTML differences.</li>
             <li>Session token leakage in URLs, logs, Referer, JS, cached responses.</li>
             <li>JWT structure leaks roles, algorithms, issuer, claims.</li>
           </ul>
-          <h4>H. Caching and browser behavior</h4>
+          <h4>11.1.H. Caching and browser behavior</h4>
           <ul>
             <li><code>Cache-Control</code>, <code>Pragma</code>, <code>Expires</code>, <code>ETag</code> on sensitive
               pages.</li>
@@ -3620,7 +3600,7 @@
             <li>Private data in HTML comments, JS constants, JSON blobs, API responses.</li>
             <li>Browser devtools, saved pages, search indexes, logs.</li>
           </ul>
-          <h4>I. Verbose backend / framework behavior</h4>
+          <h4>11.1.I. Verbose backend / framework behavior</h4>
           <ul>
             <li>Flask/Django/FastAPI debug mode pages.</li>
             <li>Java/Spring boot actuator endpoints.</li>
@@ -3629,7 +3609,7 @@
               endpoints.</li>
             <li>GraphQL introspection and schema dumping.</li>
           </ul>
-          <h4>J. Common OSWE-style leakage patterns</h4>
+          <h4>11.1.J. Common OSWE-style leakage patterns</h4>
           <ul>
             <li>Default app pages leak internal stack layout.</li>
             <li>Error pages include file names and line numbers.</li>
@@ -3641,20 +3621,20 @@
         </section>
         <section>
           <h3>11.2. What to Do With It</h3>
-          <h4>A. Verify the disclosure is real</h4>
+          <h4>11.2.A. Verify the disclosure is real</h4>
           <ul>
             <li>Reproduce the leak with a single crafted request.</li>
             <li>Confirm it is not a front-end-only artifact or stale cache.</li>
             <li>Check whether data is static or dynamically generated.</li>
             <li>Determine exact scope: one user, all users, internal system, admin-only, all hosts.</li>
           </ul>
-          <h4>B. Classify the value</h4>
+          <h4>11.2.B. Classify the value</h4>
           <ul>
             <li>High value: credentials, session tokens, API keys, secrets, internal IPs, DB URIs, admin paths.</li>
             <li>Medium value: stack traces, source file names, framework versions, route names, config fragments.</li>
             <li>Low value: harmless metadata, generic headers, minor version numbers.</li>
           </ul>
-          <h4>C. Pivot from the leak</h4>
+          <h4>11.2.C. Pivot from the leak</h4>
           <ul>
             <li>Secrets -&gt; auth bypass / API abuse.</li>
             <li>Internal hostnames -&gt; SSRF / port scanning / service discovery.</li>
@@ -3663,21 +3643,21 @@
             <li>Source file names -&gt; target likely vulnerable functions and business logic.</li>
             <li>Admin endpoints -&gt; privilege escalation and direct takeover.</li>
           </ul>
-          <h4>D. Use it for chain building</h4>
+          <h4>11.2.D. Use it for chain building</h4>
           <p>- auth bypass - IDOR - SSRF - SQL injection via DB creds or error details - remote command execution via
             misconfigured secrets - token forgery and privilege escalation - file read/write via path or upload config
           </p>
           <ul>
             <li>Disclosure often leads to:</li>
           </ul>
-          <h4>E. Make it exam-usable</h4>
+          <h4>11.2.E. Make it exam-usable</h4>
           <ul>
             <li>Capture exact endpoint, request, response, and leak type.</li>
             <li>Reflect whether leak is direct, reflected, or reachable via unprotected route.</li>
             <li>Map what object is exposed and what security boundary it breaks.</li>
             <li>Note whether the leak helps identify deeper vulnerabilities.</li>
           </ul>
-          <h4>F. Operational discipline</h4>
+          <h4>11.2.F. Operational discipline</h4>
           <ul>
             <li>Keep the finding narrow, reproducible, and tied to a security boundary.</li>
             <li>Do not confuse “leak of metadata” with “vulnerability” unless it leads to impact.</li>
@@ -3712,7 +3692,7 @@
           </ul>
         </section>
       </details>
-      <details aria-label="Local File Inclusion / File Upload + Execution">
+      <details open aria-label="Local File Inclusion / File Upload + Execution">
         <summary id="local-file-inclusion-lfi-file-upload-execution">
           <h2>12. Local File Inclusion (LFI) / File Upload + Execution</h2>
         </summary>
@@ -3973,7 +3953,7 @@
           </ul>
         </section>
       </details>
-      <details aria-label="Sql Injection">
+      <details open aria-label="Sql Injection">
         <summary id="sql-injection-cheat-sheet">
           <h2>13. SQL Injection Cheat Sheet</h2>
         </summary>
