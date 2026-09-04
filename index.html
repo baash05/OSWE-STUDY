@@ -813,7 +813,47 @@
           </ul>
         </section>
         <section>
-          <h3>5.1. Identify the Stack</h3>
+          <h3>5.1. The 10 Patterns to Check First</h3>
+          <ul>
+            <li>User input and route confusion: <code>$_GET</code>, <code>$_POST</code>, <code>$_REQUEST</code>,
+              <code>$_COOKIE</code>, <code>$_SERVER</code>, <code>$_FILES</code>, route files, router configs
+            </li>
+            <li>Code execution: <code>eval</code>, <code>assert</code>, <code>preg_replace(... /e )</code>,
+              <code>create_function</code>, <code>call_user_func</code>, <code>call_user_func_array</code>,
+              <code>array_map</code> with string callable
+            </li>
+            <li>Command injection: <code>exec</code>, <code>shell_exec</code>, <code>system</code>,
+              <code>passthru</code>, <code>popen</code>, <code>proc_open</code>, <code>pcntl_exec</code>,
+              <code>curl | bash</code>
+            </li>
+            <li>Insecure deserialization / XXE: <code>unserialize</code>, <code>serialize</code>,
+              <code>yaml_parse</code>, <code>xml_parse</code>, <code>simplexml_load_string</code>,
+              <code>DOMDocument::loadXML</code>
+            </li>
+            <li>SSTI: <code>{{ ... }}</code>, <code>{% ... %}</code>,
+              <code>&lt;?= $var ?&gt;</code>, <code>Blade</code>, <code>Twig</code>, <code>Smarty</code>,
+              <code>render</code>
+            </li>
+            <li>XSS: <code>echo</code>, <code>print</code>, <code>header</code>, <code>print_r</code>, raw HTML output
+            </li>
+            <li>File upload / write abuse: <code>move_uploaded_file</code>, <code>file_put_contents</code>,
+              <code>fopen</code>, <code>fwrite</code>, <code>rename</code>, <code>tmp_name</code>, <code>$_FILES</code>
+            </li>
+            <li>SQLi: <code>mysqli_query</code>, <code>PDO::query</code>, <code>SELECT</code>, <code>ORDER BY</code>,
+              <code>UNION</code>, <code>LIMIT</code>
+            </li>
+            <li>Traversal / file read abuse: <code>file_get_contents</code>, <code>fopen</code>, <code>readfile</code>,
+              <code>include</code>, <code>require</code>, <code>glob</code>, <code>opendir</code>,
+              <code>file_exists</code>, <code>unlink</code>
+            </li>
+            <li>Mass assignment / object mutation: <code>extract</code>, <code>parse_str</code>,
+              <code>foreach ($_GET as ...)</code>, <code>$_REQUEST</code>, <code>array_merge</code>,
+              <code>array_walk</code>, <code>-&gt;set</code>, <Code>Session</code> / config arrays
+            </li>
+          </ul>
+        </section>
+        <section>
+          <h3>5.2. Identify the Stack</h3>
           <ul>
             <li>Plain PHP: <code>$_GET</code>, <code>$_POST</code>, <code>$_REQUEST</code>, <code>$_COOKIE</code>,
               <code>$_SERVER</code>, <code>$_FILES</code>, <code>header()</code>, <code>echo</code>, <code>print</code>,
@@ -840,46 +880,6 @@
           </ul>
         </section>
         <section>
-          <h3>5.2. The 10 Patterns to Check First</h3>
-          <ul>
-            <li>User input and route confusion: <code>$_GET</code>, <code>$_POST</code>, <code>$_REQUEST</code>,
-              <code>$_COOKIE</code>, <code>$_SERVER</code>, <code>$_FILES</code>, route files, router configs
-            </li>
-            <li>Code execution: <code>eval</code>, <code>assert</code>, <code>preg_replace(... /e )</code>,
-              <code>create_function</code>, <code>call_user_func</code>, <code>call_user_func_array</code>,
-              <code>array_map</code> with string callable
-            </li>
-            <li>Command injection: <code>exec</code>, <code>shell_exec</code>, <code>system</code>,
-              <code>passthru</code>, <code>popen</code>, <code>proc_open</code>, <code>pcntl_exec</code>,
-              <code>curl | bash</code>
-            </li>
-            <li>Insecure deserialization / XXE: <code>unserialize</code>, <code>serialize</code>,
-              <code>yaml_parse</code>, <code>xml_parse</code>, <code>simplexml_load_string</code>,
-              <code>DOMDocument::loadXML</code>
-            </li>
-            <li>SSTI / template injection: <code>{{ ... }}</code>, <code>{% ... %}</code>,
-              <code>&lt;?= $var ?&gt;</code>, <code>Blade</code>, <code>Twig</code>, <code>Smarty</code>,
-              <code>render</code>
-            </li>
-            <li>XSS: <code>echo</code>, <code>print</code>, <code>header</code>, <code>print_r</code>, raw HTML output
-            </li>
-            <li>File upload / write abuse: <code>move_uploaded_file</code>, <code>file_put_contents</code>,
-              <code>fopen</code>, <code>fwrite</code>, <code>rename</code>, <code>tmp_name</code>, <code>$_FILES</code>
-            </li>
-            <li>SQLi: <code>mysqli_query</code>, <code>PDO::query</code>, <code>SELECT</code>, <code>ORDER BY</code>,
-              <code>UNION</code>, <code>LIMIT</code>
-            </li>
-            <li>Traversal / file read abuse: <code>file_get_contents</code>, <code>fopen</code>, <code>readfile</code>,
-              <code>include</code>, <code>require</code>, <code>glob</code>, <code>opendir</code>,
-              <code>file_exists</code>, <code>unlink</code>
-            </li>
-            <li>Mass assignment / object mutation: <code>extract</code>, <code>parse_str</code>,
-              <code>foreach ($_GET as ...)</code>, <code>$_REQUEST</code>, <code>array_merge</code>,
-              <code>array_walk</code>, <code>-&gt;set</code>, <Code>Session</code> / config arrays
-            </li>
-          </ul>
-        </section>
-        <section>
           <h3>5.3. Identify the Template Engine</h3>
           <ul>
             <li>Twig: <code>{{ ... }}</code>, <code>{% ... %}</code></li>
@@ -887,14 +887,13 @@
               <code>@if</code>
             </li>
             <li>Smarty: <code>{...}</code></li>
-            <li>native PHP templates: <code>&lt;?= $var ?&gt;</code>, <code>&lt;?php echo $var ?&gt;</code></li>
-            <li>custom template loaders: <code>render</code>, <code>template</code>, <code>view</code>,
+            <li>Native PHP templates: <code>&lt;?= $var ?&gt;</code>, <code>&lt;?php echo $var ?&gt;</code></li>
+            <li>Custom template loaders: <code>render</code>, <code>template</code>, <code>view</code>,
               <code>mustache</code>, <code>handlebars</code>
             </li>
             <li>route → controller → template → user input</li>
           </ul>
         </section>
-
         <section>
           <h3>5.4. Routing</h3>
           <ul>
@@ -1002,7 +1001,7 @@
           </ul>
         </section>
         <section>
-          <h3>5.8. Templates / SSTI</h3>
+          <h3>5.8. SSTI</h3>
           <ul>
             <li>Twig: <code>{{ ... }}</code></li>
             <li>Blade: <code>{{ ... }}</code></li>
@@ -1289,45 +1288,7 @@
           </ul>
         </section>
         <section>
-          <h3>6.0. Identify the Stack</h3>
-          <ul>
-            <li>Spring Boot: <code>@SpringBootApplication</code>, <code>@RestController</code>,
-              <code>@Controller</code>, <code>@GetMapping</code>, <code>@PostMapping</code>,
-              <code>@RequestMapping</code>
-            </li>
-            <li>Spring MVC: <code>@Controller</code>, <code>@RequestParam</code>, <code>@PathVariable</code>,
-              <code>@RequestBody</code>, <code>Model</code>, <code>HttpServletRequest</code>
-            </li>
-            <li>Servlet/JSP: <code>HttpServlet</code>, <code>doGet</code>, <code>doPost</code>,
-              <code>request.getParameter</code>, <code>response.getWriter</code>, <code>JSP EL</code>,
-              <code>${...}</code>
-            </li>
-            <li>Struts: <code>Action</code>, <code>ActionForm</code>, <code>struts.xml</code>, <code>OGNL</code></li>
-            <li>Thymeleaf: <code>th:text</code>, <code>th:utext</code>, <code>@{...}</code>, <code>${...}</code></li>
-            <li>JPA/Hibernate: <code>EntityManager</code>, <code>Query</code>, <code>CriteriaBuilder</code>,
-              <code>session.createQuery</code>
-            </li>
-            <li>MyBatis: <code>Mapper</code>, <code>@Select</code>, <code>#{param}</code></li>
-            <li>Quarkus/Micronaut: <code>@Path</code>, <code>@GET</code>, <code>@POST</code>, <code>@Body</code></li>
-            <li>JDBC/raw Java: <code>Statement</code>, <code>PreparedStatement</code>, <code>DriverManager</code>,
-              <code>ProcessBuilder</code>
-            </li>
-          </ul>
-        </section>
-        <section>
-          <h3>6.1. Identify the Template Engine</h3>
-          <ul>
-            <li>JSP EL: <code>${...}</code>, <code>${param.foo}</code>, <code>${requestScope.x}</code></li>
-            <li>Thymeleaf: <code>th:text</code>, <code>th:utext</code>, <code>${...}</code>, <code>@{...}</code></li>
-            <li>Freemarker: <code>${...}</code>, <code>?html</code>, <code>TemplateHashModel</code></li>
-            <li>Velocity: <code>$var</code>, <code>#set</code>, <code>#if</code>, <code>#include</code></li>
-            <li>Mustache: <code>{{name}}</code>, <code>{{{html}}}</code></li>
-            <li>OGNL: <code>${...}</code> in Struts/Apache Commons, object graph traversal</li>
-            <li>if template engine is server-side and user input reaches it, inspect for SSTI</li>
-          </ul>
-        </section>
-        <section>
-          <h3>6.2. The 10 Patterns to Check First</h3>
+          <h3>6.0. The 10 Patterns to Check First</h3>
           <ul>
             <li>Route precedence and generic-vs-specific confusion: <code>@GetMapping</code>, <code>@PostMapping</code>,
               <code>@RequestMapping</code>, <code>@Controller</code>, <code>web.xml</code>, <code>doGet</code>,
@@ -1362,6 +1323,44 @@
               <code>BeanUtils.copyProperties</code>, <code>Reflection</code>, <code>Class.forName</code>,
               <code>MBeanServer</code>, <code>@RequestBody</code>
             </li>
+          </ul>
+        </section>
+        <section>
+          <h3>6.1. Identify the Stack</h3>
+          <ul>
+            <li>Spring Boot: <code>@SpringBootApplication</code>, <code>@RestController</code>,
+              <code>@Controller</code>, <code>@GetMapping</code>, <code>@PostMapping</code>,
+              <code>@RequestMapping</code>
+            </li>
+            <li>Spring MVC: <code>@Controller</code>, <code>@RequestParam</code>, <code>@PathVariable</code>,
+              <code>@RequestBody</code>, <code>Model</code>, <code>HttpServletRequest</code>
+            </li>
+            <li>Servlet/JSP: <code>HttpServlet</code>, <code>doGet</code>, <code>doPost</code>,
+              <code>request.getParameter</code>, <code>response.getWriter</code>, <code>JSP EL</code>,
+              <code>${...}</code>
+            </li>
+            <li>Struts: <code>Action</code>, <code>ActionForm</code>, <code>struts.xml</code>, <code>OGNL</code></li>
+            <li>Thymeleaf: <code>th:text</code>, <code>th:utext</code>, <code>@{...}</code>, <code>${...}</code></li>
+            <li>JPA/Hibernate: <code>EntityManager</code>, <code>Query</code>, <code>CriteriaBuilder</code>,
+              <code>session.createQuery</code>
+            </li>
+            <li>MyBatis: <code>Mapper</code>, <code>@Select</code>, <code>#{param}</code></li>
+            <li>Quarkus/Micronaut: <code>@Path</code>, <code>@GET</code>, <code>@POST</code>, <code>@Body</code></li>
+            <li>JDBC/raw Java: <code>Statement</code>, <code>PreparedStatement</code>, <code>DriverManager</code>,
+              <code>ProcessBuilder</code>
+            </li>
+          </ul>
+        </section>
+        <section>
+          <h3>6.2. Identify the Template Engine</h3>
+          <ul>
+            <li>JSP EL: <code>${...}</code>, <code>${param.foo}</code>, <code>${requestScope.x}</code></li>
+            <li>Thymeleaf: <code>th:text</code>, <code>th:utext</code>, <code>${...}</code>, <code>@{...}</code></li>
+            <li>Freemarker: <code>${...}</code>, <code>?html</code>, <code>TemplateHashModel</code></li>
+            <li>Velocity: <code>$var</code>, <code>#set</code>, <code>#if</code>, <code>#include</code></li>
+            <li>Mustache: <code>{{name}}</code>, <code>{{{html}}}</code></li>
+            <li>OGNL: <code>${...}</code> in Struts/Apache Commons, object graph traversal</li>
+            <li>if template engine is server-side and user input reaches it, inspect for SSTI</li>
           </ul>
         </section>
         <section>
@@ -1405,7 +1404,7 @@
               <code>ognl</code>
             </li>
           </ul>
-          <h4>4.1. Java RCE in practice</h4>
+          <h4>6.4.1. Java RCE in practice</h4>
           <ul>
             <li>
               <code>Runtime.getRuntime().exec(&quot;bash -c \&quot;&quot; + req.getParameter(&quot;cmd&quot;) + &quot;\&quot;&quot;)</code>
@@ -1418,7 +1417,7 @@
             <li><code>loadClass</code>, <code>invoke</code>, <code>MethodHandles</code> on attacker-controlled class
               names or method strings</li>
           </ul>
-          <h4>4.2. High-value sinks / file names</h4>
+          <h4>6.4.2. High-value sinks / file names</h4>
           <ul>
             <li><code>CommandRunner.java</code>, <code>Shell.java</code>, <code>Exec.java</code>,
               <code>ProcessUtil.java</code>, <code>RuntimeUtil.java</code>, <code>BeanUtils.java</code>
@@ -1431,7 +1430,7 @@
               <code>Class.forName</code>, <code>Method.invoke</code>
             </li>
           </ul>
-          <h4>4.3. What to do when you find it</h4>
+          <h4>6.4.3. What to do when you find it</h4>
           <ul>
             <li>Confirm user input reaches <code>exec</code>, <code>ProcessBuilder</code>, <code>eval</code>,
               <code>reflect</code>, or <code>Class.forName</code>
@@ -3259,21 +3258,33 @@
                   <code>request.form</code>, <code>User(</code>
                 </li>
               </ul>
-              <!-- ## 17. Unsafe File Ops
-<ul>
-<li><code>os.remove</code>, <code>unlink()</code>, <code>rmtree()</code>, <code>shutil.copy</code>, <code>shutil.move</code>, <code>mkstemp()</code></li>
-<li><code>open(...)</code>, <code>Path.write_text</code>, <code>Path.write_bytes</code>, <code>NamedTemporaryFile</code></li>
-<li>file writes from user-controlled paths or names</li>
-<li>treat config/cache/upload state changes as security-sensitive</li>
-</ul>
-- search for: `unlink`, `remove`, `rmtree`, `write_text`, `NamedTemporaryFile`, `shutil.move` -->
-              <!-- ## 18. CSRF / Session State
-<ul>
-<li><code>csrf</code>, <code>token</code>, <code>SameSite</code>, <code>session_cookie</code>, <code>csrf_token</code></li>
-<li><code>validate_csrf</code>, <code>protect</code>, <code>csrf_protect</code>, <code>@csrf.exempt</code></li>
-<li>session fixation via reused tokens, cookies, login state</li>
-</ul>
-- search for: `csrf`, `SameSite`, `session_cookie`, `csrf_token`, `validate_csrf` -->
+            </section>
+            <section>
+              <h3>9.17. Unsafe File Ops</h3>
+              <ul>
+                <li><code>os.remove</code>, <code>unlink()</code>, <code>rmtree()</code>, <code>shutil.copy</code>,
+                  <code>shutil.move</code>, <code>mkstemp()</code>
+                </li>
+                <li><code>open(...)</code>, <code>Path.write_text</code>, <code>Path.write_bytes</code>,
+                  <code>NamedTemporaryFile</code>
+                </li>
+                <li>file writes from user-controlled paths or names</li>
+                <li>treat config/cache/upload state changes as security-sensitive</li>
+              </ul>
+              - search for: `unlink`, `remove`, `rmtree`, `write_text`, `NamedTemporaryFile`, `shutil.move` -->
+            </section>
+            <section>
+              <h3>9.18. CSRF / Session State</h3>
+              <ul>
+                <li><code>csrf</code>, <code>token</code>, <code>SameSite</code>, <code>session_cookie</code>,
+                  <code>csrf_token</code>
+                </li>
+                <li><code>validate_csrf</code>, <code>protect</code>, <code>csrf_protect</code>,
+                  <code>@csrf.exempt</code>
+                </li>
+                <li>session fixation via reused tokens, cookies, login state</li>
+              </ul>
+              - search for: `csrf`, `SameSite`, `session_cookie`, `csrf_token`, `validate_csrf`
             </section>
             <section>
               <h3>Quick Review Rule</h3>
@@ -3291,7 +3302,7 @@
       <h1 id="vectors">Vectors</h1>
       <details aria-label="Business Logic / IDOR">
         <summary id="business-logic-idor-notes">
-          <h2>10. Business Logic / IDOR</h2>
+          <h2>10. Business Logic / IDOR (Insecure Direct Object Reference)</h2>
         </summary>
         <section>
           <h3>Scope</h3>
